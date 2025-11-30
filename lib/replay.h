@@ -17,6 +17,7 @@ private:
 	Napi::Value getParameters(const Napi::CallbackInfo& info);
 	Napi::Value getScriptName(const Napi::CallbackInfo& info);
 	Napi::Value getDecks(const Napi::CallbackInfo& info);
+	Napi::Value getReplayData(const Napi::CallbackInfo& info);
 	
 // -> C++
 private:

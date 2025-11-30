@@ -13,6 +13,7 @@ private:
 public:
     std::uint8_t* data(void);
     std::size_t size(void) const;
+    std::size_t getCursor(void) const;
 
 public:
     template<typename T>

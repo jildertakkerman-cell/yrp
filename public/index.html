@@ -1,0 +1,307 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YRP Replay Parser</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #e2e8f0;
+            --accent-color: #38bdf8;
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 3rem;
+        }
+
+        .drop-zone {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 2px dashed var(--glass-border);
+            border-radius: 1rem;
+            padding: 4rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.drag-over {
+            border-color: var(--accent-color);
+            background: rgba(56, 189, 248, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .drop-zone p {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            pointer-events: none;
+        }
+
+        .drop-zone svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+            fill: var(--accent-color);
+            pointer-events: none;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .results {
+            margin-top: 2rem;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .result-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .file-name {
+            font-weight: 600;
+        }
+
+        .actions button {
+            background: var(--accent-color);
+            color: #0f172a;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .actions button:hover {
+            opacity: 0.9;
+        }
+
+        .download-btn {
+            background: var(--accent-color);
+            color: #0f172a;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .download-btn:hover {
+            opacity: 0.9;
+        }
+
+        .error {
+            color: #ef4444;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>YRP Parser</h1>
+        <p class="subtitle">Drag & drop your .yrp files to convert them to JSON</p>
+
+        <div class="drop-zone" id="dropZone">
+            <svg viewBox="0 0 24 24">
+                <path
+                    d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z" />
+            </svg>
+            <p>Drop files here or click to upload</p>
+            <input type="file" id="fileInput" multiple accept=".yrp,.yrpx,.yrpX">
+        </div>
+
+        <div class="results" id="results"></div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const resultsContainer = document.getElementById('results');
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        dropZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', () => {
+            handleFiles(fileInput.files);
+        });
+
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
+                const lowerName = file.name.toLowerCase();
+                if (lowerName.endsWith('.yrp') || lowerName.endsWith('.yrpx')) {
+                    uploadAndParse(file);
+                } else {
+                    showError(file.name, "Not a .yrp or .yrpx file");
+                }
+            });
+        }
+
+        async function uploadAndParse(file) {
+            const card = createResultCard(file.name, "Processing...");
+
+            try {
+                const response = await fetch('/parse', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/octet-stream'
+                    },
+                    body: file
+                });
+
+                if (!response.ok) {
+                    const errorJson = await response.json().catch(() => ({}));
+                    throw new Error(errorJson.details || errorJson.error || 'Parse failed');
+                }
+
+                const json = await response.json();
+                updateCardSuccess(card, file.name, json);
+            } catch (error) {
+                updateCardError(card, error.message);
+                console.error(error);
+            }
+        }
+
+        function createResultCard(fileName, status) {
+            const div = document.createElement('div');
+            div.className = 'result-card';
+            div.innerHTML = `
+                <span class="file-name">${fileName}</span>
+                <span class="status">${status}</span>
+            `;
+            resultsContainer.prepend(div);
+            return div;
+        }
+
+        function updateCardSuccess(card, fileName, data) {
+            const jsonStr = JSON.stringify(data, null, 2);
+            // Use application/octet-stream to force download and respect filename
+            const blob = new Blob([jsonStr], { type: 'application/octet-stream' });
+            const downloadName = fileName.replace(/\.[^/.]+$/, "") + ".json";
+
+            card.innerHTML = `
+                <span class="file-name">${fileName}</span>
+                <div class="actions">
+                    <button class="download-btn">Download JSON</button>
+                </div>
+            `;
+
+            const btn = card.querySelector('.download-btn');
+            btn.addEventListener('click', () => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = downloadName;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 100);
+            });
+        }
+
+        function updateCardError(card, message) {
+            card.innerHTML += `<div class="error">${message}</div>`;
+        }
+
+        function showError(fileName, message) {
+            const div = document.createElement('div');
+            div.className = 'result-card';
+            div.style.borderColor = '#ef4444';
+            div.innerHTML = `
+                <span class="file-name">${fileName}</span>
+                <span class="error">${message}</span>
+            `;
+            resultsContainer.prepend(div);
+        }
+    </script>
+</body>
+
+</html>

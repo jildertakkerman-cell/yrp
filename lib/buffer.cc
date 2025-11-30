@@ -32,3 +32,6 @@ std::uint8_t* Buffer::data(void) {
 std::size_t Buffer::size(void) const {
 	return this->byteLength;
 }
+std::size_t Buffer::getCursor(void) const {
+	return this->cursor;
+}

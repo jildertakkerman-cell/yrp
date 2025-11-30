@@ -6,7 +6,7 @@ import path from "path";
 describe("yrp", () => {
     it("should retrieve replay header information", async () => {
         const originalFileBuffer = fs.readFileSync(path.join(process.cwd(), "./res/yrp-basic.yrp"));
-        const replay = Replay.fromBuffer(originalFileBuffer);
+        const replay = await Replay.fromBuffer(originalFileBuffer);
 
         expect(replay.getHeader()).toMatchSnapshot();
     });
@@ -18,28 +18,28 @@ describe("yrp", () => {
 
     it("should retrieve player names", async () => {
         const originalFileBuffer = fs.readFileSync(path.join(process.cwd(), "./res/yrp-basic.yrp"));
-        const replay = Replay.fromBuffer(originalFileBuffer);
+        const replay = await Replay.fromBuffer(originalFileBuffer);
 
         expect(replay.getPlayerNames()).toMatchSnapshot();
     });
 
     it("should retrieve replay parameters", async () => {
         const originalFileBuffer = fs.readFileSync(path.join(process.cwd(), "./res/yrp-basic.yrp"));
-        const replay = Replay.fromBuffer(originalFileBuffer);
+        const replay = await Replay.fromBuffer(originalFileBuffer);
 
         expect(replay.getParameter()).toMatchSnapshot();
     });
 
     it("should retrieve replay script name", async () => {
         const originalFileBuffer = fs.readFileSync(path.join(process.cwd(), "./res/yrp-basic.yrp"));
-        const replay = Replay.fromBuffer(originalFileBuffer);
+        const replay = await Replay.fromBuffer(originalFileBuffer);
 
         expect(replay.getScriptName()).toMatchSnapshot();
     });
 
-    it("should parse replay decks", () => {
+    it("should parse replay decks", async () => {
         const originalFileBuffer = fs.readFileSync(path.join(process.cwd(), "./res/yrp-basic.yrp"));
-        const replay = Replay.fromBuffer(originalFileBuffer);
+        const replay = await Replay.fromBuffer(originalFileBuffer);
 
         expect(replay.getDecks()).toMatchSnapshot();
     });

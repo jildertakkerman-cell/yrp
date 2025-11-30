@@ -1,9 +1,10 @@
-import * as fs from "fs-extra";
+﻿import * as fs from "fs-extra";
 import cloneDeep from "lodash.clonedeep";
+import { YrpxParser } from "./yrpx_parser";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const addon = require("bindings")("yrp.node");
-const NativeReplay: { new (buffer: Buffer): NativeReplay } = addon.Replay;
+const NativeReplay: { new(buffer: Buffer): NativeReplay } = addon.Replay;
 
 interface NativeReplay {
     getHeaderInformation(): ReplayHeader;
@@ -38,11 +39,16 @@ export interface Deck {
 export class Replay {
     public static async fromFile(path: string) {
         const buffer = await fs.readFile(path);
-        const nativeReplay = new NativeReplay(buffer);
-
-        return new Replay(nativeReplay);
+        return Replay.fromBuffer(buffer);
     }
-    public static fromBuffer(buffer: Buffer) {
+    public static async fromBuffer(buffer: Buffer) {
+        if (buffer.length >= 4) {
+            const id = buffer.readUInt32LE(0);
+            if (id === 0x58707279) { // YRPX
+                const parser = await YrpxParser.create(buffer);
+                return new Replay(parser);
+            }
+        }
         return new Replay(new NativeReplay(buffer));
     }
 
@@ -76,5 +82,11 @@ export class Replay {
     }
     public getDecks() {
         return cloneDeep(this.decks);
+    }
+    public getReplayData(): Buffer | null {
+        if ('getReplayData' in this.native) {
+            return (this.native as any).getReplayData();
+        }
+        return null;
     }
 }

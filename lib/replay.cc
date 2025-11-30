@@ -7,6 +7,7 @@ Napi::Object Replay::Init(Napi::Env env, Napi::Object exports) {
         InstanceMethod("getScriptName", &Replay::getScriptName),
         InstanceMethod("getParameters", &Replay::getParameters),
         InstanceMethod("getDecks", &Replay::getDecks),
+        InstanceMethod("getReplayData", &Replay::getReplayData),
     });
 	Napi::FunctionReference* constructor = new Napi::FunctionReference();
 	*constructor = Napi::Persistent(func);
@@ -226,4 +227,26 @@ void Replay::decompressData(Napi::Env& env) {
 void Replay::getName(char16_t* data) {
 	this->decompressedBuffer->readItem(data, 20);
 	data[19] = 0;
+}
+
+Napi::Value Replay::getReplayData(const Napi::CallbackInfo& info) {
+    auto env = info.Env();
+    
+    if (!this->decompressedBuffer) {
+        return env.Null();
+    }
+    
+    // Get remaining data from current cursor position to end of buffer
+    std::size_t remainingSize = this->decompressedBuffer->size() - this->decompressedBuffer->getCursor();
+    
+    if (remainingSize == 0) {
+        return env.Null();
+    }
+    
+    // Create a new Node.js Buffer with the remaining data
+    auto buffer = Napi::Buffer<uint8_t>::Copy(env, 
+        this->decompressedBuffer->data() + this->decompressedBuffer->getCursor(), 
+        remainingSize);
+    
+    return buffer;
 }
