@@ -1,7 +1,9 @@
 import express from "express";
 import * as path from "path";
-import { Replay } from "./index";
+import { ReplayParserTS } from "./replay_parser_ts";
 import { ReplayDecoder } from "./replay_decoder";
+
+import { distillReplayData } from "./distill_combo";
 
 const app = express();
 const PORT = 3000;
@@ -17,29 +19,24 @@ app.post("/parse", async (req, res) => {
         const buffer = req.body;
         console.log(`Received request. Body is Buffer: ${Buffer.isBuffer(buffer)}, Length: ${buffer ? buffer.length : 0}`);
 
-        if (!buffer || buffer.length === 0) {
-            console.error("Error: Buffer is empty");
-            return res.status(400).json({ error: "No file data received" });
-        }
-
-        const replay = await Replay.fromBuffer(buffer);
+        const replay = new ReplayParserTS(buffer);
+        await replay.parse();
         console.log("Replay parsed successfully");
 
-        const replayDataBuffer = replay.getReplayData();
-        const header = replay.getHeader();
-        const parsedReplayData = replayDataBuffer ? ReplayDecoder.decode(replayDataBuffer, header.id) : [];
+        const replayDataBuffer = replay.replayData;
+        const parsedReplayData = replayDataBuffer ? ReplayDecoder.decode(replayDataBuffer, replay.header.id) : [];
 
-        const data = {
-            header: replay.getHeader(),
-            playerNames: replay.getPlayerNames(),
-            scriptName: replay.getScriptName(),
-            parameter: replay.getParameter(),
-            decks: replay.getDecks(),
-            replayData: replayDataBuffer?.toString('base64') || null,
+        const replayData = {
+            header: replay.header,
             parsedReplayData: parsedReplayData
         };
 
-        res.json(data);
+        // Distill the combo
+        console.log("Distilling combo...");
+        const distilledCombo = await distillReplayData(replayData);
+        console.log("Combo distilled successfully");
+
+        res.json(distilledCombo);
     } catch (error) {
         console.error("Error parsing replay:", error);
         res.status(500).json({ error: "Failed to parse replay file", details: String(error) });

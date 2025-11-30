@@ -1,0 +1,772 @@
+{
+    "archetype": "ABC",
+    "combos": {
+        "combo1": {
+            "title": "Imported Combo",
+            "description": "Automatically distilled from replay file.",
+            "cards": [
+                {
+                    "id": "card_70860415",
+                    "name": "X-Cross Cannon",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "card_77411244",
+                    "name": "B-Buster Drake",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "card_40216089",
+                    "name": "Platinum Gadget",
+                    "type": "extra",
+                    "zone": "zone-extra"
+                },
+                {
+                    "id": "card_6355563",
+                    "name": "Y-Yare Head",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "card_2133971",
+                    "name": "Union Controller",
+                    "type": "extra",
+                    "zone": "zone-extra"
+                },
+                {
+                    "id": "card_3405259",
+                    "name": "C-Crush Wyvern",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "card_66399653",
+                    "name": "Union Hangar",
+                    "type": "spell",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "card_33744268",
+                    "name": "Z-Zillion Tank",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "card_99249638",
+                    "name": "Union Driver",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "card_79538761",
+                    "name": "Torque Tune Gear",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "card_25862681",
+                    "name": "Ancient Fairy Dragon",
+                    "type": "extra",
+                    "zone": "zone-extra"
+                },
+                {
+                    "id": "card_84792926",
+                    "name": "Therion Discolosseum",
+                    "type": "spell",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "card_10604644",
+                    "name": "Therion \"King\" Regulus",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "card_1528054",
+                    "name": "Silhouhatte Rabbit",
+                    "type": "extra",
+                    "zone": "zone-extra"
+                },
+                {
+                    "id": "card_44822037",
+                    "name": "Angel Statue - Azurune",
+                    "type": "trap",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "card_30012506",
+                    "name": "A-Assault Core",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "card_18326736",
+                    "name": "Tellarknight Ptolemaeus",
+                    "type": "extra",
+                    "zone": "zone-extra"
+                },
+                {
+                    "id": "card_58069384",
+                    "name": "Cyber Dragon Nova",
+                    "type": "extra",
+                    "zone": "zone-extra"
+                },
+                {
+                    "id": "card_10443957",
+                    "name": "Cyber Dragon Infinity",
+                    "type": "extra",
+                    "zone": "zone-extra"
+                },
+                {
+                    "id": "card_75748977",
+                    "name": "XYZ-Hyper Dragon Cannon",
+                    "type": "extra",
+                    "zone": "zone-extra"
+                },
+                {
+                    "id": "card_1561110",
+                    "name": "ABC-Dragon Buster",
+                    "type": "extra",
+                    "zone": "zone-extra"
+                }
+            ],
+            "steps": [
+                {
+                    "text": "Draw X-Cross Cannon",
+                    "card": "card_70860415",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Move to Main Monster Zone X-Cross Cannon",
+                    "card": "card_70860415",
+                    "to": "zone-m3"
+                },
+                {
+                    "text": "Normal Summon X-Cross Cannon",
+                    "card": "card_70860415",
+                    "to": "zone-m3"
+                },
+                {
+                    "text": "Activate Effect X-Cross Cannon",
+                    "card": "card_70860415",
+                    "to": "zone-field"
+                },
+                {
+                    "text": "Move to Spell/Trap Zone B-Buster Drake",
+                    "card": "card_77411244",
+                    "to": "zone-s4"
+                },
+                {
+                    "text": "Equip Card",
+                    "to": "zone-m3"
+                },
+                {
+                    "text": "Activate Effect B-Buster Drake",
+                    "card": "card_77411244",
+                    "to": "zone-field"
+                },
+                {
+                    "text": "Move to Main Monster Zone B-Buster Drake",
+                    "card": "card_77411244",
+                    "to": "zone-m1"
+                },
+                {
+                    "text": "Special Summon B-Buster Drake (Union Effect)",
+                    "card": "card_77411244",
+                    "to": "zone-m1",
+                    "chainCard": 77411244
+                },
+                {
+                    "text": "Send to Graveyard as Material B-Buster Drake",
+                    "card": "card_77411244",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Send to Graveyard as Material X-Cross Cannon",
+                    "card": "card_70860415",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Move to Main Monster Zone Platinum Gadget",
+                    "card": "card_40216089",
+                    "to": "zone-em-left"
+                },
+                {
+                    "text": "Special Summon Platinum Gadget",
+                    "card": "card_40216089",
+                    "to": "zone-em-left"
+                },
+                {
+                    "text": "Activate Effect B-Buster Drake",
+                    "card": "card_77411244",
+                    "to": "zone-deck"
+                },
+                {
+                    "text": "Move to Hand Y-Yare Head",
+                    "card": "card_6355563",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Activate Effect Platinum Gadget",
+                    "card": "card_40216089",
+                    "to": "zone-deck"
+                },
+                {
+                    "text": "Move to Main Monster Zone Y-Yare Head",
+                    "card": "card_6355563",
+                    "to": "zone-m3"
+                },
+                {
+                    "text": "Special Summon Y-Yare Head (via Platinum Gadget)",
+                    "card": "card_6355563",
+                    "to": "zone-m3",
+                    "chainCard": 40216089
+                },
+                {
+                    "text": "Activate Effect Y-Yare Head",
+                    "card": "card_6355563",
+                    "to": "zone-field"
+                },
+                {
+                    "text": "Send to Spell/Trap Zone as Material B-Buster Drake",
+                    "card": "card_77411244",
+                    "to": "zone-s4"
+                },
+                {
+                    "text": "Equip Card",
+                    "to": "zone-m3"
+                },
+                {
+                    "text": "Send to Banished as Material Y-Yare Head",
+                    "card": "card_6355563",
+                    "to": "zone-banish"
+                },
+                {
+                    "text": "Send to Banished as Material Platinum Gadget",
+                    "card": "card_40216089",
+                    "to": "zone-banish"
+                },
+                {
+                    "text": "Move to Graveyard B-Buster Drake",
+                    "card": "card_77411244",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Move to Main Monster Zone Union Controller",
+                    "card": "card_2133971",
+                    "to": "zone-m3"
+                },
+                {
+                    "text": "Special Summon Union Controller",
+                    "card": "card_2133971",
+                    "to": "zone-m3"
+                },
+                {
+                    "text": "Activate Effect Union Controller",
+                    "card": "card_2133971",
+                    "to": "zone-field"
+                },
+                {
+                    "text": "Activate Effect B-Buster Drake",
+                    "card": "card_77411244",
+                    "to": "zone-deck"
+                },
+                {
+                    "text": "Move to Hand C-Crush Wyvern",
+                    "card": "card_3405259",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Move to Hand Union Hangar",
+                    "card": "card_66399653",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Move to Spell/Trap Zone Union Hangar",
+                    "card": "card_66399653",
+                    "to": "zone-field"
+                },
+                {
+                    "text": "Activate Effect Union Hangar",
+                    "card": "card_66399653",
+                    "to": "zone-deck"
+                },
+                {
+                    "text": "Move to Hand Z-Zillion Tank",
+                    "card": "card_33744268",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Activate Effect Union Controller",
+                    "card": "card_2133971",
+                    "to": "zone-field"
+                },
+                {
+                    "text": "Move to Main Monster Zone C-Crush Wyvern",
+                    "card": "card_3405259",
+                    "to": "zone-m5"
+                },
+                {
+                    "text": "Special Summon C-Crush Wyvern (via Union Controller)",
+                    "card": "card_3405259",
+                    "to": "zone-m5",
+                    "chainCard": 2133971
+                },
+                {
+                    "text": "Activate Effect Union Hangar",
+                    "card": "card_66399653",
+                    "to": "zone-deck"
+                },
+                {
+                    "text": "Move to Spell/Trap Zone Union Driver",
+                    "card": "card_99249638",
+                    "to": "zone-s4"
+                },
+                {
+                    "text": "Equip Card",
+                    "to": "zone-m5"
+                },
+                {
+                    "text": "Activate Effect Union Driver",
+                    "card": "card_99249638",
+                    "to": "zone-field"
+                },
+                {
+                    "text": "Move to Banished Union Driver",
+                    "card": "card_99249638",
+                    "to": "zone-banish"
+                },
+                {
+                    "text": "Move to Spell/Trap Zone Torque Tune Gear",
+                    "card": "card_79538761",
+                    "to": "zone-s4"
+                },
+                {
+                    "text": "Equip Card",
+                    "to": "zone-m5"
+                },
+                {
+                    "text": "Activate Effect Torque Tune Gear",
+                    "card": "card_79538761",
+                    "to": "zone-field"
+                },
+                {
+                    "text": "Move to Main Monster Zone Torque Tune Gear",
+                    "card": "card_79538761",
+                    "to": "zone-m1"
+                },
+                {
+                    "text": "Special Summon Torque Tune Gear (own effect)",
+                    "card": "card_79538761",
+                    "to": "zone-m1",
+                    "chainCard": 79538761
+                },
+                {
+                    "text": "Send to Graveyard as Material Torque Tune Gear",
+                    "card": "card_79538761",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Send to Graveyard as Material Union Controller",
+                    "card": "card_2133971",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Move to Main Monster Zone Ancient Fairy Dragon",
+                    "card": "card_25862681",
+                    "to": "zone-m3"
+                },
+                {
+                    "text": "Special Summon Ancient Fairy Dragon",
+                    "card": "card_25862681",
+                    "to": "zone-m3"
+                },
+                {
+                    "text": "Activate Effect Ancient Fairy Dragon",
+                    "card": "card_25862681",
+                    "to": "zone-field"
+                },
+                {
+                    "text": "Move to Graveyard Union Hangar",
+                    "card": "card_66399653",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Move to Hand Therion Discolosseum",
+                    "card": "card_84792926",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Move to Spell/Trap Zone Therion Discolosseum",
+                    "card": "card_84792926",
+                    "to": "zone-field"
+                },
+                {
+                    "text": "Activate Effect Therion Discolosseum",
+                    "card": "card_84792926",
+                    "to": "zone-deck"
+                },
+                {
+                    "text": "Move to Hand Therion \"King\" Regulus",
+                    "card": "card_10604644",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Activate Effect Therion \"King\" Regulus",
+                    "card": "card_10604644",
+                    "to": "zone-deck"
+                },
+                {
+                    "text": "Move to Main Monster Zone Therion \"King\" Regulus",
+                    "card": "card_10604644",
+                    "to": "zone-m1"
+                },
+                {
+                    "text": "Special Summon Therion \"King\" Regulus (own effect)",
+                    "card": "card_10604644",
+                    "to": "zone-m1",
+                    "chainCard": 10604644
+                },
+                {
+                    "text": "Move to Spell/Trap Zone B-Buster Drake",
+                    "card": "card_77411244",
+                    "to": "zone-s4"
+                },
+                {
+                    "text": "Equip Card",
+                    "to": "zone-m1"
+                },
+                {
+                    "text": "Activate Effect B-Buster Drake",
+                    "card": "card_77411244",
+                    "to": "zone-field"
+                },
+                {
+                    "text": "Move to Main Monster Zone B-Buster Drake",
+                    "card": "card_77411244",
+                    "to": "zone-m2"
+                },
+                {
+                    "text": "Special Summon B-Buster Drake (Union Effect)",
+                    "card": "card_77411244",
+                    "to": "zone-m2",
+                    "chainCard": 77411244
+                },
+                {
+                    "text": "Send to Graveyard as Material B-Buster Drake",
+                    "card": "card_77411244",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Send to Graveyard as Material C-Crush Wyvern",
+                    "card": "card_3405259",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Move to Main Monster Zone Silhouhatte Rabbit",
+                    "card": "card_1528054",
+                    "to": "zone-em-left"
+                },
+                {
+                    "text": "Special Summon Silhouhatte Rabbit",
+                    "card": "card_1528054",
+                    "to": "zone-em-left"
+                },
+                {
+                    "text": "Activate Effect C-Crush Wyvern",
+                    "card": "card_3405259",
+                    "to": "zone-deck"
+                },
+                {
+                    "text": "Activate Effect B-Buster Drake",
+                    "card": "card_77411244",
+                    "to": "zone-m1"
+                },
+                {
+                    "text": "Activate Effect Silhouhatte Rabbit",
+                    "card": "card_1528054",
+                    "to": "zone-deck"
+                },
+                {
+                    "text": "Move to Spell/Trap Zone Angel Statue - Azurune",
+                    "card": "card_44822037",
+                    "to": "zone-s4"
+                },
+                {
+                    "text": "Move to Hand A-Assault Core",
+                    "card": "card_30012506",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Move to Main Monster Zone Z-Zillion Tank",
+                    "card": "card_33744268",
+                    "to": "zone-m2"
+                },
+                {
+                    "text": "Special Summon Z-Zillion Tank (via C-Crush Wyvern)",
+                    "card": "card_33744268",
+                    "to": "zone-m2",
+                    "chainCard": 3405259
+                },
+                {
+                    "text": "Activate Effect Z-Zillion Tank",
+                    "card": "card_33744268",
+                    "to": "zone-deck"
+                },
+                {
+                    "text": "Send to Spell/Trap Zone as Material Y-Yare Head",
+                    "card": "card_6355563",
+                    "to": "zone-s3"
+                },
+                {
+                    "text": "Equip Card",
+                    "to": "zone-m2"
+                },
+                {
+                    "text": "Activate Effect Y-Yare Head",
+                    "card": "card_6355563",
+                    "to": "zone-field"
+                },
+                {
+                    "text": "Move to Main Monster Zone Y-Yare Head",
+                    "card": "card_6355563",
+                    "to": "zone-m4"
+                },
+                {
+                    "text": "Special Summon Y-Yare Head (Union Effect)",
+                    "card": "card_6355563",
+                    "to": "zone-m4",
+                    "chainCard": 6355563
+                },
+                {
+                    "text": "Activate Effect Y-Yare Head",
+                    "card": "card_6355563",
+                    "to": "zone-field"
+                },
+                {
+                    "text": "Send to Spell/Trap Zone as Material B-Buster Drake",
+                    "card": "card_77411244",
+                    "to": "zone-s5"
+                },
+                {
+                    "text": "Equip Card",
+                    "to": "zone-m4"
+                },
+                {
+                    "text": "Activate Effect B-Buster Drake",
+                    "card": "card_77411244",
+                    "to": "zone-m1"
+                },
+                {
+                    "text": "Move to Main Monster Zone B-Buster Drake",
+                    "card": "card_77411244",
+                    "to": "zone-m5"
+                },
+                {
+                    "text": "Special Summon B-Buster Drake (Union Effect)",
+                    "card": "card_77411244",
+                    "to": "zone-m5",
+                    "chainCard": 77411244
+                },
+                {
+                    "text": "Attach as Material Z-Zillion Tank",
+                    "card": "card_33744268",
+                    "to": "zone-m4"
+                },
+                {
+                    "text": "Attach as Material Y-Yare Head",
+                    "card": "card_6355563",
+                    "to": "zone-m4"
+                },
+                {
+                    "text": "Attach as Material B-Buster Drake",
+                    "card": "card_77411244",
+                    "to": "zone-m4"
+                },
+                {
+                    "text": "Move to Main Monster Zone Tellarknight Ptolemaeus",
+                    "card": "card_18326736",
+                    "to": "zone-m5"
+                },
+                {
+                    "text": "Special Summon Tellarknight Ptolemaeus",
+                    "card": "card_18326736",
+                    "to": "zone-m5"
+                },
+                {
+                    "text": "Activate Effect Tellarknight Ptolemaeus",
+                    "card": "card_18326736",
+                    "to": "zone-m1"
+                },
+                {
+                    "text": "Move to Graveyard Z-Zillion Tank",
+                    "card": "card_33744268",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Move to Graveyard Y-Yare Head",
+                    "card": "card_6355563",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Move to Graveyard B-Buster Drake",
+                    "card": "card_77411244",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Attach as Material Tellarknight Ptolemaeus",
+                    "card": "card_18326736",
+                    "to": "zone-m5"
+                },
+                {
+                    "text": "Move to Main Monster Zone Cyber Dragon Nova",
+                    "card": "card_58069384",
+                    "to": "zone-m5"
+                },
+                {
+                    "text": "Special Summon Cyber Dragon Nova (via Tellarknight Ptolemaeus)",
+                    "card": "card_58069384",
+                    "to": "zone-m5",
+                    "chainCard": 18326736
+                },
+                {
+                    "text": "Activate Effect Ancient Fairy Dragon",
+                    "card": "card_25862681",
+                    "to": "zone-field"
+                },
+                {
+                    "text": "Move to Main Monster Zone A-Assault Core",
+                    "card": "card_30012506",
+                    "to": "zone-m2"
+                },
+                {
+                    "text": "Special Summon A-Assault Core (via Ancient Fairy Dragon)",
+                    "card": "card_30012506",
+                    "to": "zone-m2",
+                    "chainCard": 25862681
+                },
+                {
+                    "text": "Activate Effect A-Assault Core",
+                    "card": "card_30012506",
+                    "to": "zone-deck"
+                },
+                {
+                    "text": "Move to Spell/Trap Zone A-Assault Core",
+                    "card": "card_30012506",
+                    "to": "zone-s5"
+                },
+                {
+                    "text": "Equip Card",
+                    "to": "zone-m5"
+                },
+                {
+                    "text": "Attach as Material Tellarknight Ptolemaeus",
+                    "card": "card_18326736",
+                    "to": "zone-m5"
+                },
+                {
+                    "text": "Attach as Material Cyber Dragon Nova",
+                    "card": "card_58069384",
+                    "to": "zone-m5"
+                },
+                {
+                    "text": "Move to Graveyard A-Assault Core",
+                    "card": "card_30012506",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Move to Main Monster Zone Cyber Dragon Infinity",
+                    "card": "card_10443957",
+                    "to": "zone-m5"
+                },
+                {
+                    "text": "Special Summon Cyber Dragon Infinity",
+                    "card": "card_10443957",
+                    "to": "zone-m5"
+                },
+                {
+                    "text": "Activate Effect A-Assault Core",
+                    "card": "card_30012506",
+                    "to": "zone-s1"
+                },
+                {
+                    "text": "Move to Hand Torque Tune Gear",
+                    "card": "card_79538761",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Activate Effect Cyber Dragon Infinity",
+                    "card": "card_10443957",
+                    "to": "zone-m1"
+                },
+                {
+                    "text": "Attach as Material Ancient Fairy Dragon",
+                    "card": "card_25862681",
+                    "to": "zone-m5"
+                },
+                {
+                    "text": "Send to Banished as Material Y-Yare Head",
+                    "card": "card_6355563",
+                    "to": "zone-banish"
+                },
+                {
+                    "text": "Send to Banished as Material Z-Zillion Tank",
+                    "card": "card_33744268",
+                    "to": "zone-banish"
+                },
+                {
+                    "text": "Send to Banished as Material X-Cross Cannon",
+                    "card": "card_70860415",
+                    "to": "zone-banish"
+                },
+                {
+                    "text": "Move to Main Monster Zone XYZ-Hyper Dragon Cannon",
+                    "card": "card_75748977",
+                    "to": "zone-m3"
+                },
+                {
+                    "text": "Special Summon XYZ-Hyper Dragon Cannon",
+                    "card": "card_75748977",
+                    "to": "zone-m3"
+                },
+                {
+                    "text": "Send to Banished as Material A-Assault Core",
+                    "card": "card_30012506",
+                    "to": "zone-banish"
+                },
+                {
+                    "text": "Send to Banished as Material B-Buster Drake",
+                    "card": "card_77411244",
+                    "to": "zone-banish"
+                },
+                {
+                    "text": "Send to Banished as Material C-Crush Wyvern",
+                    "card": "card_3405259",
+                    "to": "zone-banish"
+                },
+                {
+                    "text": "Move to Main Monster Zone ABC-Dragon Buster",
+                    "card": "card_1561110",
+                    "to": "zone-m2"
+                },
+                {
+                    "text": "Special Summon ABC-Dragon Buster",
+                    "card": "card_1561110",
+                    "to": "zone-m2"
+                },
+                {
+                    "text": "Activate Effect ABC-Dragon Buster",
+                    "card": "card_1561110",
+                    "to": "zone-deck"
+                },
+                {
+                    "text": "Move to Graveyard Torque Tune Gear",
+                    "card": "card_79538761",
+                    "to": "zone-gy"
+                }
+            ]
+        }
+    }
+}

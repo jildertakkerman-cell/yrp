@@ -1,0 +1,10 @@
+TypeError: Do not know how to serialize a BigInt
+TypeError: Do not know how to serialize a BigInt
+    at JSON.stringify (<anonymous>)
+    at stringify (C:\Users\jilde\Documents\VSCode-Projects-main\Apps\yrp\node_modules\jsonfile\utils.js:3:20)
+    at Object._writeFile (C:\Users\jilde\Documents\VSCode-Projects-main\Apps\yrp\node_modules\jsonfile\index.js:66:15)
+    at Object._writeFile (C:\Users\jilde\Documents\VSCode-Projects-main\Apps\yrp\node_modules\universalify\index.js:21:45)
+    at C:\Users\jilde\Documents\VSCode-Projects-main\Apps\yrp\src\parse_replays.ts:66:22
+    at step (C:\Users\jilde\Documents\VSCode-Projects-main\Apps\yrp\node_modules\tslib\tslib.js:144:27)
+    at Object.next (C:\Users\jilde\Documents\VSCode-Projects-main\Apps\yrp\node_modules\tslib\tslib.js:125:57)
+    at fulfilled (C:\Users\jilde\Documents\VSCode-Projects-main\Apps\yrp\node_modules\tslib\tslib.js:115:62)

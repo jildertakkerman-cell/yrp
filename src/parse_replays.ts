@@ -3,6 +3,9 @@ import * as path from "path";
 import { ReplayParserTS } from "./replay_parser_ts";
 import { ReplayDecoder } from "./replay_decoder";
 
+// Patch BigInt serialization
+(BigInt.prototype as any).toJSON = function () { return this.toString() };
+
 async function parseReplays() {
     const args = process.argv.slice(2);
     let filesToProcess: string[] = [];
@@ -63,10 +66,19 @@ async function parseReplays() {
             };
 
             const outputPath = file + ".json";
-            await fs.writeJson(outputPath, data, { spaces: 2 });
+            await fs.writeJson(outputPath, data, {
+                spaces: 2,
+                replacer: (key: string, value: any) => {
+                    if (typeof value === 'bigint') {
+                        return value.toString();
+                    }
+                    return value;
+                }
+            });
             console.log(`Saved JSON to ${outputPath}`);
         } catch (error) {
             console.error(`Error processing ${file}:`, error);
+            fs.writeFileSync("parse_error.log", String(error) + "\n" + (error instanceof Error ? error.stack : ""));
         }
     }
 }

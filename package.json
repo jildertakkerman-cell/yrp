@@ -31,6 +31,7 @@
         "prebuild": "npm run build:addons",
         "prepublishOnly": "npm run build",
         "start:dev": "ts-node src/test.ts",
+        "start": "ts-node src/server.ts",
         "semantic-release": "semantic-release"
     },
     "files": [

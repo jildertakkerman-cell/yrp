@@ -1,0 +1,178 @@
+[
+  {
+    "type": "MSG_MOVE",
+    "msgId": 50,
+    "len": 28,
+    "raw": "7f3e39040002000000000a0000000004020000000100000000040002",
+    "details": {
+      "code": 70860415,
+      "oldController": 0,
+      "oldLocation": 2,
+      "oldLocationName": "HAND",
+      "oldSequence": 0,
+      "oldPosition": 0,
+      "oldPositionName": "UNKNOWN_POS_0",
+      "newController": 0,
+      "newLocation": 0,
+      "newLocationName": "UNKNOWN_LOCATION_0",
+      "newSequence": 10,
+      "newPosition": 0,
+      "newPositionName": "UNKNOWN_POS_0",
+      "reason": 67108864,
+      "reasonName": "REDIRECT"
+    }
+  },
+  {
+    "type": "MSG_MOVE",
+    "msgId": 50,
+    "len": 28,
+    "raw": "7f3e39040002000000000a0000000004020000000100000000040002",
+    "details": {
+      "code": 70860415,
+      "oldController": 0,
+      "oldLocation": 2,
+      "oldLocationName": "HAND",
+      "oldSequence": 0,
+      "oldPosition": 0,
+      "oldPositionName": "UNKNOWN_POS_0",
+      "newController": 0,
+      "newLocation": 0,
+      "newLocationName": "UNKNOWN_LOCATION_0",
+      "newSequence": 10,
+      "newPosition": 0,
+      "newPositionName": "UNKNOWN_POS_0",
+      "reason": 67108864,
+      "reasonName": "REDIRECT"
+    },
+    "note": "MSG_MOVE found"
+  },
+  {
+    "type": "MSG_SUMMONING",
+    "msgId": 60,
+    "len": 14,
+    "raw": "7f3e390400040200000001000000",
+    "details": {
+      "code": 70860415,
+      "controller": 0,
+      "location": 4,
+      "locationName": "MZONE",
+      "sequence": 2,
+      "position": 0,
+      "positionName": "UNKNOWN_POS_0"
+    }
+  },
+  {
+    "type": "MSG_CHAINING",
+    "msgId": 70,
+    "len": 32,
+    "raw": "7f3e3904000402000000010000000004020000000100f0e79343000001000000",
+    "details": {
+      "code": 70860415,
+      "pcode": 132096,
+      "function": 65536,
+      "triggerController": 0,
+      "triggerLocation": 0,
+      "triggerLocationName": "UNKNOWN_LOCATION_0",
+      "triggerSequence": 0,
+      "controller": 4,
+      "location": 2,
+      "locationName": "HAND",
+      "sequence": 0,
+      "desc": 65536
+    }
+  },
+  {
+    "type": "MSG_MOVE",
+    "msgId": 50,
+    "len": 28,
+    "raw": "7f3e3904000402000000010000000010010000000500000008000010",
+    "details": {
+      "code": 70860415,
+      "oldController": 0,
+      "oldLocation": 4,
+      "oldLocationName": "MZONE",
+      "oldSequence": 2,
+      "oldPosition": 0,
+      "oldPositionName": "UNKNOWN_POS_0",
+      "newController": 0,
+      "newLocation": 0,
+      "newLocationName": "UNKNOWN_LOCATION_0",
+      "newSequence": 1,
+      "newPosition": 0,
+      "newPositionName": "UNKNOWN_POS_0",
+      "reason": 268435456,
+      "reasonName": "LINK"
+    }
+  },
+  {
+    "type": "MSG_MOVE",
+    "msgId": 50,
+    "len": 28,
+    "raw": "7f3e3904000402000000010000000010010000000500000008000010",
+    "details": {
+      "code": 70860415,
+      "oldController": 0,
+      "oldLocation": 4,
+      "oldLocationName": "MZONE",
+      "oldSequence": 2,
+      "oldPosition": 0,
+      "oldPositionName": "UNKNOWN_POS_0",
+      "newController": 0,
+      "newLocation": 0,
+      "newLocationName": "UNKNOWN_LOCATION_0",
+      "newSequence": 1,
+      "newPosition": 0,
+      "newPositionName": "UNKNOWN_POS_0",
+      "reason": 268435456,
+      "reasonName": "LINK"
+    },
+    "note": "MSG_MOVE found"
+  },
+  {
+    "type": "MSG_MOVE",
+    "msgId": 50,
+    "len": 28,
+    "raw": "7f3e3904001000000000050000000020040000000500000088000000",
+    "details": {
+      "code": 70860415,
+      "oldController": 0,
+      "oldLocation": 16,
+      "oldLocationName": "GRAVE",
+      "oldSequence": 0,
+      "oldPosition": 0,
+      "oldPositionName": "UNKNOWN_POS_0",
+      "newController": 0,
+      "newLocation": 0,
+      "newLocationName": "UNKNOWN_LOCATION_0",
+      "newSequence": 5,
+      "newPosition": 0,
+      "newPositionName": "UNKNOWN_POS_0",
+      "reason": 536870912,
+      "reasonName": "UNKNOWN_REASON_536870912"
+    }
+  },
+  {
+    "type": "MSG_MOVE",
+    "msgId": 50,
+    "len": 28,
+    "raw": "7f3e3904001000000000050000000020040000000500000088000000",
+    "details": {
+      "code": 70860415,
+      "oldController": 0,
+      "oldLocation": 16,
+      "oldLocationName": "GRAVE",
+      "oldSequence": 0,
+      "oldPosition": 0,
+      "oldPositionName": "UNKNOWN_POS_0",
+      "newController": 0,
+      "newLocation": 0,
+      "newLocationName": "UNKNOWN_LOCATION_0",
+      "newSequence": 5,
+      "newPosition": 0,
+      "newPositionName": "UNKNOWN_POS_0",
+      "reason": 536870912,
+      "reasonName": "UNKNOWN_REASON_536870912"
+    },
+    "note": "MSG_MOVE found"
+  }
+]

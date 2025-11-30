@@ -6,6 +6,8 @@ export interface ReplayStep {
     details?: any;
 }
 
+console.log("ReplayDecoder module loaded");
+
 // YGOPro Message IDs
 const MSG_RETRY = 1;
 const MSG_HINT = 2;
@@ -608,6 +610,11 @@ function getReasonName(reason: number): string {
 }
 
 function getLocationName(loc: number): string {
+    if (loc & LOCATION_OVERLAY) {
+        const baseLoc = loc & ~LOCATION_OVERLAY;
+        if (baseLoc === 0) return "OVERLAY";
+        return `OVERLAY|${getLocationName(baseLoc)}`;
+    }
     if (loc === LOCATION_DECK) return "DECK";
     if (loc === LOCATION_HAND) return "HAND";
     if (loc === LOCATION_MZONE) return "MZONE";
@@ -615,11 +622,11 @@ function getLocationName(loc: number): string {
     if (loc === LOCATION_GRAVE) return "GRAVE";
     if (loc === LOCATION_REMOVED) return "REMOVED";
     if (loc === LOCATION_EXTRA) return "EXTRA";
-    if (loc === LOCATION_OVERLAY) return "OVERLAY";
     return `UNKNOWN_LOCATION_${loc}`;
 }
 
 function getPositionName(pos: number): string {
+    if (pos === 0) return "NO_POS";
     const positions = [];
     if (pos & POS_FACEUP_ATTACK) positions.push("FACEUP_ATTACK");
     if (pos & POS_FACEDOWN_ATTACK) positions.push("FACEDOWN_ATTACK");
@@ -658,6 +665,78 @@ export function getDuelModeName(flags: number | bigint): string {
     return "UNKNOWN_MODE";
 }
 
+function getHintName(type: number): string {
+    switch (type) {
+        case HINT_EVENT: return "HINT_EVENT";
+        case HINT_MESSAGE: return "HINT_MESSAGE";
+        case HINT_SELECTMSG: return "HINT_SELECTMSG";
+        case HINT_OPSELECTED: return "HINT_OPSELECTED";
+        case HINT_EFFECT: return "HINT_EFFECT";
+        case HINT_RACE: return "HINT_RACE";
+        case HINT_ATTRIB: return "HINT_ATTRIB";
+        case HINT_CODE: return "HINT_CODE";
+        case HINT_NUMBER: return "HINT_NUMBER";
+        case HINT_CARD: return "HINT_CARD";
+        case HINT_ZONE: return "HINT_ZONE";
+        default: return `UNKNOWN_HINT_${type}`;
+    }
+}
+
+function getCardHintName(type: number): string {
+    switch (type) {
+        case CHINT_TURN: return "CHINT_TURN";
+        case CHINT_CARD: return "CHINT_CARD";
+        case CHINT_RACE: return "CHINT_RACE";
+        case CHINT_ATTRIBUTE: return "CHINT_ATTRIBUTE";
+        case CHINT_NUMBER: return "CHINT_NUMBER";
+        case CHINT_DESC_ADD: return "CHINT_DESC_ADD";
+        case CHINT_DESC_REMOVE: return "CHINT_DESC_REMOVE";
+        default: return `UNKNOWN_CHINT_${type}`;
+    }
+}
+
+function getPlayerHintName(type: number): string {
+    switch (type) {
+        case PHINT_DESC_ADD: return "PHINT_DESC_ADD";
+        case PHINT_DESC_REMOVE: return "PHINT_DESC_REMOVE";
+        default: return `UNKNOWN_PHINT_${type}`;
+    }
+}
+
+function getOpcodeNames(opcodes: bigint[]): string[] {
+    const names: string[] = [];
+    for (const op of opcodes) {
+        if (op === OPCODE_ADD) names.push("OPCODE_ADD");
+        else if (op === OPCODE_SUB) names.push("OPCODE_SUB");
+        else if (op === OPCODE_MUL) names.push("OPCODE_MUL");
+        else if (op === OPCODE_DIV) names.push("OPCODE_DIV");
+        else if (op === OPCODE_AND) names.push("OPCODE_AND");
+        else if (op === OPCODE_OR) names.push("OPCODE_OR");
+        else if (op === OPCODE_NEG) names.push("OPCODE_NEG");
+        else if (op === OPCODE_NOT) names.push("OPCODE_NOT");
+        else if (op === OPCODE_BAND) names.push("OPCODE_BAND");
+        else if (op === OPCODE_BOR) names.push("OPCODE_BOR");
+        else if (op === OPCODE_BNOT) names.push("OPCODE_BNOT");
+        else if (op === OPCODE_BXOR) names.push("OPCODE_BXOR");
+        else if (op === OPCODE_LSHIFT) names.push("OPCODE_LSHIFT");
+        else if (op === OPCODE_RSHIFT) names.push("OPCODE_RSHIFT");
+        else if (op === OPCODE_ALLOW_ALIASES) names.push("OPCODE_ALLOW_ALIASES");
+        else if (op === OPCODE_ALLOW_TOKENS) names.push("OPCODE_ALLOW_TOKENS");
+        else if (op === OPCODE_ISCODE) names.push("OPCODE_ISCODE");
+        else if (op === OPCODE_ISSETCARD) names.push("OPCODE_ISSETCARD");
+        else if (op === OPCODE_ISTYPE) names.push("OPCODE_ISTYPE");
+        else if (op === OPCODE_ISRACE) names.push("OPCODE_ISRACE");
+        else if (op === OPCODE_ISATTRIBUTE) names.push("OPCODE_ISATTRIBUTE");
+        else if (op === OPCODE_GETCODE) names.push("OPCODE_GETCODE");
+        else if (op === OPCODE_GETSETCARD) names.push("OPCODE_GETSETCARD");
+        else if (op === OPCODE_GETTYPE) names.push("OPCODE_GETTYPE");
+        else if (op === OPCODE_GETRACE) names.push("OPCODE_GETRACE");
+        else if (op === OPCODE_GETATTRIBUTE) names.push("OPCODE_GETATTRIBUTE");
+        else names.push(op.toString());
+    }
+    return names;
+}
+
 export class ReplayDecoder {
     private static parsers: { [key: number]: (d: Buffer) => any } = {
         [MSG_NEW_TURN]: (d) => ({ player: d.readUInt8(0) }),
@@ -668,21 +747,39 @@ export class ReplayDecoder {
         [MSG_WIN]: (d) => ({ player: d.readUInt8(0), type: d.readUInt8(1) }),
         [MSG_DRAW]: (d) => {
             const player = d.readUInt8(0);
-            const count = d.readUInt8(1);
+            const count = d.readUInt32LE(1);
             const cards = [];
             for (let i = 0; i < count; i++) {
-                if (2 + i * 4 + 4 <= d.length) {
-                    cards.push(d.readUInt32LE(2 + i * 4));
+                const offset = 5 + i * 8;
+                if (offset + 8 <= d.length) {
+                    cards.push({
+                        code: d.readUInt32LE(offset),
+                        // The next 4 bytes (offset + 4) are unknown (value 10 in repro).
+                        // Since this is a draw, location is implicitly HAND (2) for the player.
+                        controller: player,
+                        location: LOCATION_HAND,
+                        locationName: "HAND",
+                        // Sequence is likely the last one, but we don't know it from this message.
+                        // We can leave it undefined or 0.
+                        sequence: 0
+                    });
                 }
             }
             return { player, count, cards };
         },
-        [MSG_START]: (d) => ({
-            // Usually contains setup info, but can be variable. Returning hex for safety.
-            data: d.toString('hex')
-        }),
+        [MSG_START]: (d) => {
+            const info: any = {};
+            if (d.length >= 1) info.type = d.readUInt8(0);
+            if (d.length >= 5) info.lp = d.readUInt32LE(1);
+            if (d.length >= 9) info.lp2 = d.readUInt32LE(5);
+            if (d.length >= 13) info.deckSize = d.readUInt16LE(9);
+            if (d.length >= 15) info.extraSize = d.readUInt16LE(11);
+            if (d.length >= 17) info.handSize = d.readUInt16LE(13);
+            return info;
+        },
         [MSG_HINT]: (d) => ({
             type: d.readUInt8(0),
+            typeName: getHintName(d.readUInt8(0)),
             player: d.readUInt8(1),
             data: d.readUInt32LE(2)
         }),
@@ -690,32 +787,49 @@ export class ReplayDecoder {
             controller: d.readUInt8(0),
             location: d.readUInt8(1),
             locationName: getLocationName(d.readUInt8(1)),
-            sequence: d.readUInt8(2),
-            position: d.readUInt8(3),
-            positionName: getPositionName(d.readUInt8(3)),
-            type: d.readUInt8(4),
-            val: d.readUInt32LE(5)
+            sequence: d.readUInt32LE(2),
+            position: d.readUInt32LE(6),
+            positionName: getPositionName(d.readUInt32LE(6)),
+            type: d.readUInt32LE(10),
+            typeName: getCardHintName(d.readUInt32LE(10)),
+            val: d.readUInt32LE(14)
         }),
         [MSG_PLAYER_HINT]: (d) => ({
             player: d.readUInt8(0),
             type: d.readUInt8(1),
+            typeName: getPlayerHintName(d.readUInt8(1)),
             val: d.readUInt32LE(2)
         }),
-        [MSG_ANNOUNCE_RACE]: (d) => ({
-            player: d.readUInt8(0),
-            count: d.readUInt8(1),
-            available: d.readUInt32LE(2) // 32-bit mask for races
-        }),
-        [MSG_ANNOUNCE_ATTRIB]: (d) => ({
-            player: d.readUInt8(0),
-            count: d.readUInt8(1),
-            available: d.readUInt32LE(2)
-        }),
-        [MSG_ANNOUNCE_CARD]: (d) => ({
-            player: d.readUInt8(0),
-            count: d.readUInt8(1)
-            // opcodes follow?
-        }),
+        [MSG_ANNOUNCE_RACE]: (d) => {
+            const available = d.readUInt32LE(2);
+            return {
+                player: d.readUInt8(0),
+                count: d.readUInt8(1),
+                available,
+                availableNames: getRaceName(available)
+            };
+        },
+        [MSG_ANNOUNCE_ATTRIB]: (d) => {
+            const available = d.readUInt32LE(2);
+            return {
+                player: d.readUInt8(0),
+                count: d.readUInt8(1),
+                available,
+                availableNames: getAttributeName(available)
+            };
+        },
+        [MSG_ANNOUNCE_CARD]: (d) => {
+            const player = d.readUInt8(0);
+            const count = d.readUInt8(1);
+            const opcodes: bigint[] = [];
+            let offset = 2;
+            for (let i = 0; i < count; i++) {
+                if (offset + 4 > d.length) break;
+                opcodes.push(BigInt(d.readUInt32LE(offset)));
+                offset += 4;
+            }
+            return { player, count, opcodes: opcodes.map(o => o.toString()), opcodeNames: getOpcodeNames(opcodes) };
+        },
         [MSG_ANNOUNCE_NUMBER]: (d) => {
             const player = d.readUInt8(0);
             const count = d.readUInt8(1);
@@ -768,25 +882,134 @@ export class ReplayDecoder {
             }
             return { player, count, cards };
         },
-        [MSG_SELECT_BATTLECMD]: (d) => ({
-            player: d.readUInt8(0),
-            activatable: d.readUInt8(1),
-            attackable: d.readUInt8(2),
-            to_m2: d.readUInt8(3),
-            to_ep: d.readUInt8(4)
-        }),
-        [MSG_SELECT_IDLECMD]: (d) => ({
-            player: d.readUInt8(0),
-            activatable: d.readUInt8(1),
-            summonable: d.readUInt8(2),
-            spsummonable: d.readUInt8(3),
-            repos: d.readUInt8(4),
-            mset: d.readUInt8(5),
-            sset: d.readUInt8(6),
-            bp: d.readUInt8(7),
-            ep: d.readUInt8(8),
-            shuffle: d.readUInt8(9)
-        }),
+        [MSG_SELECT_BATTLECMD]: (d) => {
+            const player = d.readUInt8(0);
+            const activatableCount = d.readUInt8(1);
+            let offset = 2;
+            const activatable = [];
+            for (let i = 0; i < activatableCount; i++) {
+                const code = d.readUInt32LE(offset);
+                const desc = d.readUInt32LE(offset + 4);
+                const count = d.readUInt8(offset + 8);
+                offset += 9;
+                const clients = [];
+                for (let j = 0; j < count; j++) {
+                    clients.push({
+                        code: d.readUInt32LE(offset),
+                        desc: d.readUInt32LE(offset + 4)
+                    });
+                    offset += 8;
+                }
+                activatable.push({ code, desc, clients });
+            }
+            const attackableCount = d.readUInt8(offset);
+            offset += 1;
+            const attackable = [];
+            for (let i = 0; i < attackableCount; i++) {
+                attackable.push({
+                    code: d.readUInt32LE(offset),
+                    controller: d.readUInt8(offset + 4),
+                    location: d.readUInt8(offset + 5),
+                    locationName: getLocationName(d.readUInt8(offset + 5)),
+                    sequence: d.readUInt8(offset + 6),
+                    dirAtt: d.readUInt8(offset + 7)
+                });
+                offset += 8;
+            }
+            const mainPhase2 = d.readUInt8(offset);
+            const toEp = d.readUInt8(offset + 1);
+            return { player, activatable, attackable, mainPhase2, toEp };
+        },
+        [MSG_SELECT_IDLECMD]: (d) => {
+            const player = d.readUInt8(0);
+            const count = d.readUInt8(1);
+            let offset = 2;
+            const activatable = [];
+            for (let i = 0; i < count; i++) {
+                const code = d.readUInt32LE(offset);
+                const desc = d.readUInt32LE(offset + 4);
+                const clientCount = d.readUInt8(offset + 8);
+                offset += 9;
+                const clients = [];
+                for (let j = 0; j < clientCount; j++) {
+                    clients.push({
+                        code: d.readUInt32LE(offset),
+                        desc: d.readUInt32LE(offset + 4)
+                    });
+                    offset += 8;
+                }
+                activatable.push({ code, desc, clients });
+            }
+            const summonableCount = d.readUInt8(offset);
+            offset += 1;
+            const summonable = [];
+            for (let i = 0; i < summonableCount; i++) {
+                summonable.push({
+                    code: d.readUInt32LE(offset),
+                    controller: d.readUInt8(offset + 4),
+                    location: d.readUInt8(offset + 5),
+                    locationName: getLocationName(d.readUInt8(offset + 5)),
+                    sequence: d.readUInt8(offset + 6)
+                });
+                offset += 7;
+            }
+            const spsummonableCount = d.readUInt8(offset);
+            offset += 1;
+            const spsummonable = [];
+            for (let i = 0; i < spsummonableCount; i++) {
+                spsummonable.push({
+                    code: d.readUInt32LE(offset),
+                    controller: d.readUInt8(offset + 4),
+                    location: d.readUInt8(offset + 5),
+                    locationName: getLocationName(d.readUInt8(offset + 5)),
+                    sequence: d.readUInt8(offset + 6)
+                });
+                offset += 7;
+            }
+            const reposCount = d.readUInt8(offset);
+            offset += 1;
+            const repos = [];
+            for (let i = 0; i < reposCount; i++) {
+                repos.push({
+                    code: d.readUInt32LE(offset),
+                    controller: d.readUInt8(offset + 4),
+                    location: d.readUInt8(offset + 5),
+                    locationName: getLocationName(d.readUInt8(offset + 5)),
+                    sequence: d.readUInt8(offset + 6)
+                });
+                offset += 7;
+            }
+            const msetCount = d.readUInt8(offset);
+            offset += 1;
+            const mset = [];
+            for (let i = 0; i < msetCount; i++) {
+                mset.push({
+                    code: d.readUInt32LE(offset),
+                    controller: d.readUInt8(offset + 4),
+                    location: d.readUInt8(offset + 5),
+                    locationName: getLocationName(d.readUInt8(offset + 5)),
+                    sequence: d.readUInt8(offset + 6)
+                });
+                offset += 7;
+            }
+            const ssetCount = d.readUInt8(offset);
+            offset += 1;
+            const sset = [];
+            for (let i = 0; i < ssetCount; i++) {
+                sset.push({
+                    code: d.readUInt32LE(offset),
+                    controller: d.readUInt8(offset + 4),
+                    location: d.readUInt8(offset + 5),
+                    locationName: getLocationName(d.readUInt8(offset + 5)),
+                    sequence: d.readUInt8(offset + 6)
+                });
+                offset += 7;
+            }
+            const bpAllowed = d.readUInt8(offset);
+            const epAllowed = d.readUInt8(offset + 1);
+            const shuffleAllowed = d.readUInt8(offset + 2);
+            return { player, activatable, summonable, spsummonable, repos, mset, sset, bpAllowed, epAllowed, shuffleAllowed };
+        },
         [MSG_SELECT_EFFECTYN]: (d) => ({
             player: d.readUInt8(0),
             code: d.readUInt32LE(1),
@@ -1092,15 +1315,31 @@ export class ReplayDecoder {
                         else if (queryType === QUERY_IS_PUBLIC) currentCard.isPublic = value;
                         else if (queryType === QUERY_IS_HIDDEN) currentCard.isHidden = value;
                         else if (queryType === QUERY_COVER) currentCard.cover = value;
+                        else if (queryType === QUERY_EQUIP_CARD) currentCard.equipCard = value;
+                        else if (queryType === QUERY_TARGET_CARD) currentCard.targetCard = value;
+                        else if (queryType === QUERY_OVERLAY_CARD) currentCard.overlayCard = value;
+                        else if (queryType === QUERY_COUNTERS) currentCard.counters = value;
+                        else if (queryType === QUERY_OWNER) currentCard.owner = value;
+                        else if (queryType === QUERY_END) currentCard.queryEnd = value;
+                        else if (queryType === QUERY_REASON_CARD) currentCard.reasonCard = value;
+                        else if (queryType === QUERY_END) currentCard.queryEnd = value;
                     } else if (chunkLen === 12) {
                         const queryType = chunk.readUInt32LE(0);
                         const valLow = chunk.readUInt32LE(4);
                         const valHigh = chunk.readUInt32LE(8);
                         const value = BigInt(valLow) + (BigInt(valHigh) << BigInt(32));
-                        if (queryType === QUERY_RACE) currentCard.race = value.toString();
+                        if (queryType === QUERY_RACE) {
+                            currentCard.race = value.toString();
+                            currentCard.raceName = getRaceName(value);
+                        }
                     }
                 }
                 if (currentCard.code !== undefined || Object.keys(currentCard).length > 0) {
+                    if (currentCard.position !== undefined) currentCard.positionName = getPositionName(currentCard.position);
+                    if (currentCard.type !== undefined) currentCard.typeName = getTypeName(currentCard.type);
+                    if (currentCard.attribute !== undefined) currentCard.attributeName = getAttributeName(currentCard.attribute);
+                    if (currentCard.reason !== undefined) currentCard.reasonName = getReasonName(currentCard.reason);
+                    if (currentCard.location !== undefined) currentCard.locationName = getLocationName(currentCard.location);
                     cards.push(currentCard);
                 }
                 result.cards = cards;
@@ -1114,13 +1353,13 @@ export class ReplayDecoder {
             const code = d.readUInt32LE(0);
             const oldController = d.readUInt8(4);
             const oldLocation = d.readUInt8(5);
-            const oldSequence = d.readUInt8(6);
-            const oldPosition = d.readUInt8(7);
-            const newController = d.readUInt8(8);
-            const newLocation = d.readUInt8(9);
-            const newSequence = d.readUInt8(10);
-            const newPosition = d.readUInt8(11);
-            const reason = d.readUInt32LE(12);
+            const oldSequence = d.readUInt32LE(6);
+            const oldPosition = d.readUInt32LE(10);
+            const newController = d.readUInt8(14);
+            const newLocation = d.readUInt8(15);
+            const newSequence = d.readUInt32LE(16);
+            const newPosition = d.readUInt32LE(20);
+            const reason = d.readUInt32LE(24);
             return {
                 code,
                 oldController,
@@ -1138,8 +1377,8 @@ export class ReplayDecoder {
             const code = d.readUInt32LE(0);
             const controller = d.readUInt8(4);
             const location = d.readUInt8(5);
-            const sequence = d.readUInt8(6);
-            const position = d.readUInt8(7);
+            const sequence = d.readUInt32LE(6);
+            const position = d.readUInt32LE(10);
             return {
                 code, controller,
                 location, locationName: getLocationName(location),
@@ -1152,8 +1391,8 @@ export class ReplayDecoder {
             const code = d.readUInt32LE(0);
             const controller = d.readUInt8(4);
             const location = d.readUInt8(5);
-            const sequence = d.readUInt8(6);
-            const position = d.readUInt8(7);
+            const sequence = d.readUInt32LE(6);
+            const position = d.readUInt32LE(10);
             return {
                 code, controller,
                 location, locationName: getLocationName(location),
@@ -1166,84 +1405,14 @@ export class ReplayDecoder {
             const code = d.readUInt32LE(0);
             const controller = d.readUInt8(4);
             const location = d.readUInt8(5);
-            const sequence = d.readUInt8(6);
-            const position = d.readUInt8(7);
+            const sequence = d.readUInt32LE(6);
+            const position = d.readUInt32LE(10);
             return {
                 code, controller,
                 location, locationName: getLocationName(location),
                 sequence,
                 position, positionName: getPositionName(position)
             };
-        },
-        [MSG_FLIPSUMMONED]: (d) => ({}),
-        [MSG_SET]: (d) => {
-            const code = d.readUInt32LE(0);
-            const controller = d.readUInt8(4);
-            const location = d.readUInt8(5);
-            const sequence = d.readUInt8(6);
-            const position = d.readUInt8(7);
-            return {
-                code, controller,
-                location, locationName: getLocationName(location),
-                sequence,
-                position, positionName: getPositionName(position)
-            };
-        },
-        [MSG_POS_CHANGE]: (d) => ({
-            code: d.readUInt32LE(0),
-            controller: d.readUInt8(4),
-            location: d.readUInt8(5),
-            locationName: getLocationName(d.readUInt8(5)),
-            sequence: d.readUInt8(6),
-            prevPos: d.readUInt8(7),
-            prevPosName: getPositionName(d.readUInt8(7)),
-            currentPos: d.readUInt8(8),
-            currentPosName: getPositionName(d.readUInt8(8))
-        }),
-        [MSG_SWAP]: (d) => ({
-            code1: d.readUInt32LE(0),
-            location1: d.readUInt8(4),
-            locationName1: getLocationName(d.readUInt8(4)),
-            sequence1: d.readUInt8(5),
-            position1: d.readUInt8(6),
-            positionName1: getPositionName(d.readUInt8(6)),
-            code2: d.readUInt32LE(7),
-            location2: d.readUInt8(11),
-            locationName2: getLocationName(d.readUInt8(11)),
-            sequence2: d.readUInt8(12),
-            position2: d.readUInt8(13),
-            positionName2: getPositionName(d.readUInt8(13))
-        }),
-        [MSG_FIELD_DISABLED]: (d) => ({
-            mask: d.readUInt32LE(0)
-        }),
-        [MSG_CHAINED]: (d) => ({
-            chainCount: d.readUInt8(0)
-        }),
-        [MSG_CHAIN_SOLVING]: (d) => ({
-            chainCount: d.readUInt8(0)
-        }),
-        [MSG_CHAIN_SOLVED]: (d) => ({
-            chainCount: d.readUInt8(0)
-        }),
-        [MSG_CHAIN_END]: (d) => ({}),
-        [MSG_CHAIN_NEGATED]: (d) => ({
-            chainCount: d.readUInt8(0)
-        }),
-        [MSG_CHAIN_DISABLED]: (d) => ({
-            chainCount: d.readUInt8(0)
-        }),
-        [MSG_CARD_SELECTED]: (d) => {
-            const player = d.readUInt8(0);
-            const count = d.readUInt8(1);
-            const cards = [];
-            for (let i = 0; i < count; i++) {
-                const offset = 2 + i * 4;
-                if (offset + 4 <= d.length) {
-                    cards.push(d.readUInt32LE(offset));
-                }
-            }
-            return { player, count, cards };
         },
         [MSG_RANDOM_SELECTED]: (d) => {
             const player = d.readUInt8(0);
@@ -1267,27 +1436,6 @@ export class ReplayDecoder {
                 }
             }
             return { count, cards };
-        },
-        [MSG_CHAINING]: (d) => {
-            const code = d.readUInt32LE(0);
-            const pcode = d.readUInt32LE(4);
-            const functionCode = d.readUInt32LE(8);
-            const triggerController = d.readUInt8(12);
-            const triggerLocation = d.readUInt8(13);
-            const triggerSequence = d.readUInt8(14);
-            const controller = d.readUInt8(15);
-            const location = d.readUInt8(16);
-            const sequence = d.readUInt8(17);
-            const desc = d.readUInt32LE(18);
-            return {
-                code, pcode, function: functionCode,
-                triggerController,
-                triggerLocation, triggerLocationName: getLocationName(triggerLocation),
-                triggerSequence,
-                controller,
-                location, locationName: getLocationName(location),
-                sequence, desc
-            };
         },
         [MSG_ATTACK]: (d) => {
             const attackerController = d.readUInt8(0);
@@ -1359,19 +1507,20 @@ export class ReplayDecoder {
         [MSG_UPDATE_CARD]: (d) => {
             const player = d.readUInt8(0);
             const location = d.readUInt8(1);
-            const dataLen = d.readUInt32LE(2);
-            const data = d.slice(6);
+            const sequence = d.readUInt8(2);
+            // Offset 3-12 seems to be header data (position, padding, code?)
+            // The first valid chunk (08 00) appears at offset 13 in the observed data.
+            let cursor = 13;
 
             const card: any = {};
-            let cursor = 0;
             try {
-                while (cursor < data.length) {
-                    if (cursor + 2 > data.length) break;
-                    const chunkLen = data.readUInt16LE(cursor);
+                while (cursor < d.length) {
+                    if (cursor + 2 > d.length) break;
+                    const chunkLen = d.readUInt16LE(cursor);
                     cursor += 2;
-                    if (cursor + chunkLen > data.length) break;
+                    if (cursor + chunkLen > d.length) break;
 
-                    const chunk = data.slice(cursor, cursor + chunkLen);
+                    const chunk = d.slice(cursor, cursor + chunkLen);
                     cursor += chunkLen;
 
                     if (chunkLen === 8) {
@@ -1394,19 +1543,39 @@ export class ReplayDecoder {
                         else if (queryType === QUERY_LSCALE) card.lscale = value;
                         else if (queryType === QUERY_RSCALE) card.rscale = value;
                         else if (queryType === QUERY_LINK) card.link = value;
+                        else if (queryType === QUERY_EQUIP_CARD) card.equipCard = value;
+                        else if (queryType === QUERY_TARGET_CARD) card.targetCard = value;
+                        else if (queryType === QUERY_OVERLAY_CARD) card.overlayCard = value;
+                        else if (queryType === QUERY_COUNTERS) card.counters = value;
+                        else if (queryType === QUERY_OWNER) card.owner = value;
+                        else if (queryType === QUERY_END) card.queryEnd = value;
+                        else if (queryType === QUERY_REASON_CARD) card.reasonCard = value;
+                        else if (queryType === QUERY_IS_PUBLIC) card.isPublic = value;
+                        else if (queryType === QUERY_IS_HIDDEN) card.isHidden = value;
+                        else if (queryType === QUERY_COVER) card.cover = value;
+                        else if (queryType === QUERY_END) card.queryEnd = value;
                     } else if (chunkLen === 12) {
                         const queryType = chunk.readUInt32LE(0);
                         const valLow = chunk.readUInt32LE(4);
                         const valHigh = chunk.readUInt32LE(8);
                         const value = BigInt(valLow) + (BigInt(valHigh) << BigInt(32));
-                        if (queryType === QUERY_RACE) card.race = value.toString();
+                        if (queryType === QUERY_RACE) {
+                            card.race = value.toString();
+                            card.raceName = getRaceName(value);
+                        }
                     }
                 }
+
+                if (card.position !== undefined) card.positionName = getPositionName(card.position);
+                if (card.type !== undefined) card.typeName = getTypeName(card.type);
+                if (card.attribute !== undefined) card.attributeName = getAttributeName(card.attribute);
+                if (card.reason !== undefined) card.reasonName = getReasonName(card.reason);
+                if (card.location !== undefined) card.locationName = getLocationName(card.location);
             } catch (e) {
                 // Ignore
             }
 
-            return { player, location, locationName: getLocationName(location), dataLen, card };
+            return { player, location, locationName: getLocationName(location), sequence, card };
         },
         [MSG_REQUEST_DECK]: (d) => ({ data: d.toString('hex') }),
         [MSG_REFRESH_DECK]: (d) => ({ data: d.toString('hex') }),
@@ -1415,12 +1584,18 @@ export class ReplayDecoder {
         [MSG_DECK_TOP]: (d) => ({ data: d.toString('hex') }),
         [MSG_RECOVER]: (d) => ({ player: d.readUInt8(0), amount: d.readUInt32LE(1) }),
         [MSG_EQUIP]: (d) => ({
-            location: d.readUInt8(0),
-            locationName: getLocationName(d.readUInt8(0)),
-            sequence: d.readUInt8(1),
-            targetLocation: d.readUInt8(2),
-            targetLocationName: getLocationName(d.readUInt8(2)),
-            targetSequence: d.readUInt8(3)
+            controller: d.readUInt8(0),
+            location: d.readUInt8(1),
+            locationName: getLocationName(d.readUInt8(1)),
+            sequence: d.readUInt32LE(2),
+            position: d.readUInt32LE(6),
+            positionName: getPositionName(d.readUInt32LE(6)),
+            targetController: d.readUInt8(10),
+            targetLocation: d.readUInt8(11),
+            targetLocationName: getLocationName(d.readUInt8(11)),
+            targetSequence: d.readUInt32LE(12),
+            targetPosition: d.readUInt32LE(16),
+            targetPositionName: getPositionName(d.readUInt32LE(16))
         }),
         [MSG_LPUPDATE]: (d) => ({ player: d.readUInt8(0), lp: d.readUInt32LE(1) }),
         [MSG_UNEQUIP]: (d) => ({
@@ -1521,7 +1696,38 @@ export class ReplayDecoder {
             player: d.readUInt8(1),
             count: d.readUInt8(2),
             data: d.slice(3).toString('hex')
-        })
+        }),
+        [MSG_CHAINING]: (d) => {
+            const code = d.readUInt32LE(0);
+            const pcode = d.readUInt32LE(4);
+            const func = d.readUInt32LE(8);
+            const triggerController = d.readUInt8(12);
+            const triggerLocation = d.readUInt8(13);
+            const triggerSequence = d.readUInt8(14);
+            const controller = d.readUInt8(15);
+            const location = d.readUInt8(16);
+            const sequence = d.readUInt8(17);
+            const desc = d.readUInt32LE(18);
+            const param1 = d.readUInt32LE(22);
+            const param2 = d.readUInt16LE(26);
+            const param3 = d.readUInt32LE(28);
+
+            return {
+                code,
+                pcode,
+                function: func,
+                triggerController,
+                triggerLocation, triggerLocationName: getLocationName(triggerLocation),
+                triggerSequence,
+                controller,
+                location, locationName: getLocationName(location),
+                sequence,
+                desc,
+                param1,
+                param2,
+                param3
+            };
+        }
     };
 
     public static decode(buffer: Buffer, replayId: number): ReplayStep[] {

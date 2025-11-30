@@ -1,0 +1,6 @@
+[Error: ENOENT: no such file or directory, stat 'C:\Users\jilde\Documents\VSCode-Projects-main\Apps\yrp\"'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'stat',
+  path: 'C:\\Users\\jilde\\Documents\\VSCode-Projects-main\\Apps\\yrp\\"'
+}

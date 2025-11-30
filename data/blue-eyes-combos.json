@@ -1,0 +1,803 @@
+﻿{
+    "archetype": "Blue-Eyes",
+    "combos": {
+        "combo1": {
+            "title": "Sage + Discard",
+            "description": "The classic Blue-Eyes combo utilizing Sage with Eyes of Blue to search and summon your key monsters. This line establishes a strong field presence with multiple negates.",
+            "cards": [
+                {
+                    "id": "sage",
+                    "name": "Sage with Eyes of Blue",
+                    "type": "monster",
+                    "zone": "zone-hand"
+                },
+                {
+                    "id": "maiden",
+                    "name": "Maiden of White",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "spirit_link",
+                    "name": "Spirit with Eyes of Blue",
+                    "type": "extra",
+                    "zone": "zone-extra"
+                },
+                {
+                    "id": "mausoleum",
+                    "name": "Mausoleum of White",
+                    "type": "spell",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "true_light",
+                    "name": "True Light",
+                    "type": "trap",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "wishes",
+                    "name": "Wishes for Eyes of Blue",
+                    "type": "spell",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "bewd",
+                    "name": "Blue-Eyes White Dragon",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "veiler",
+                    "name": "Effect Veiler",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "roar",
+                    "name": "Roar of the Blue-Eyed Dragons",
+                    "type": "spell",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "jet",
+                    "name": "Blue-Eyes Jet Dragon",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "tyrant",
+                    "name": "Blue-Eyes Tyrant Dragon",
+                    "type": "monster",
+                    "zone": "zone-extra"
+                },
+                {
+                    "id": "neo_ultimate",
+                    "name": "Neo Blue-Eyes Ultimate Dragon",
+                    "type": "extra",
+                    "zone": "zone-extra"
+                },
+                {
+                    "id": "spirit1",
+                    "name": "Blue-Eyes Spirit Dragon",
+                    "type": "extra",
+                    "zone": "zone-extra"
+                },
+                {
+                    "id": "spirit2",
+                    "name": "Blue-Eyes Spirit Dragon",
+                    "type": "extra",
+                    "zone": "zone-extra"
+                }
+            ],
+            "steps": [
+                {
+                    "text": "Normal Summon Sage with Eyes of Blue",
+                    "card": "sage",
+                    "to": "zone-m3"
+                },
+                {
+                    "text": "Link Summon Spirit with Eyes of Blue",
+                    "actions": [
+                        {
+                            "card": "sage",
+                            "to": "zone-gy"
+                        },
+                        {
+                            "card": "spirit_link",
+                            "to": "zone-em-left"
+                        }
+                    ]
+                },
+                {
+                    "text": "Add Maiden of White to Hand (Sage Effect)",
+                    "card": "maiden",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Discard Maiden (Cost)",
+                    "card": "maiden",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Activate True Light from Deck (Maiden Effect)",
+                    "card": "true_light",
+                    "to": "zone-s3"
+                },
+                {
+                    "text": "Set Wishes for Eyes of Blue (True Light Effect)",
+                    "card": "wishes",
+                    "to": "zone-s2"
+                },
+                {
+                    "text": "Add Mausoleum to Hand (Spirit Effect)",
+                    "card": "mausoleum",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Activate Mausoleum of White",
+                    "card": "mausoleum",
+                    "to": "zone-field"
+                },
+                {
+                    "text": "Send BEWD to GY (Mausoleum Cost)",
+                    "card": "bewd",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Tribute Spirit (Cost)",
+                    "card": "spirit_link",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "SS BEWD from GY (Spirit Effect)",
+                    "card": "bewd",
+                    "to": "zone-m2"
+                },
+                {
+                    "text": "SS Maiden from GY (Maiden Trigger)",
+                    "card": "maiden",
+                    "to": "zone-m1"
+                },
+                {
+                    "text": "Activate Wishes for Eyes of Blue",
+                    "card": "wishes",
+                    "to": "zone-s2"
+                },
+                {
+                    "text": "Send wishes to Graveyard",
+                    "card": "wishes",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Resolve Wishes: Add Sage to Hand",
+                    "card": "sage",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Resolve Wishes: Add Roar to Hand",
+                    "card": "roar",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Normal Summon Sage (Mausoleum Extra Summon)",
+                    "card": "sage",
+                    "to": "zone-m4"
+                },
+                {
+                    "text": "Add Effect Veiler to Hand (Sage Effect)",
+                    "card": "veiler",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Activate Roar",
+                    "card": "roar",
+                    "to": "zone-s1"
+                },
+                {
+                    "text": "SS Jet Dragon from Deck (Roar Effect)",
+                    "card": "jet",
+                    "to": "zone-m5"
+                },
+                {
+                    "text": "Send Roar to GY",
+                    "card": "roar",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Equip Neo Ultimate to BEWD (Wishes GY Effect)",
+                    "card": "neo_ultimate",
+                    "to": "zone-s5"
+                },
+                {
+                    "text": "Banish Wishes for Eyes of Blue from GY",
+                    "card": "wishes",
+                    "to": "zone-banish"
+                },
+                {
+                    "text": "Contact Fusion Tyrant Dragon",
+                    "actions": [
+                        {
+                            "card": "bewd",
+                            "to": "zone-gy"
+                        },
+                        {
+                            "card": "neo_ultimate",
+                            "to": "zone-gy"
+                        },
+                        {
+                            "card": "tyrant",
+                            "to": "zone-em-right"
+                        }
+                    ]
+                },
+                {
+                    "text": "Synchro Summon Spirit Dragon #1",
+                    "actions": [
+                        {
+                            "card": "maiden",
+                            "to": "zone-gy"
+                        },
+                        {
+                            "card": "tyrant",
+                            "to": "zone-gy"
+                        },
+                        {
+                            "card": "spirit1",
+                            "to": "zone-m3"
+                        }
+                    ]
+                },
+                {
+                    "text": "Synchro Summon Spirit Dragon #2",
+                    "actions": [
+                        {
+                            "card": "sage",
+                            "to": "zone-gy"
+                        },
+                        {
+                            "card": "jet",
+                            "to": "zone-gy"
+                        },
+                        {
+                            "card": "spirit2",
+                            "to": "zone-m4"
+                        }
+                    ]
+                }
+            ]
+        },
+        "combo2": {
+            "title": "Maiden + Discard",
+            "description": "Start with Maiden of the Blue-Eyes and a discard outlet to search and summon your Blue-Eyes monsters. This combo establishes field presence while maintaining hand advantage through Maiden search effects.",
+            "cards": [
+                {
+                    "id": "maiden",
+                    "name": "Maiden of White",
+                    "type": "monster",
+                    "zone": "zone-hand"
+                },
+                {
+                    "id": "discard_fodder",
+                    "name": "Effect Veiler",
+                    "type": "monster",
+                    "zone": "zone-hand"
+                },
+                {
+                    "id": "true_light",
+                    "name": "True Light",
+                    "type": "trap",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "wishes",
+                    "name": "Wishes for Eyes of Blue",
+                    "type": "spell",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "sage",
+                    "name": "Sage with Eyes of Blue",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "roar",
+                    "name": "Roar of the Blue-Eyed Dragons",
+                    "type": "spell",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "maiden2",
+                    "name": "Maiden of White",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "spirit_link",
+                    "name": "Spirit with Eyes of Blue",
+                    "type": "extra",
+                    "zone": "zone-extra"
+                },
+                {
+                    "id": "mausoleum",
+                    "name": "Mausoleum of White",
+                    "type": "spell",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "bewd",
+                    "name": "Blue-Eyes White Dragon",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "jet",
+                    "name": "Blue-Eyes Jet Dragon",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "neo_ultimate",
+                    "name": "Neo Blue-Eyes Ultimate Dragon",
+                    "type": "extra",
+                    "zone": "zone-extra"
+                },
+                {
+                    "id": "tyrant",
+                    "name": "Blue-Eyes Tyrant Dragon",
+                    "type": "monster",
+                    "zone": "zone-extra"
+                },
+                {
+                    "id": "spirit1",
+                    "name": "Blue-Eyes Spirit Dragon",
+                    "type": "extra",
+                    "zone": "zone-extra"
+                },
+                {
+                    "id": "spirit2",
+                    "name": "Blue-Eyes Spirit Dragon",
+                    "type": "extra",
+                    "zone": "zone-extra"
+                }
+            ],
+            "steps": [
+                {
+                    "text": "Activate Maiden from Hand (Send to GY)",
+                    "card": "maiden",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Activate True Light from Deck (Maiden Effect)",
+                    "card": "true_light",
+                    "to": "zone-s3"
+                },
+                {
+                    "text": "Set Wishes from Deck (True Light Effect)",
+                    "card": "wishes",
+                    "to": "zone-s2"
+                },
+                {
+                    "text": "Activate Wishes for Eyes of Blue",
+                    "card": "wishes",
+                    "to": "zone-s2"
+                },
+                {
+                    "text": "Send wishes to Graveyard",
+                    "card": "wishes",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Discard Card for Wishes Cost",
+                    "card": "discard_fodder",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Add Sage & Roar to Hand (Wishes Effect)",
+                    "card": "sage",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Add Roar to Hand",
+                    "card": "roar",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Normal Summon Sage",
+                    "card": "sage",
+                    "to": "zone-m3"
+                },
+                {
+                    "text": "Add Maiden to Hand (Sage Effect)",
+                    "card": "maiden2",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Link Summon Spirit with Eyes of Blue",
+                    "actions": [
+                        {
+                            "card": "sage",
+                            "to": "zone-gy"
+                        },
+                        {
+                            "card": "spirit_link",
+                            "to": "zone-em-left"
+                        }
+                    ]
+                },
+                {
+                    "text": "Add Mausoleum to Hand (Spirit Effect)",
+                    "card": "mausoleum",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Activate Mausoleum of White",
+                    "card": "mausoleum",
+                    "to": "zone-field"
+                },
+                {
+                    "text": "Send BEWD from Deck to GY (Mausoleum Cost)",
+                    "card": "bewd",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Tribute Spirit (Cost)",
+                    "card": "spirit_link",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "SS BEWD from GY (Spirit Effect)",
+                    "card": "bewd",
+                    "to": "zone-m2"
+                },
+                {
+                    "text": "SS Maiden from GY (Maiden Trigger)",
+                    "card": "maiden",
+                    "to": "zone-m1"
+                },
+                {
+                    "text": "Activate Roar of the Blue-Eyed Dragons",
+                    "card": "roar",
+                    "to": "zone-s1"
+                },
+                {
+                    "text": "SS Jet Dragon from Deck (Roar Effect)",
+                    "card": "jet",
+                    "to": "zone-m5"
+                },
+                {
+                    "text": "Send Roar to GY",
+                    "card": "roar",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Equip Neo Ultimate to BEWD (Wishes GY Effect)",
+                    "card": "neo_ultimate",
+                    "to": "zone-s5"
+                },
+                {
+                    "text": "Banish Wishes for Eyes of Blue from GY",
+                    "card": "wishes",
+                    "to": "zone-banish"
+                },
+                {
+                    "text": "Contact Fusion Tyrant Dragon",
+                    "actions": [
+                        {
+                            "card": "bewd",
+                            "to": "zone-gy"
+                        },
+                        {
+                            "card": "neo_ultimate",
+                            "to": "zone-gy"
+                        },
+                        {
+                            "card": "tyrant",
+                            "to": "zone-em-right"
+                        }
+                    ]
+                },
+                {
+                    "text": "Synchro Summon Spirit Dragon #1",
+                    "actions": [
+                        {
+                            "card": "maiden",
+                            "to": "zone-gy"
+                        },
+                        {
+                            "card": "tyrant",
+                            "to": "zone-gy"
+                        },
+                        {
+                            "card": "spirit1",
+                            "to": "zone-m3"
+                        }
+                    ]
+                },
+                {
+                    "text": "Normal Summon Maiden (Mausoleum Effect)",
+                    "card": "maiden2",
+                    "to": "zone-m4"
+                },
+                {
+                    "text": "Synchro Summon Spirit Dragon #2",
+                    "actions": [
+                        {
+                            "card": "maiden2",
+                            "to": "zone-gy"
+                        },
+                        {
+                            "card": "jet",
+                            "to": "zone-gy"
+                        },
+                        {
+                            "card": "spirit2",
+                            "to": "zone-m4"
+                        }
+                    ]
+                }
+            ]
+        },
+        "combo3": {
+            "title": "Neo Kaiser Sea Horse Combo",
+            "description": "Utilize Neo Kaiser Sea Horse to tribute summon Blue-Eyes monsters more efficiently. This combo demonstrates alternative summoning methods when your standard plays are unavailable.",
+            "cards": [
+                {
+                    "id": "nksh",
+                    "name": "Neo Kaiser Sea Horse",
+                    "type": "monster",
+                    "zone": "zone-hand"
+                },
+                {
+                    "id": "spirit_link",
+                    "name": "Spirit with Eyes of Blue",
+                    "type": "extra",
+                    "zone": "zone-extra"
+                },
+                {
+                    "id": "maiden",
+                    "name": "Maiden of White",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "mausoleum",
+                    "name": "Mausoleum of White",
+                    "type": "spell",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "bewd",
+                    "name": "Blue-Eyes White Dragon",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "true_light",
+                    "name": "True Light",
+                    "type": "trap",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "wishes",
+                    "name": "Wishes for Eyes of Blue",
+                    "type": "spell",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "discard_fodder",
+                    "name": "Any Card",
+                    "type": "monster",
+                    "zone": "zone-hand"
+                },
+                {
+                    "id": "sage",
+                    "name": "Sage with Eyes of Blue",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "roar",
+                    "name": "Roar of the Blue-Eyed Dragons",
+                    "type": "spell",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "veiler",
+                    "name": "Effect Veiler",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "jet",
+                    "name": "Blue-Eyes Jet Dragon",
+                    "type": "monster",
+                    "zone": "zone-deck"
+                },
+                {
+                    "id": "neo_ultimate",
+                    "name": "Neo Blue-Eyes Ultimate Dragon",
+                    "type": "extra",
+                    "zone": "zone-extra"
+                },
+                {
+                    "id": "tyrant",
+                    "name": "Blue-Eyes Tyrant Dragon",
+                    "type": "monster",
+                    "zone": "zone-extra"
+                },
+                {
+                    "id": "spirit_synchro",
+                    "name": "Blue-Eyes Spirit Dragon",
+                    "type": "extra",
+                    "zone": "zone-extra"
+                }
+            ],
+            "steps": [
+                {
+                    "text": "Normal Summon Neo Kaiser Sea Horse",
+                    "card": "nksh",
+                    "to": "zone-m3"
+                },
+                {
+                    "text": "Link Summon Spirit with Eyes of Blue",
+                    "actions": [
+                        {
+                            "card": "nksh",
+                            "to": "zone-gy"
+                        },
+                        {
+                            "card": "spirit_link",
+                            "to": "zone-em-left"
+                        }
+                    ]
+                },
+                {
+                    "text": "Neo Kaiser Sea Horse effect sends Maiden of White from your Deck to the GY",
+                    "card": "maiden",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Spirit with Eyes of Blue effect adds Mausoleum of White from your Deck to your hand",
+                    "card": "mausoleum",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Activate Mausoleum of White and use its effect to send Blue-Eyes White Dragon from your Deck to the GY",
+                    "card": "mausoleum",
+                    "to": "zone-field"
+                },
+                {
+                    "text": "Send BEWD to GY (Mausoleum Cost)",
+                    "card": "bewd",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Use the effect of Spirit with Eyes of Blue to Special Summon Blue-Eyes White Dragon from your GY",
+                    "card": "bewd",
+                    "to": "zone-m2"
+                },
+                {
+                    "text": "Tribute Spirit (Cost)",
+                    "card": "spirit_link",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "The GY effect of Maiden of White is triggered and you Special Summon it to your field",
+                    "card": "maiden",
+                    "to": "zone-m1"
+                },
+                {
+                    "text": "Use the first effect of Maiden of White to send it from your side of the field to the GY to activate True Light directly from your Deck",
+                    "card": "maiden",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Activate True Light from Deck",
+                    "card": "true_light",
+                    "to": "zone-s3"
+                },
+                {
+                    "text": "Use the effect of True Light to set Wishes for Eyes of Blue",
+                    "card": "wishes",
+                    "to": "zone-s2"
+                },
+                {
+                    "text": "Activate Wishes for Eyes of Blue to discard a card and search for Sage with Eyes of Blue and Roar of the Blue-Eyed Dragons",
+                    "card": "wishes",
+                    "to": "zone-s2"
+                },
+                {
+                    "text": "Send wishes to Graveyard",
+                    "card": "wishes",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Discard 1 Card (Cost)",
+                    "card": "discard_fodder",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Add Sage & Roar to Hand",
+                    "card": "sage",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Add Roar to Hand",
+                    "card": "roar",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Normal Summon Sage with Eyes of Blue and use its effect to add Effect Veiler from your Deck to your hand",
+                    "card": "sage",
+                    "to": "zone-m4"
+                },
+                {
+                    "text": "Add Effect Veiler to Hand",
+                    "card": "veiler",
+                    "to": "zone-hand"
+                },
+                {
+                    "text": "Activate Roar of the Blue-Eyed Dragons to Special Summon Blue-Eyes Jet Dragon from your Deck",
+                    "card": "roar",
+                    "to": "zone-s1"
+                },
+                {
+                    "text": "SS Jet Dragon",
+                    "card": "jet",
+                    "to": "zone-m5"
+                },
+                {
+                    "text": "Send Roar to GY",
+                    "card": "roar",
+                    "to": "zone-gy"
+                },
+                {
+                    "text": "Equip Neo Ultimate to BEWD (Wishes GY Effect)",
+                    "card": "neo_ultimate",
+                    "to": "zone-s5"
+                },
+                {
+                    "text": "Banish Wishes for Eyes of Blue from GY",
+                    "card": "wishes",
+                    "to": "zone-banish"
+                },
+                {
+                    "text": "Special Summon Blue-Eyes Tyrant Dragon",
+                    "actions": [
+                        {
+                            "card": "bewd",
+                            "to": "zone-gy"
+                        },
+                        {
+                            "card": "neo_ultimate",
+                            "to": "zone-gy"
+                        },
+                        {
+                            "card": "tyrant",
+                            "to": "zone-em-right"
+                        }
+                    ]
+                },
+                {
+                    "text": "Synchro Summon Blue-Eyes Spirit Dragon",
+                    "actions": [
+                        {
+                            "card": "sage",
+                            "to": "zone-gy"
+                        },
+                        {
+                            "card": "tyrant",
+                            "to": "zone-gy"
+                        },
+                        {
+                            "card": "spirit_synchro",
+                            "to": "zone-m3"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

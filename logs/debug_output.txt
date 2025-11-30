@@ -1,0 +1,3 @@
+Detected header: 0x58707279
+Payload first 20 bytes: 29000b0079030000b4c9ea68fa2b0a0000000000
+First Payload Message: ID=41, Len=2030045952
