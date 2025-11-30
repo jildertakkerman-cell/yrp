@@ -1,6 +1,6 @@
 ﻿import * as fs from "fs-extra";
 import cloneDeep from "lodash.clonedeep";
-import { YrpxParser } from "./yrpx_parser";
+import { ReplayParserTS } from "./replay_parser_ts";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const addon = require("bindings")("yrp.node");
@@ -45,8 +45,9 @@ export class Replay {
         if (buffer.length >= 4) {
             const id = buffer.readUInt32LE(0);
             if (id === 0x58707279) { // YRPX
-                const parser = await YrpxParser.create(buffer);
-                return new Replay(parser);
+                const parser = new ReplayParserTS(buffer);
+                await parser.parse();
+                return new Replay(parser as unknown as NativeReplay);
             }
         }
         return new Replay(new NativeReplay(buffer));

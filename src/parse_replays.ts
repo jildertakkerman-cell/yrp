@@ -1,4 +1,5 @@
 import * as fs from "fs-extra";
+// Force IDE re-check
 import * as path from "path";
 import { ReplayParserTS } from "./replay_parser_ts";
 import { ReplayDecoder } from "./replay_decoder";

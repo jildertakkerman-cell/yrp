@@ -3,7 +3,11 @@ import * as path from "path";
 import { ReplayParserTS } from "./replay_parser_ts";
 import { ReplayDecoder } from "./replay_decoder";
 
-import { distillReplayData } from "./distill_combo";
+// Clear module cache for distill_combo to force reload
+const distillComboPath = require.resolve("./distill_combo_v2");
+delete require.cache[distillComboPath];
+
+import { distillReplayData } from "./distill_combo_v2";
 
 const app = express();
 const PORT = 3000;
@@ -33,6 +37,8 @@ app.post("/parse", async (req, res) => {
 
         // Distill the combo
         console.log("Distilling combo...");
+        console.log("[DEBUG SERVER] About to call distillReplayData");
+        console.log("[DEBUG SERVER] distillReplayData function:", typeof distillReplayData);
         const distilledCombo = await distillReplayData(replayData);
         console.log("Combo distilled successfully");
 

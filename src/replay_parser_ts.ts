@@ -103,16 +103,16 @@ export class ReplayParserTS {
         const props = this.header.props.slice(0, 5);
 
         const header = Buffer.alloc(13);
-        props.copy(header, 0);
+        props.copy(header as any, 0);
         const size = BigInt(this.header.dataSize);
         header.writeBigUInt64LE(size, 5);
 
-        const stream = Buffer.concat([header, compressedData]);
+        const stream = Buffer.concat([header, compressedData] as any);
 
         console.log(`Compressed stream size: ${stream.length}`);
         // lzma-purejs decompressFile returns Buffer synchronously
         try {
-            this.decompressed = lzma.decompressFile(stream);
+            this.decompressed = lzma.decompressFile(stream as any);
             console.log(`Decompressed size: ${this.decompressed?.length}`);
         } catch (e) {
             console.error("LZMA Decompression error:", e);
@@ -196,8 +196,17 @@ export class ReplayParserTS {
         }
 
         if (this.header.flag & REPLAY_NEWREPLAY && !(this.header.flag & REPLAY_HAND_TEST)) {
-            const rules = this.decompressed.readUInt32LE(this.decCursor); this.decCursor += 4;
+            const rules = this.decompressed.readUInt32LE(this.decCursor);
+            this.decCursor += 4;
             this.decCursor += rules * 4;
         }
     }
+
+    // NativeReplay interface implementation
+    getHeaderInformation() { return this.header; }
+    getPlayerNames() { return this.playerNames; }
+    getParameters() { return this.params; }
+    getScriptName() { return this.scriptName; }
+    getDecks() { return this.decks; }
+    getReplayData() { return this.replayData; }
 }

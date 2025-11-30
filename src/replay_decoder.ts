@@ -1703,10 +1703,10 @@ export class ReplayDecoder {
             const func = d.readUInt32LE(8);
             const triggerController = d.readUInt8(12);
             const triggerLocation = d.readUInt8(13);
-            const triggerSequence = d.readUInt8(14);
-            const controller = d.readUInt8(15);
-            const location = d.readUInt8(16);
-            const sequence = d.readUInt8(17);
+            const triggerSequence = 0; // d.readUInt8(14); // Offset 14 is controller
+            const controller = d.readUInt8(14);
+            const location = d.readUInt8(15);
+            const sequence = d.readUInt8(16);
             const desc = d.readUInt32LE(18);
             const param1 = d.readUInt32LE(22);
             const param2 = d.readUInt16LE(26);

@@ -223,9 +223,11 @@
         }
 
         async function uploadAndParse(file) {
+            console.log('[FRONTEND] Starting upload for:', file.name);
             const card = createResultCard(file.name, "Processing...");
 
             try {
+                console.log('[FRONTEND] Sending POST to /parse');
                 const response = await fetch('/parse', {
                     method: 'POST',
                     headers: {
@@ -234,14 +236,17 @@
                     body: file
                 });
 
+                console.log('[FRONTEND] Response received:', response.status);
                 if (!response.ok) {
                     const errorJson = await response.json().catch(() => ({}));
                     throw new Error(errorJson.details || errorJson.error || 'Parse failed');
                 }
 
                 const json = await response.json();
+                console.log('[FRONTEND] JSON received, cards count:', json.combos?.combo1?.cards?.length);
                 updateCardSuccess(card, file.name, json);
             } catch (error) {
+                console.error('[FRONTEND] Error:', error);
                 updateCardError(card, error.message);
                 console.error(error);
             }
