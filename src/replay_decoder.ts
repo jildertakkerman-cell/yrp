@@ -752,16 +752,17 @@ export class ReplayDecoder {
             for (let i = 0; i < count; i++) {
                 const offset = 5 + i * 8;
                 if (offset + 8 <= d.length) {
+                    const position = d.readUInt32LE(offset + 4);
                     cards.push({
                         code: d.readUInt32LE(offset),
-                        // The next 4 bytes (offset + 4) are unknown (value 10 in repro).
+                        position,
+                        positionName: getPositionName(position),
                         // Since this is a draw, location is implicitly HAND (2) for the player.
                         controller: player,
                         location: LOCATION_HAND,
                         locationName: "HAND",
-                        // Sequence is likely the last one, but we don't know it from this message.
-                        // We can leave it undefined or 0.
-                        sequence: 0
+                        // Sequence is assigned upon adding to hand, not known from this message directly.
+                        sequence: i  // Order in which cards were drawn
                     });
                 }
             }
