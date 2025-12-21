@@ -278,7 +278,7 @@ export async function generatePDF(comboData: ComboData): Promise<Buffer> {
     const contentWidth = pageWidth - 100;
 
     // --- HEADER ---
-    const headerHeight = comboData.playerName ? 95 : 80;
+    const headerHeight = 80;
     doc.rect(0, 0, pageWidth, headerHeight).fill(COLORS.primary);
     doc.fillColor(COLORS.white)
         .fontSize(24)
@@ -291,14 +291,40 @@ export async function generatePDF(comboData: ComboData): Promise<Buffer> {
             .text(comboData.archetype, 0, 52, { align: 'center' });
     }
 
-    if (comboData.playerName) {
-        doc.fontSize(10)
-            .font('Helvetica-Oblique')
-            .fillColor('#94a3b8')
-            .text(`Combo by: ${comboData.playerName}`, 0, comboData.archetype ? 70 : 55, { align: 'center' });
-    }
-
     doc.y = headerHeight + 15;
+
+    // --- CREATOR CREDIT BANNER ---
+    if (comboData.playerName) {
+        const creditY = doc.y;
+        const bannerHeight = 45;
+        
+        // Gold/amber accent banner
+        doc.rect(50, creditY, contentWidth, bannerHeight)
+            .fill('#fef3c7');
+        
+        // Left accent bar
+        doc.rect(50, creditY, 5, bannerHeight)
+            .fill('#f59e0b');
+        
+        // Trophy/star icon area
+        doc.fontSize(18)
+            .fillColor('#f59e0b')
+            .text('★', 65, creditY + 13);
+        
+        // "Created by" label
+        doc.fontSize(10)
+            .font('Helvetica')
+            .fillColor('#92400e')
+            .text('COMBO CREATED BY', 90, creditY + 10);
+        
+        // Player name - large and bold
+        doc.fontSize(16)
+            .font('Helvetica-Bold')
+            .fillColor('#78350f')
+            .text(comboData.playerName, 90, creditY + 23);
+        
+        doc.y = creditY + bannerHeight + 15;
+    }
 
     // --- CARDS SECTION (only show cards with loaded images) ---
     const cardsWithImages = cards.filter(card => {
