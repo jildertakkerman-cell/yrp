@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import * as path from "path";
 import { ReplayParserTS } from "./replay_parser_ts";
 import { ReplayDecoder } from "./replay_decoder";
@@ -17,9 +18,48 @@ import {
     generateComboFilename,
 } from "./gcs_storage";
 
+// Magic bytes for replay file identification
+const REPLAY_YRP1 = 0x31707279; // .yrp format
+const REPLAY_YRPX = 0x58707279; // .yrpX format
+
+/**
+ * Validates that a buffer is a valid .yrpX replay file by checking magic bytes.
+ * Returns an object with validation result and details.
+ */
+function validateYrpxFile(buffer: Buffer): { valid: boolean; error?: string; fileType?: string } {
+    if (!Buffer.isBuffer(buffer)) {
+        return { valid: false, error: "Invalid input: expected binary data" };
+    }
+    
+    if (buffer.length < 32) {
+        return { valid: false, error: "File too small to be a valid replay file (minimum 32 bytes required)" };
+    }
+    
+    const magicBytes = buffer.readUInt32LE(0);
+    
+    if (magicBytes === REPLAY_YRPX) {
+        return { valid: true, fileType: "yrpX" };
+    }
+    
+    if (magicBytes === REPLAY_YRP1) {
+        return { valid: false, error: "This appears to be a .yrp file (older format). Only .yrpX files are supported." };
+    }
+    
+    // Log the actual magic bytes for debugging (in hex)
+    const hexMagic = magicBytes.toString(16).padStart(8, '0');
+    return { valid: false, error: `Invalid file format. Expected .yrpX replay file (magic bytes: 0x${hexMagic})` };
+}
+
 const app = express();
 // Use PORT environment variable for Cloud Run compatibility
 const PORT = parseInt(process.env.PORT || "3000", 10);
+
+// Enable CORS for cross-origin requests from other websites
+app.use(cors({
+    origin: '*', // Allow all origins (or specify your domain)
+    methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 // Serve static files from 'public' directory
 app.use(express.static(path.join(process.cwd(), "public")));
@@ -34,6 +74,15 @@ app.post("/parse", async (req, res) => {
     try {
         const buffer = req.body;
         console.log(`Received request. Body is Buffer: ${Buffer.isBuffer(buffer)}, Length: ${buffer ? buffer.length : 0}`);
+
+        // Validate file is a .yrpX file
+        const validation = validateYrpxFile(buffer);
+        if (!validation.valid) {
+            console.log(`[parse] File validation failed: ${validation.error}`);
+            res.status(400).json({ error: "Invalid file", details: validation.error });
+            return;
+        }
+        console.log(`[parse] File validated as ${validation.fileType}`);
 
         const replay = new ReplayParserTS(buffer);
         await replay.parse();
@@ -74,6 +123,59 @@ app.post("/pdf", async (req, res) => {
     } catch (error) {
         console.error("Error generating PDF:", error);
         res.status(500).json({ error: "Failed to generate PDF", details: String(error) });
+    }
+});
+
+// Combined endpoint: Upload .yrpX file -> Get PDF directly
+// This is the main endpoint for external integrations
+app.post("/yrpx-to-pdf", async (req, res) => {
+    try {
+        const buffer = req.body;
+        console.log(`[yrpx-to-pdf] Received file. Is Buffer: ${Buffer.isBuffer(buffer)}, Length: ${buffer ? buffer.length : 0}`);
+
+        if (!Buffer.isBuffer(buffer) || buffer.length === 0) {
+            res.status(400).json({ error: "No file data received. Send the .yrpX file as binary in the request body." });
+            return;
+        }
+
+        // Validate file is a .yrpX file
+        const validation = validateYrpxFile(buffer);
+        if (!validation.valid) {
+            console.log(`[yrpx-to-pdf] File validation failed: ${validation.error}`);
+            res.status(400).json({ error: "Invalid file", details: validation.error });
+            return;
+        }
+        console.log(`[yrpx-to-pdf] File validated as ${validation.fileType}`);
+
+        // Step 1: Parse the replay
+        const replay = new ReplayParserTS(buffer);
+        await replay.parse();
+        console.log("[yrpx-to-pdf] Replay parsed successfully");
+
+        const replayDataBuffer = replay.replayData;
+        const parsedReplayData = replayDataBuffer ? ReplayDecoder.decode(replayDataBuffer, replay.header.id) : [];
+
+        const replayData = {
+            header: replay.header,
+            parsedReplayData: parsedReplayData
+        };
+
+        // Step 2: Distill the combo
+        console.log("[yrpx-to-pdf] Distilling combo...");
+        const distilledCombo = await distillReplayData(replayData);
+        console.log("[yrpx-to-pdf] Combo distilled successfully");
+
+        // Step 3: Generate PDF
+        console.log("[yrpx-to-pdf] Generating PDF...");
+        const pdfBuffer = await generatePDF(distilledCombo);
+        console.log("[yrpx-to-pdf] PDF generated successfully");
+
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", "attachment; filename=combo.pdf");
+        res.send(pdfBuffer);
+    } catch (error) {
+        console.error("[yrpx-to-pdf] Error:", error);
+        res.status(500).json({ error: "Failed to process replay file", details: String(error) });
     }
 });
 
