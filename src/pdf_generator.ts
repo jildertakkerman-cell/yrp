@@ -662,30 +662,129 @@ export async function generatePDF(comboData: ComboData): Promise<Buffer> {
 
     // --- FINAL BOARD STATE ---
     if (structured.finalBoard.length > 0) {
-        if (doc.y > doc.page.height - 100) {
+        // Ensure enough space for the final board section
+        if (doc.y > doc.page.height - 250) {
             doc.addPage();
             doc.y = 40;
         }
 
-        doc.fillColor(COLORS.primary)
-            .fontSize(11)
+        // Section header with accent bar
+        const sectionY = doc.y;
+        doc.rect(50, sectionY, contentWidth, 35).fill('#ecfdf5');
+        doc.rect(50, sectionY, 5, 35).fill('#10b981');
+        
+        doc.fontSize(14)
             .font('Helvetica-Bold')
-            .text('FINAL BOARD', 50, doc.y);
-        doc.moveDown(0.3);
+            .fillColor('#065f46')
+            .text('FINAL BOARD', 65, sectionY + 10);
+        
+        doc.fontSize(9)
+            .font('Helvetica')
+            .fillColor('#047857')
+            .text('End result of the combo', 65, sectionY + 26);
+        
+        doc.y = sectionY + 50;
 
+        // Get unique cards for final board
+        const finalBoardCards: CardInfo[] = [];
+        const seenFinalIds = new Set<string>();
+        
         structured.finalBoard.forEach(cardIdOrName => {
-            // Convert card ID to name if it looks like an ID
-            let displayName = cardIdOrName;
             if (cardIdOrName.startsWith('card_')) {
                 const cardInfo = cardMap.get(cardIdOrName);
-                displayName = cardInfo?.name || cardIdOrName.replace('card_', '');
+                const baseId = getCardIdFromFullId(cardIdOrName);
+                if (cardInfo && !seenFinalIds.has(baseId)) {
+                    seenFinalIds.add(baseId);
+                    finalBoardCards.push(cardInfo);
+                }
             }
-            doc.fillColor(COLORS.text)
-                .fontSize(9)
-                .font('Helvetica')
-                .text(`• ${displayName}`, 55);
         });
-        doc.moveDown(0.5);
+
+        if (finalBoardCards.length > 0) {
+            // Card grid for final board
+            const cardWidth = 80;
+            const cardHeight = 117;
+            const cardsPerRow = 5;
+            const totalGridWidth = cardsPerRow * cardWidth + (cardsPerRow - 1) * 15;
+            const startX = 50 + (contentWidth - totalGridWidth) / 2; // Center the grid
+            const cardSpacingX = 15;
+            const cardSpacingY = 25;
+
+            let cardX = startX;
+            let cardY = doc.y;
+
+            finalBoardCards.forEach((card, idx) => {
+                if (idx > 0 && idx % cardsPerRow === 0) {
+                    cardX = startX;
+                    cardY += cardHeight + cardSpacingY + 20;
+                }
+
+                // Check page break
+                if (cardY + cardHeight + 30 > doc.page.height - 50) {
+                    doc.addPage();
+                    cardY = 50;
+                    cardX = startX;
+                }
+
+                const numericId = getCardIdFromFullId(card.id);
+                const imgBuffer = imageCache.get(numericId);
+
+                // Card shadow effect
+                doc.rect(cardX + 3, cardY + 3, cardWidth, cardHeight)
+                    .fill('#e5e7eb');
+
+                if (imgBuffer) {
+                    try {
+                        doc.image(imgBuffer, cardX, cardY, { width: cardWidth, height: cardHeight });
+                        // Green border for final board cards
+                        doc.lineWidth(2)
+                            .rect(cardX, cardY, cardWidth, cardHeight)
+                            .stroke('#10b981');
+                        doc.lineWidth(1);
+                    } catch {
+                        doc.rect(cardX, cardY, cardWidth, cardHeight).fill(COLORS.cardBg);
+                        doc.rect(cardX, cardY, cardWidth, cardHeight).stroke('#10b981');
+                    }
+                } else {
+                    doc.rect(cardX, cardY, cardWidth, cardHeight).fill(COLORS.cardBg);
+                    doc.rect(cardX, cardY, cardWidth, cardHeight).stroke('#10b981');
+                }
+
+                // Card name below with background
+                const nameY = cardY + cardHeight + 4;
+                doc.rect(cardX - 2, nameY - 2, cardWidth + 4, 18)
+                    .fill('#f0fdf4');
+                
+                doc.fillColor('#065f46')
+                    .fontSize(7)
+                    .font('Helvetica-Bold')
+                    .text(card.name, cardX, nameY, {
+                        width: cardWidth,
+                        align: 'center',
+                        lineBreak: true,
+                        height: 16,
+                        ellipsis: true
+                    });
+
+                cardX += cardWidth + cardSpacingX;
+            });
+
+            doc.y = cardY + cardHeight + 40;
+        } else {
+            // Fallback to text list if no card images found
+            structured.finalBoard.forEach(cardIdOrName => {
+                let displayName = cardIdOrName;
+                if (cardIdOrName.startsWith('card_')) {
+                    const cardInfo = cardMap.get(cardIdOrName);
+                    displayName = cardInfo?.name || cardIdOrName.replace('card_', '');
+                }
+                doc.fillColor(COLORS.text)
+                    .fontSize(9)
+                    .font('Helvetica')
+                    .text(`• ${displayName}`, 55);
+            });
+            doc.moveDown(0.5);
+        }
     }
 
     // --- FOOTER with page numbers ---
