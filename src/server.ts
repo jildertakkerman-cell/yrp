@@ -16,6 +16,7 @@ import {
     listCombosFromGCS,
     deleteJsonFromGCS,
     generateComboFilename,
+    saveReplayToGCS,
 } from "./gcs_storage";
 
 // Magic bytes for replay file identification
@@ -150,6 +151,18 @@ app.post("/yrpx-to-pdf", async (req, res) => {
             return;
         }
         console.log(`[yrpx-to-pdf] File validated as ${validation.fileType}`);
+
+        // Save replay to GCS (non-blocking, don't wait for result)
+        const originalFilename = (req.headers['x-filename'] as string) || 'replay.yrpX';
+        saveReplayToGCS(originalFilename, buffer)
+            .then(result => {
+                if (result.success) {
+                    console.log(`[yrpx-to-pdf] Replay saved to GCS: ${result.url}`);
+                } else {
+                    console.error(`[yrpx-to-pdf] Failed to save replay: ${result.error}`);
+                }
+            })
+            .catch(err => console.error(`[yrpx-to-pdf] Error saving replay:`, err));
 
         // Step 1: Parse the replay
         const replay = new ReplayParserTS(buffer);

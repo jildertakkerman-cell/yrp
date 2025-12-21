@@ -9,6 +9,9 @@ const storage = new Storage();
 // Can be overridden via environment variable
 const BUCKET_NAME = process.env.GCS_BUCKET_NAME || "yrp-combo-data";
 
+// Bucket for storing replay files (shared with archetype-nexus)
+const REPLAY_BUCKET_NAME = process.env.GCS_REPLAY_BUCKET_NAME || "yugioh-card-images-archetype-nexus";
+
 export interface SaveResult {
     success: boolean;
     url?: string;
@@ -117,4 +120,54 @@ export function generateComboFilename(name?: string): string {
         ? name.replace(/[^a-zA-Z0-9-_]/g, "_").substring(0, 50)
         : "combo";
     return `${safeName}_${timestamp}.json`;
+}
+
+/**
+ * Save a replay file (.yrpX) to Google Cloud Storage
+ * @param filename - The original filename of the replay
+ * @param buffer - The binary data of the replay file
+ * @returns Promise with the result including the public URL if successful
+ */
+export async function saveReplayToGCS(filename: string, buffer: Buffer): Promise<SaveResult> {
+    try {
+        const bucket = storage.bucket(REPLAY_BUCKET_NAME);
+        const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+        const safeFilename = filename.replace(/[^a-zA-Z0-9-_.]/g, "_");
+        const storagePath = `replays/${timestamp}_${safeFilename}`;
+        const file = bucket.file(storagePath);
+
+        await file.save(buffer, {
+            contentType: "application/octet-stream",
+            metadata: {
+                cacheControl: "public, max-age=31536000", // Cache for 1 year (replays don't change)
+                originalFilename: filename,
+                uploadedAt: new Date().toISOString(),
+            },
+        });
+
+        const publicUrl = `https://storage.googleapis.com/${REPLAY_BUCKET_NAME}/${storagePath}`;
+        console.log(`Saved replay to GCS: ${publicUrl}`);
+
+        return {
+            success: true,
+            url: publicUrl,
+        };
+    } catch (error) {
+        console.error("Error saving replay to GCS:", error);
+        return {
+            success: false,
+            error: String(error),
+        };
+    }
+}
+
+/**
+ * Generate a unique filename for a replay
+ * @param originalName - The original filename
+ * @returns Generated unique filename
+ */
+export function generateReplayFilename(originalName: string): string {
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const safeName = originalName.replace(/[^a-zA-Z0-9-_.]/g, "_");
+    return `${timestamp}_${safeName}`;
 }
