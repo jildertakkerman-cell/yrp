@@ -8,6 +8,7 @@ const distillComboPath = require.resolve("./distill_combo_v2");
 delete require.cache[distillComboPath];
 
 import { distillReplayData } from "./distill_combo_v2";
+import { generatePDF } from "./pdf_generator";
 
 const app = express();
 const PORT = 3000;
@@ -17,6 +18,9 @@ app.use(express.static(path.join(process.cwd(), "public")));
 
 // Parse raw body for file uploads
 app.use(express.raw({ type: "application/octet-stream", limit: "50mb" }));
+
+// Parse JSON body for /pdf endpoint
+app.use(express.json({ limit: "50mb" }));
 
 app.post("/parse", async (req, res) => {
     try {
@@ -46,6 +50,22 @@ app.post("/parse", async (req, res) => {
     } catch (error) {
         console.error("Error parsing replay:", error);
         res.status(500).json({ error: "Failed to parse replay file", details: String(error) });
+    }
+});
+
+app.post("/pdf", async (req, res) => {
+    try {
+        const comboData = req.body;
+        console.log("Generating PDF...", comboData ? "data received" : "no data");
+        const pdfBuffer = await generatePDF(comboData);
+        console.log("PDF generated successfully");
+
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", "attachment; filename=combo.pdf");
+        res.send(pdfBuffer);
+    } catch (error) {
+        console.error("Error generating PDF:", error);
+        res.status(500).json({ error: "Failed to generate PDF", details: String(error) });
     }
 });
 

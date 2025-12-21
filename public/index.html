@@ -273,10 +273,11 @@
                 <span class="file-name">${fileName}</span>
                 <div class="actions">
                     <button class="download-btn">Download JSON</button>
+                    <button class="download-btn download-pdf">Download PDF</button>
                 </div>
             `;
 
-            const btn = card.querySelector('.download-btn');
+            const btn = card.querySelector('.download-btn:not(.download-pdf)');
             btn.addEventListener('click', () => {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -289,6 +290,45 @@
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
                 }, 100);
+            });
+
+            const pdfBtn = card.querySelector('.download-pdf');
+            pdfBtn.addEventListener('click', async () => {
+                pdfBtn.textContent = 'Generating...';
+                pdfBtn.disabled = true;
+                try {
+                    const response = await fetch('/pdf', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: jsonStr
+                    });
+
+                    if (!response.ok) throw new Error('PDF generation failed');
+
+                    const pdfBlob = await response.blob();
+                    const url = URL.createObjectURL(pdfBlob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = fileName.replace(/\.[^/.]+$/, "") + ".pdf";
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                        pdfBtn.textContent = 'Download PDF';
+                        pdfBtn.disabled = false;
+                    }, 100);
+                } catch (error) {
+                    console.error('PDF download error:', error);
+                    pdfBtn.textContent = 'Error';
+                    setTimeout(() => {
+                        pdfBtn.textContent = 'Download PDF';
+                        pdfBtn.disabled = false;
+                    }, 2000);
+                }
             });
         }
 
