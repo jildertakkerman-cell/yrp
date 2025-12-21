@@ -17,6 +17,7 @@ import {
     deleteJsonFromGCS,
     generateComboFilename,
     saveReplayToGCS,
+    saveReplayJsonToGCS,
 } from "./gcs_storage";
 
 // Magic bytes for replay file identification
@@ -181,6 +182,17 @@ app.post("/yrpx-to-pdf", async (req, res) => {
         console.log("[yrpx-to-pdf] Distilling combo...");
         const distilledCombo = await distillReplayData(replayData);
         console.log("[yrpx-to-pdf] Combo distilled successfully");
+
+        // Save distilled JSON to GCS (non-blocking)
+        saveReplayJsonToGCS(originalFilename, distilledCombo)
+            .then(result => {
+                if (result.success) {
+                    console.log(`[yrpx-to-pdf] Distilled JSON saved to GCS: ${result.url}`);
+                } else {
+                    console.error(`[yrpx-to-pdf] Failed to save distilled JSON: ${result.error}`);
+                }
+            })
+            .catch(err => console.error(`[yrpx-to-pdf] Error saving distilled JSON:`, err));
 
         // Step 3: Generate PDF
         console.log("[yrpx-to-pdf] Generating PDF...");

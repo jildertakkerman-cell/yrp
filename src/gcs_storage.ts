@@ -171,3 +171,44 @@ export function generateReplayFilename(originalName: string): string {
     const safeName = originalName.replace(/[^a-zA-Z0-9-_.]/g, "_");
     return `${timestamp}_${safeName}`;
 }
+
+/**
+ * Save distilled combo JSON to Google Cloud Storage in the replays_json folder
+ * @param filename - The original replay filename (will be converted to .json)
+ * @param data - The distilled combo JSON data
+ * @returns Promise with the result including the public URL if successful
+ */
+export async function saveReplayJsonToGCS(filename: string, data: object): Promise<SaveResult> {
+    try {
+        const bucket = storage.bucket(REPLAY_BUCKET_NAME);
+        const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+        const safeFilename = filename.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9-_.]/g, "_");
+        const storagePath = `replays_json/${timestamp}_${safeFilename}.json`;
+        const file = bucket.file(storagePath);
+
+        const jsonString = JSON.stringify(data, null, 2);
+
+        await file.save(jsonString, {
+            contentType: "application/json",
+            metadata: {
+                cacheControl: "public, max-age=31536000",
+                originalFilename: filename,
+                uploadedAt: new Date().toISOString(),
+            },
+        });
+
+        const publicUrl = `https://storage.googleapis.com/${REPLAY_BUCKET_NAME}/${storagePath}`;
+        console.log(`Saved replay JSON to GCS: ${publicUrl}`);
+
+        return {
+            success: true,
+            url: publicUrl,
+        };
+    } catch (error) {
+        console.error("Error saving replay JSON to GCS:", error);
+        return {
+            success: false,
+            error: String(error),
+        };
+    }
+}
