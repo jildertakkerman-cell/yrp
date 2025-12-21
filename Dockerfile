@@ -48,6 +48,8 @@ COPY --from=builder /app/build ./build
 # Cloud Run will set the PORT environment variable
 ENV PORT=8080
 ENV NODE_ENV=production
+# Set your GCS bucket name (override at deploy time if needed)
+ENV GCS_BUCKET_NAME=yrp-combo-data
 
 # Expose the port Cloud Run expects
 EXPOSE 8080

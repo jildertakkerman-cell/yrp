@@ -9,6 +9,13 @@ delete require.cache[distillComboPath];
 
 import { distillReplayData } from "./distill_combo_v2";
 import { generatePDF } from "./pdf_generator";
+import {
+    saveJsonToGCS,
+    loadJsonFromGCS,
+    listCombosFromGCS,
+    deleteJsonFromGCS,
+    generateComboFilename,
+} from "./gcs_storage";
 
 const app = express();
 // Use PORT environment variable for Cloud Run compatibility
@@ -67,6 +74,79 @@ app.post("/pdf", async (req, res) => {
     } catch (error) {
         console.error("Error generating PDF:", error);
         res.status(500).json({ error: "Failed to generate PDF", details: String(error) });
+    }
+});
+
+// Save combo JSON to Google Cloud Storage
+app.post("/combos", async (req, res) => {
+    try {
+        const { name, data } = req.body;
+        
+        if (!data) {
+            res.status(400).json({ error: "No combo data provided" });
+            return;
+        }
+
+        const filename = generateComboFilename(name);
+        const result = await saveJsonToGCS(filename, data);
+
+        if (result.success) {
+            res.json({
+                success: true,
+                filename,
+                url: result.url,
+            });
+        } else {
+            res.status(500).json({ error: "Failed to save combo", details: result.error });
+        }
+    } catch (error) {
+        console.error("Error saving combo:", error);
+        res.status(500).json({ error: "Failed to save combo", details: String(error) });
+    }
+});
+
+// List all saved combos
+app.get("/combos", async (_req, res) => {
+    try {
+        const files = await listCombosFromGCS();
+        res.json({ combos: files });
+    } catch (error) {
+        console.error("Error listing combos:", error);
+        res.status(500).json({ error: "Failed to list combos", details: String(error) });
+    }
+});
+
+// Load a specific combo by filename
+app.get("/combos/:filename", async (req, res) => {
+    try {
+        const { filename } = req.params;
+        const data = await loadJsonFromGCS(filename);
+
+        if (data) {
+            res.json(data);
+        } else {
+            res.status(404).json({ error: "Combo not found" });
+        }
+    } catch (error) {
+        console.error("Error loading combo:", error);
+        res.status(500).json({ error: "Failed to load combo", details: String(error) });
+    }
+});
+
+// Delete a combo by filename
+app.delete("/combos/:filename", async (req, res) => {
+    try {
+        const { filename } = req.params;
+        const success = await deleteJsonFromGCS(filename);
+
+        if (success) {
+            res.json({ success: true });
+        } else {
+            res.status(500).json({ error: "Failed to delete combo" });
+        }
+    } catch (error) {
+        console.error("Error deleting combo:", error);
+        res.status(500).json({ error: "Failed to delete combo", details: String(error) });
     }
 });
 
