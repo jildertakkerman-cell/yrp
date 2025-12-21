@@ -153,17 +153,24 @@ app.post("/yrpx-to-pdf", async (req, res) => {
         }
         console.log(`[yrpx-to-pdf] File validated as ${validation.fileType}`);
 
-        // Save replay to GCS (non-blocking, don't wait for result)
+        // Check if user opted in to save replay (via X-Save-Replay header)
+        const saveReplay = req.headers['x-save-replay'] === 'true';
         const originalFilename = (req.headers['x-filename'] as string) || 'replay.yrpX';
-        saveReplayToGCS(originalFilename, buffer)
-            .then(result => {
-                if (result.success) {
-                    console.log(`[yrpx-to-pdf] Replay saved to GCS: ${result.url}`);
-                } else {
-                    console.error(`[yrpx-to-pdf] Failed to save replay: ${result.error}`);
-                }
-            })
-            .catch(err => console.error(`[yrpx-to-pdf] Error saving replay:`, err));
+        
+        if (saveReplay) {
+            // Save replay to GCS (non-blocking, don't wait for result)
+            saveReplayToGCS(originalFilename, buffer)
+                .then(result => {
+                    if (result.success) {
+                        console.log(`[yrpx-to-pdf] Replay saved to GCS: ${result.url}`);
+                    } else {
+                        console.error(`[yrpx-to-pdf] Failed to save replay: ${result.error}`);
+                    }
+                })
+                .catch(err => console.error(`[yrpx-to-pdf] Error saving replay:`, err));
+        } else {
+            console.log(`[yrpx-to-pdf] User opted out of saving replay`);
+        }
 
         // Step 1: Parse the replay
         const replay = new ReplayParserTS(buffer);
@@ -183,16 +190,18 @@ app.post("/yrpx-to-pdf", async (req, res) => {
         const distilledCombo = await distillReplayData(replayData);
         console.log("[yrpx-to-pdf] Combo distilled successfully");
 
-        // Save distilled JSON to GCS (non-blocking)
-        saveReplayJsonToGCS(originalFilename, distilledCombo)
-            .then(result => {
-                if (result.success) {
-                    console.log(`[yrpx-to-pdf] Distilled JSON saved to GCS: ${result.url}`);
-                } else {
-                    console.error(`[yrpx-to-pdf] Failed to save distilled JSON: ${result.error}`);
-                }
-            })
-            .catch(err => console.error(`[yrpx-to-pdf] Error saving distilled JSON:`, err));
+        if (saveReplay) {
+            // Save distilled JSON to GCS (non-blocking)
+            saveReplayJsonToGCS(originalFilename, distilledCombo)
+                .then(result => {
+                    if (result.success) {
+                        console.log(`[yrpx-to-pdf] Distilled JSON saved to GCS: ${result.url}`);
+                    } else {
+                        console.error(`[yrpx-to-pdf] Failed to save distilled JSON: ${result.error}`);
+                    }
+                })
+                .catch(err => console.error(`[yrpx-to-pdf] Error saving distilled JSON:`, err));
+        }
 
         // Step 3: Generate PDF
         console.log("[yrpx-to-pdf] Generating PDF...");
