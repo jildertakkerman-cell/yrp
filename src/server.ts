@@ -269,6 +269,47 @@ app.delete("/combos/:filename", async (req, res) => {
     }
 });
 
+// Debug endpoint to test GCS connection and permissions
+app.get("/debug/gcs-test", async (_req, res) => {
+    try {
+        const testBuffer = Buffer.from("GCS test file - " + new Date().toISOString());
+        const result = await saveReplayToGCS("test-connection.txt", testBuffer);
+        
+        if (result.success) {
+            res.json({
+                success: true,
+                message: "GCS connection successful!",
+                url: result.url,
+                bucket: process.env.GCS_REPLAY_BUCKET_NAME || "yugioh-card-images-archetype-nexus",
+            });
+        } else {
+            res.status(500).json({
+                success: false,
+                error: result.error,
+                bucket: process.env.GCS_REPLAY_BUCKET_NAME || "yugioh-card-images-archetype-nexus",
+                hint: "Check that the Cloud Run service account has 'Storage Object Creator' role on this bucket",
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: String(error),
+            stack: error instanceof Error ? error.stack : undefined,
+            bucket: process.env.GCS_REPLAY_BUCKET_NAME || "yugioh-card-images-archetype-nexus",
+        });
+    }
+});
+
+// Debug endpoint to check service configuration
+app.get("/debug/config", (_req, res) => {
+    res.json({
+        gcsBucket: process.env.GCS_BUCKET_NAME || "yrp-combo-data (default)",
+        gcsReplayBucket: process.env.GCS_REPLAY_BUCKET_NAME || "yugioh-card-images-archetype-nexus (default)",
+        nodeEnv: process.env.NODE_ENV || "not set",
+        port: PORT,
+    });
+});
+
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running at http://0.0.0.0:${PORT}`);
     console.log("Open this URL in your browser to use the GUI.");
