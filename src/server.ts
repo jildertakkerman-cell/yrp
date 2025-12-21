@@ -11,7 +11,8 @@ import { distillReplayData } from "./distill_combo_v2";
 import { generatePDF } from "./pdf_generator";
 
 const app = express();
-const PORT = 3000;
+// Use PORT environment variable for Cloud Run compatibility
+const PORT = parseInt(process.env.PORT || "3000", 10);
 
 // Serve static files from 'public' directory
 app.use(express.static(path.join(process.cwd(), "public")));
@@ -69,7 +70,7 @@ app.post("/pdf", async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running at http://0.0.0.0:${PORT}`);
     console.log("Open this URL in your browser to use the GUI.");
 });
