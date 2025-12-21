@@ -65,9 +65,6 @@ app.use(cors({
     preflightContinue: false,
 }));
 
-// Explicitly handle OPTIONS preflight for all routes
-app.options('*', cors());
-
 // Serve static files from 'public' directory
 app.use(express.static(path.join(process.cwd(), "public")));
 
