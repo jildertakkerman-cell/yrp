@@ -55,11 +55,18 @@ const app = express();
 const PORT = parseInt(process.env.PORT || "3000", 10);
 
 // Enable CORS for cross-origin requests from other websites
+// Must be before other middleware to handle preflight OPTIONS requests
 app.use(cors({
-    origin: '*', // Allow all origins (or specify your domain)
-    methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: true, // Reflect the request origin (works better than '*' with credentials)
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With'],
+    credentials: true,
+    optionsSuccessStatus: 200, // Some legacy browsers choke on 204
+    preflightContinue: false,
 }));
+
+// Explicitly handle OPTIONS preflight for all routes
+app.options('*', cors());
 
 // Serve static files from 'public' directory
 app.use(express.static(path.join(process.cwd(), "public")));
