@@ -6,6 +6,7 @@ import * as https from "https";
 interface ReplayData {
     header: any;
     parsedReplayData: ReplayStep[];
+    playerNames?: string[];
 }
 
 interface ReplayStep {
@@ -19,6 +20,7 @@ interface ReplayStep {
 // Interfaces for the Output JSON (Combo Format)
 interface ComboOutput {
     archetype: string;
+    playerName?: string;
     combos: { [key: string]: ComboDetail };
 }
 
@@ -919,8 +921,12 @@ export async function distillReplayData(replayJson: ReplayData): Promise<ComboOu
     console.log(`[DEBUG] Distilled ${cards.length} cards. Found ${drakes.length} B-Buster Drake instances.`);
     drakes.forEach(d => console.log(`[DEBUG] - ${d.id} (${d.zone})`));
 
+    // Get the player name from the replay (first player is typically the combo performer)
+    const playerName = replayJson.playerNames?.[0] || undefined;
+
     return {
         archetype: "ABC",
+        playerName,
         combos: {
             "combo1": {
                 title: "Imported Combo",

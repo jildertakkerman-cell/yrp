@@ -18,6 +18,7 @@ interface ComboStep {
 
 interface ComboData {
     archetype?: string;
+    playerName?: string;
     combos?: {
         combo1?: {
             title?: string;
@@ -277,7 +278,8 @@ export async function generatePDF(comboData: ComboData): Promise<Buffer> {
     const contentWidth = pageWidth - 100;
 
     // --- HEADER ---
-    doc.rect(0, 0, pageWidth, 80).fill(COLORS.primary);
+    const headerHeight = comboData.playerName ? 95 : 80;
+    doc.rect(0, 0, pageWidth, headerHeight).fill(COLORS.primary);
     doc.fillColor(COLORS.white)
         .fontSize(24)
         .font('Helvetica-Bold')
@@ -289,7 +291,14 @@ export async function generatePDF(comboData: ComboData): Promise<Buffer> {
             .text(comboData.archetype, 0, 52, { align: 'center' });
     }
 
-    doc.y = 100;
+    if (comboData.playerName) {
+        doc.fontSize(10)
+            .font('Helvetica-Oblique')
+            .fillColor('#94a3b8')
+            .text(`Combo by: ${comboData.playerName}`, 0, comboData.archetype ? 70 : 55, { align: 'center' });
+    }
+
+    doc.y = headerHeight + 15;
 
     // --- CARDS SECTION (only show cards with loaded images) ---
     const cardsWithImages = cards.filter(card => {

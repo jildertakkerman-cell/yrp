@@ -176,13 +176,15 @@ app.post("/yrpx-to-pdf", async (req, res) => {
         const replay = new ReplayParserTS(buffer);
         await replay.parse();
         console.log("[yrpx-to-pdf] Replay parsed successfully");
+        console.log(`[yrpx-to-pdf] Player names: ${replay.playerNames.join(', ')}`);
 
         const replayDataBuffer = replay.replayData;
         const parsedReplayData = replayDataBuffer ? ReplayDecoder.decode(replayDataBuffer, replay.header.id) : [];
 
         const replayData = {
             header: replay.header,
-            parsedReplayData: parsedReplayData
+            parsedReplayData: parsedReplayData,
+            playerNames: replay.playerNames
         };
 
         // Step 2: Distill the combo
