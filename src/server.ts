@@ -5,6 +5,8 @@ import { ReplayParserTS } from "./replay_parser_ts";
 import { ReplayDecoder } from "./replay_decoder";
 import { analyzeResources } from "./resource_analyzer";
 import { analyzeChains } from "./chain_analyzer";
+import { analyzeTempoMetrics } from "./tempo_analyzer";
+import { analyzeTechnicalTags } from "./technical_tags_analyzer";
 
 // Clear module cache for distill_combo to force reload
 const distillComboPath = require.resolve("./distill_combo_v2");
@@ -77,6 +79,62 @@ app.use(express.raw({ type: "application/octet-stream", limit: "50mb" }));
 
 // Parse JSON body for /pdf endpoint
 app.use(express.json({ limit: "50mb" }));
+
+// Combined analysis endpoint for GUI
+app.post("/analyze", async (req, res) => {
+    try {
+        const buffer = req.body;
+        console.log(`[analyze] Received request. Body is Buffer: ${Buffer.isBuffer(buffer)}, Length: ${buffer ? buffer.length : 0}`);
+
+        // Validate file is a .yrpX file
+        const validation = validateYrpxFile(buffer);
+        if (!validation.valid) {
+            console.log(`[analyze] File validation failed: ${validation.error}`);
+            res.status(400).json({ error: "Invalid file", details: validation.error });
+            return;
+        }
+        console.log(`[analyze] File validated as ${validation.fileType}`);
+
+        const replay = new ReplayParserTS(buffer);
+        await replay.parse();
+        console.log("[analyze] Replay parsed successfully");
+
+        const replayDataBuffer = replay.replayData;
+        const parsedReplayData = replayDataBuffer ? ReplayDecoder.decode(replayDataBuffer, replay.header.id) : [];
+
+        // Run all analyses
+        console.log("[analyze] Running resource analysis...");
+        const resourceAnalysis = analyzeResources(parsedReplayData);
+
+        console.log("[analyze] Running chain analysis...");
+        const chainAnalysis = analyzeChains(parsedReplayData);
+
+        console.log("[analyze] Running tempo analysis...");
+        const tempoAnalysis = analyzeTempoMetrics(parsedReplayData, replay.playerNames);
+
+        console.log("[analyze] Running technical tags analysis...");
+        const technicalTags = analyzeTechnicalTags(parsedReplayData, replay.playerNames);
+
+        // Combined response
+        const analysis = {
+            resourceAnalysis,
+            chainAnalysis,
+            tempoAnalysis,
+            technicalTags,
+            playerNames: replay.playerNames,
+            replayInfo: {
+                seed: replay.header.seed,
+                startLP: replay.params.startLP || 8000
+            }
+        };
+
+        console.log("[analyze] Analysis complete");
+        res.json(analysis);
+    } catch (error) {
+        console.error("[analyze] Error:", error);
+        res.status(500).json({ error: "Failed to analyze replay file", details: String(error) });
+    }
+});
 
 app.post("/parse", async (req, res) => {
     try {

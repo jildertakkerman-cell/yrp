@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -442,7 +442,7 @@
             <!-- Opening Hand Analysis (Brick Meter) -->
             <div class="card" id="handAnalysisCard" style="display: none;">
                 <div class="card-header">
-                    <h2 class="card-title">🎲 Opening Hand Analysis (Brick Meter)</h2>
+                    <h2 class="card-title">?? Opening Hand Analysis (Brick Meter)</h2>
                 </div>
                 <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
                     <!-- Player 1 Hand -->
@@ -507,6 +507,108 @@
                     <strong>How to read:</strong> The verdict shows if the hand was statistically favorable (God Hand)
                     or unfavorable (Brick).
                     A "Brick" with a loss suggests bad luck. A "God Hand" with a loss suggests misplay.
+                </div>
+            </div>
+
+            <!-- Tempo & Speed Metrics -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">? Tempo & Speed Metrics</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value neutral" id="avgActionsPerTurn">0</div>
+                        <div class="stat-label">Avg Actions/Turn</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value neutral" id="maxActionsPerTurn">0</div>
+                        <div class="stat-label">Max Actions (Turn)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value neutral" id="totalSpecialSummons">0</div>
+                        <div class="stat-label">Special Summons</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value neutral" id="totalEffectActivations">0</div>
+                        <div class="stat-label">Effect Activations</div>
+                    </div>
+                </div>
+
+                <!-- Winner Info (if available) -->
+                <div id="winnerInfo"
+                    style="display: none; margin-top: 1rem; padding: 1rem; background: rgba(56, 189, 248, 0.1); border-radius: 0.75rem; border: 1px solid rgba(56, 189, 248, 0.3);">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-size: 1.1rem; font-weight: 600; color: var(--accent-color);"
+                                id="winnerName">Winner</div>
+                            <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.25rem;"
+                                id="winnerDetails">Won in X turns</div>
+                        </div>
+                        <div id="otkBadge"
+                            style="display: none; background: linear-gradient(135deg, #f59e0b, #f97316); padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 700; font-size: 0.9rem;">
+                            ? OTK!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions Per Turn Chart -->
+                <div style="margin-top: 1.5rem;">
+                    <h3 style="font-size: 1rem; margin-bottom: 1rem; color: var(--text-muted);">Actions Per Turn
+                        Breakdown</h3>
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="tempoChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technical Play Tags -->
+            <div class="card" id="technicalTagsCard" style="display: none;">
+                <div class="card-header">
+                    <h2 class="card-title">🏷️ Technical Play Tags</h2>
+                </div>
+                <div id="technicalTagsContainer"
+                    style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem;">
+                    <!-- Tags will be dynamically inserted here -->
+                </div>
+                <div
+                    style="margin-top: 1rem; padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">
+                    <div style="margin-bottom: 0.75rem;">
+                        <strong style="color: var(--text-primary); font-size: 0.9rem;">About Technical Tags</strong>
+                    </div>
+                    <div style="margin-bottom: 0.5rem;">
+                        These tags automatically detect notable gameplay patterns and strategic decisions. Hover over
+                        any tag to see detailed information including turn number and player.
+                    </div>
+                    <div style="display: grid; gap: 0.5rem; margin-top: 1rem;">
+                        <div>
+                            <span style="color: #38bdf8; font-weight: 600;">ℹ️ Info Tags</span> — Highlight impressive
+                            or noteworthy plays:
+                            <div style="margin-left: 1.5rem; margin-top: 0.25rem; line-height: 1.6;">
+                                • <strong>Full Combo</strong>: 15+ uninterrupted actions<br>
+                                • <strong>Turn 1 End Board</strong>: Strong opening setup (3+ monsters, 2+ set
+                                cards)<br>
+                                • <strong>Resource Commitment</strong>: Heavy investment (10+ cards used)<br>
+                                • <strong>Grind Game</strong>: Match lasted 10+ turns
+                            </div>
+                        </div>
+                        <div>
+                            <span style="color: #fbbf24; font-weight: 600;">⚠️ Warning Tags</span> — Indicate risky or
+                            vulnerable plays:
+                            <div style="margin-left: 1.5rem; margin-top: 0.25rem; line-height: 1.6;">
+                                • <strong>Nibiru Check</strong>: 5+ summons before Battle Phase (Nibiru vulnerable)<br>
+                                • <strong>Overextension</strong>: 8+ summons while opponent holds 3+ cards (board wipe
+                                risk)
+                            </div>
+                        </div>
+                        <div>
+                            <span style="color: #f87171; font-weight: 600;">🔥 Critical Tags</span> — Suggest potential
+                            misplays or major mistakes:
+                            <div style="margin-left: 1.5rem; margin-top: 0.25rem; line-height: 1.6;">
+                                • <strong>Missed Lethal</strong>: Had enough ATK to win but didn't attack (game-losing
+                                mistake)
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -693,11 +795,11 @@
 
                     const getVerdictEmoji = (verdict) => {
                         switch (verdict) {
-                            case 'god_hand': return '🔥 GOD HAND';
-                            case 'good': return '✅ Good';
-                            case 'average': return '⚖️ Average';
-                            case 'brick': return '🧱 BRICK';
-                            case 'unplayable': return '💀 Unplayable';
+                            case 'god_hand': return '?? GOD HAND';
+                            case 'good': return '? Good';
+                            case 'average': return '?? Average';
+                            case 'brick': return '?? BRICK';
+                            case 'unplayable': return '?? Unplayable';
                             default: return verdict;
                         }
                     };
@@ -736,11 +838,209 @@
                 }
             }
 
+            // Update tempo & speed metrics
+            if (data.tempoAnalysis) {
+                const { summary, perTurnMetrics, winner } = data.tempoAnalysis;
+
+                // Update summary stats
+                document.getElementById('avgActionsPerTurn').textContent = summary.averageActionsPerTurn;
+                document.getElementById('maxActionsPerTurn').textContent = summary.maxActionsInSingleTurn;
+                document.getElementById('totalSpecialSummons').textContent = summary.totalSpecialSummons;
+                document.getElementById('totalEffectActivations').textContent = summary.totalEffectActivations;
+
+                // Show winner info if available
+                if (winner && winner.turnsToWin) {
+                    const winnerInfoEl = document.getElementById('winnerInfo');
+                    winnerInfoEl.style.display = 'block';
+                    document.getElementById('winnerName').textContent = winner.playerName;
+                    document.getElementById('winnerDetails').textContent = `Won in ${winner.turnsToWin} turn${winner.turnsToWin > 1 ? 's' : ''}`;
+
+                    if (winner.isOTK) {
+                        document.getElementById('otkBadge').style.display = 'block';
+                    }
+                }
+
+                // Create tempo chart
+                console.log('[TEMPO DEBUG] perTurnMetrics:', JSON.stringify(perTurnMetrics, null, 2));
+                console.log('[TEMPO DEBUG] playerNames:', playerNames);
+                createTempoChart(perTurnMetrics, playerNames);
+            }
+
+            // Display technical tags
+            if (data.technicalTags && data.technicalTags.length > 0) {
+                displayTechnicalTags(data.technicalTags);
+            }
+
             // Create chart
             createChart(snapshots, playerNames);
 
             // Show analysis container
             analysisContainer.classList.add('visible');
+        }
+
+        function displayTechnicalTags(tags) {
+            const container = document.getElementById('technicalTagsContainer');
+            const card = document.getElementById('technicalTagsCard');
+
+            if (!tags || tags.length === 0) {
+                card.style.display = 'none';
+                return;
+            }
+
+            container.innerHTML = '';
+            card.style.display = 'block';
+
+            // Create tag badges
+            tags.forEach(tag => {
+                const badge = document.createElement('div');
+                badge.style.cssText = `
+                display: inline-flex;
+                align-items: center;
+                padding: 0.5rem 0.75rem;
+                border-radius: 0.5rem;
+                font-size: 0.875rem;
+                font-weight: 600;
+                cursor: help;
+                background: ${getSeverityColor(tag.severity)};
+                border: 1px solid ${getSeverityBorderColor(tag.severity)};
+                transition: transform 0.2s;
+            `;
+                badge.onmouseenter = () => badge.style.transform = 'scale(1.05)';
+                badge.onmouseleave = () => badge.style.transform = 'scale(1)';
+                badge.title = `${tag.description}\nTurn ${tag.turn} - ${tag.playerName}`;
+
+                const icon = getSeverityIcon(tag.severity);
+                badge.innerHTML = `
+                <span style="margin-right: 0.5rem;">${icon}</span>
+                <span>${tag.name}</span>
+                <span style="margin-left: 0.5rem; opacity: 0.7; font-size: 0.75rem;">T${tag.turn}</span>
+            `;
+
+                container.appendChild(badge);
+            });
+
+            // Build dynamic explanation based on tags found
+            buildTagExplanation(tags);
+        }
+
+        function buildTagExplanation(tags) {
+            // Tag definitions with severity and description
+            const tagDefinitions = {
+                'Full Combo': { severity: 'info', description: '15+ uninterrupted actions' },
+                'Turn 1 End Board': { severity: 'info', description: 'Strong opening setup (3+ monsters, 2+ set cards)' },
+                'Resource Commitment': { severity: 'info', description: 'Heavy investment (10+ cards used)' },
+                'Grind Game': { severity: 'info', description: 'Match lasted 10+ turns' },
+                'Nibiru Check': { severity: 'warning', description: '5+ summons before Battle Phase (Nibiru vulnerable)' },
+                'Overextension': { severity: 'warning', description: '8+ summons while opponent holds 3+ cards (board wipe risk)' },
+                'Missed Lethal': { severity: 'critical', description: 'Had enough ATK to win but didn\'t attack (game-losing mistake)' }
+            };
+
+            // Group tags by severity
+            const tagsBySeverity = {
+                info: new Set(),
+                warning: new Set(),
+                critical: new Set()
+            };
+
+            tags.forEach(tag => {
+                if (tagsBySeverity[tag.severity]) {
+                    tagsBySeverity[tag.severity].add(tag.name);
+                }
+            });
+
+            // Build explanation HTML
+            let explanationHTML = `
+                <div style="margin-bottom: 0.75rem;">
+                    <strong style="color: var(--text-primary); font-size: 0.9rem;">About Technical Tags</strong>
+                </div>
+                <div style="margin-bottom: 0.5rem;">
+                    These tags automatically detect notable gameplay patterns and strategic decisions. Hover over any tag to see detailed information including turn number and player.
+                </div>
+                <div style="display: grid; gap: 0.5rem; margin-top: 1rem;">
+            `;
+
+            // Add Info tags if any found
+            if (tagsBySeverity.info.size > 0) {
+                explanationHTML += `
+                    <div>
+                        <span style="color: #38bdf8; font-weight: 600;">ℹ️ Info Tags</span> — Highlight impressive or noteworthy plays:
+                        <div style="margin-left: 1.5rem; margin-top: 0.25rem; line-height: 1.6;">
+                `;
+                tagsBySeverity.info.forEach(tagName => {
+                    const def = tagDefinitions[tagName];
+                    if (def) {
+                        explanationHTML += `• <strong>${tagName}</strong>: ${def.description}<br>`;
+                    }
+                });
+                explanationHTML += `</div></div>`;
+            }
+
+            // Add Warning tags if any found
+            if (tagsBySeverity.warning.size > 0) {
+                explanationHTML += `
+                    <div>
+                        <span style="color: #fbbf24; font-weight: 600;">⚠️ Warning Tags</span> — Indicate risky or vulnerable plays:
+                        <div style="margin-left: 1.5rem; margin-top: 0.25rem; line-height: 1.6;">
+                `;
+                tagsBySeverity.warning.forEach(tagName => {
+                    const def = tagDefinitions[tagName];
+                    if (def) {
+                        explanationHTML += `• <strong>${tagName}</strong>: ${def.description}<br>`;
+                    }
+                });
+                explanationHTML += `</div></div>`;
+            }
+
+            // Add Critical tags if any found
+            if (tagsBySeverity.critical.size > 0) {
+                explanationHTML += `
+                    <div>
+                        <span style="color: #f87171; font-weight: 600;">🔥 Critical Tags</span> — Suggest potential misplays or major mistakes:
+                        <div style="margin-left: 1.5rem; margin-top: 0.25rem; line-height: 1.6;">
+                `;
+                tagsBySeverity.critical.forEach(tagName => {
+                    const def = tagDefinitions[tagName];
+                    if (def) {
+                        explanationHTML += `• <strong>${tagName}</strong>: ${def.description}<br>`;
+                    }
+                });
+                explanationHTML += `</div></div>`;
+            }
+
+            explanationHTML += `</div>`;
+
+            // Update the explanation section
+            const explanationSection = document.querySelector('#technicalTagsCard > div:last-child');
+            if (explanationSection) {
+                explanationSection.innerHTML = explanationHTML;
+            }
+        }
+
+        function getSeverityColor(severity) {
+            switch (severity) {
+                case 'info': return 'rgba(56, 189, 248, 0.15)';
+                case 'warning': return 'rgba(251, 191, 36, 0.15)';
+                case 'critical': return 'rgba(248, 113, 113, 0.15)';
+                default: return 'rgba(148, 163, 184, 0.15)';
+            }
+        }
+
+        function getSeverityBorderColor(severity) {
+            switch (severity) {
+                case 'info': return 'rgba(56, 189, 248, 0.3)';
+                case 'warning': return 'rgba(251, 191, 36, 0.3)';
+                case 'critical': return 'rgba(248, 113, 113, 0.3)';
+                default: return 'rgba(148, 163, 184, 0.3)';
+            }
+        }
+
+        function getSeverityIcon(severity) {
+            switch (severity) {
+                case 'info': return 'ℹ️';
+                case 'warning': return '⚠️';
+                case 'critical': return '🔥';
+                default: return '❓';
+            }
         }
 
         // Known hand traps for visual highlighting
@@ -791,6 +1091,109 @@
                 cardDiv.appendChild(img);
                 container.appendChild(cardDiv);
             }
+        }
+
+        let tempoChartInstance = null;
+
+        function createTempoChart(perTurnMetrics, playerNames) {
+            const ctx = document.getElementById('tempoChart').getContext('2d');
+
+            if (tempoChartInstance) {
+                tempoChartInstance.destroy();
+            }
+
+            if (!perTurnMetrics || perTurnMetrics.length === 0) {
+                return;
+            }
+
+            const p1Name = playerNames?.[0] || 'Player 1';
+            const p2Name = playerNames?.[1] || 'Player 2';
+
+            const labels = perTurnMetrics.map(t => `Turn ${t.turn}`);
+
+            // Player 1 data
+            const p1TotalActions = perTurnMetrics.map(t => t.player1?.totalActions || 0);
+
+            // Player 2 data
+            const p2TotalActions = perTurnMetrics.map(t => t.player2?.totalActions || 0);
+
+            tempoChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: p1Name,
+                            data: p1TotalActions,
+                            backgroundColor: 'rgba(56, 189, 248, 0.8)',
+                            borderColor: 'rgb(56, 189, 248)',
+                            borderWidth: 2
+                        },
+                        {
+                            label: p2Name,
+                            data: p2TotalActions,
+                            backgroundColor: 'rgba(244, 114, 182, 0.8)',
+                            borderColor: 'rgb(244, 114, 182)',
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#94a3b8' }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#94a3b8' },
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Actions',
+                                color: '#94a3b8'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: '#e2e8f0' },
+                            position: 'top'
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleColor: '#e2e8f0',
+                            bodyColor: '#e2e8f0',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            callbacks: {
+                                afterLabel: function (context) {
+                                    const index = context.dataIndex;
+                                    const turn = perTurnMetrics[index];
+                                    const isPlayer1 = context.datasetIndex === 0;
+                                    const playerData = isPlayer1 ? turn.player1 : turn.player2;
+
+                                    if (!playerData) return '';
+
+                                    const lines = [];
+                                    if (playerData.normalSummons > 0) {
+                                        lines.push(`NS: ${playerData.normalSummons}`);
+                                    }
+                                    if (playerData.specialSummons > 0) {
+                                        lines.push(`SS: ${playerData.specialSummons}`);
+                                    }
+                                    if (playerData.effectActivations > 0) {
+                                        lines.push(`FX: ${playerData.effectActivations}`);
+                                    }
+                                    return lines.join(', ');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         function createChart(snapshots, playerNames) {

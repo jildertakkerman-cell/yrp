@@ -1,0 +1,33 @@
+{
+  "replayInfo": {
+    "playerNames": [
+      "Antares (fr)",
+      ""
+    ],
+    "seed": 1754306405,
+    "startLP": 8000
+  },
+  "perTurnMetrics": [
+    {
+      "turn": 1,
+      "specialSummons": 13,
+      "normalSummons": 1,
+      "effectActivations": 20,
+      "totalActions": 34
+    }
+  ],
+  "timeAnalysis": {
+    "hasTimestamps": false
+  },
+  "otkMetrics": {
+    "gameEnded": false,
+    "isOTK": false
+  },
+  "summary": {
+    "averageActionsPerTurn": 34,
+    "maxActionsInSingleTurn": 34,
+    "totalSpecialSummons": 13,
+    "totalNormalSummons": 1,
+    "totalEffectActivations": 20
+  }
+}
