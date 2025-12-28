@@ -5,3 +5,5 @@
 /dist
 /dist.es2015
 /coverage
+trivy.exe
+trivy_results.json

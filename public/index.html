@@ -608,189 +608,50 @@
                 currentAnalysisData = data;
                 displayAnalysis(data);
             } catch (error) {
-                showError(error.message);
-                dropZone.style.display = 'block';
-            } finally {
-                loadingState.style.display = 'none';
+                console.error('[FRONTEND] Error:', error);
+                updateCardError(card, error.message);
+                console.error(error);
             }
         }
 
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.style.display = 'block';
+        function createResultCard(fileName, status) {
+            const div = document.createElement('div');
+            div.className = 'result-card';
+            div.innerHTML = `
+                <span class="file-name">${fileName}</span>
+                <span class="status">${status}</span>
+            `;
+            resultsContainer.prepend(div);
+            return div;
         }
 
-        function displayAnalysis(data) {
-            const { resourceAnalysis, chainAnalysis, playerNames } = data;
-            const { snapshots, summary } = resourceAnalysis;
+        function updateCardSuccess(card, fileName, data) {
+            const jsonStr = JSON.stringify(data, null, 2);
+            // Use application/octet-stream to force download and respect filename
+            const blob = new Blob([jsonStr], { type: 'application/octet-stream' });
+            const downloadName = fileName.replace(/\.[^/.]+$/, "") + ".json";
 
-            // Update player names
-            const p1Name = playerNames?.[0] || 'Player 1';
-            const p2Name = playerNames?.[1] || 'Player 2';
+            card.innerHTML = `
+                <span class="file-name">${fileName}</span>
+                <div class="actions">
+                    <button class="download-btn">Download JSON</button>
+                </div>
+            `;
 
-            if (playerNames && playerNames.length >= 2) {
-                document.getElementById('player1Name').textContent = p1Name;
-                document.getElementById('player2Name').textContent = p2Name;
-            }
-
-            // Update resource stats
-            const peakAdvEl = document.getElementById('peakAdvantage');
-            const peakValue = summary.peakAdvantagePlayer === 1 ? summary.maxDelta : summary.minDelta;
-            peakAdvEl.textContent = peakValue >= 0 ? `+${peakValue}` : peakValue;
-            peakAdvEl.className = `stat-value ${peakValue > 0 ? 'positive' : peakValue < 0 ? 'negative' : 'neutral'}`;
-
-            const finalDeltaEl = document.getElementById('finalDelta');
-            finalDeltaEl.textContent = summary.finalDelta >= 0 ? `+${summary.finalDelta}` : summary.finalDelta;
-            finalDeltaEl.className = `stat-value ${summary.finalDelta > 0 ? 'positive' : summary.finalDelta < 0 ? 'negative' : 'neutral'}`;
-
-            document.getElementById('totalTurns').textContent = snapshots.length;
-
-            // Update chain efficiency stats
-            if (chainAnalysis && chainAnalysis.summary) {
-                const chainSummary = chainAnalysis.summary;
-
-                document.getElementById('negateRate').textContent = `${chainSummary.negateSuccessRate}%`;
-                document.getElementById('avgChainDepth').textContent = chainSummary.averageChainDepth;
-                document.getElementById('maxChainDepth').textContent = chainSummary.maxChainDepth;
-                document.getElementById('baitsForced').textContent = chainSummary.baitsForced;
-
-                // Per-player chain stats
-                document.getElementById('p1ChainName').textContent = p1Name;
-                document.getElementById('p2ChainName').textContent = p2Name;
-
-                if (chainSummary.player1Stats) {
-                    document.getElementById('p1EffectsActivated').textContent = chainSummary.player1Stats.effectsActivated;
-                    document.getElementById('p1EffectsNegated').textContent = chainSummary.player1Stats.effectsNegated;
-                    document.getElementById('p1ChainsInitiated').textContent = chainSummary.player1Stats.chainsInitiated;
-                }
-
-                if (chainSummary.player2Stats) {
-                    document.getElementById('p2EffectsActivated').textContent = chainSummary.player2Stats.effectsActivated;
-                    document.getElementById('p2EffectsNegated').textContent = chainSummary.player2Stats.effectsNegated;
-                    document.getElementById('p2ChainsInitiated').textContent = chainSummary.player2Stats.chainsInitiated;
-                }
-            }
-
-            // Update hand analysis (Brick Meter)
-            if (data.handAnalysis) {
-                const handCard = document.getElementById('handAnalysisCard');
-                const { player1Hand, player2Hand } = data.handAnalysis;
-
-                if (player1Hand || player2Hand) {
-                    handCard.style.display = 'block';
-
-                    // Helper to get verdict styling
-                    const getVerdictClass = (verdict) => {
-                        switch (verdict) {
-                            case 'god_hand': return 'positive';
-                            case 'good': return 'positive';
-                            case 'average': return 'neutral';
-                            case 'brick': return 'negative';
-                            case 'unplayable': return 'negative';
-                            default: return 'neutral';
-                        }
-                    };
-
-                    const getVerdictEmoji = (verdict) => {
-                        switch (verdict) {
-                            case 'god_hand': return '🔥 GOD HAND';
-                            case 'good': return '✅ Good';
-                            case 'average': return '⚖️ Average';
-                            case 'brick': return '🧱 BRICK';
-                            case 'unplayable': return '💀 Unplayable';
-                            default: return verdict;
-                        }
-                    };
-
-                    // Player 1 hand
-                    document.getElementById('p1HandName').textContent = p1Name;
-                    if (player1Hand) {
-                        const p1VerdictEl = document.getElementById('p1Verdict');
-                        p1VerdictEl.textContent = getVerdictEmoji(player1Hand.verdict);
-                        p1VerdictEl.className = `stat-value ${getVerdictClass(player1Hand.verdict)}`;
-                        document.getElementById('p1VerdictText').textContent = player1Hand.verdictExplanation;
-                        document.getElementById('p1QualityScore').textContent = `${player1Hand.handQualityScore}/100`;
-                        document.getElementById('p1HandTraps').textContent = player1Hand.handTrapsInHand;
-                        document.getElementById('p1Percentile').textContent = `Top ${100 - player1Hand.percentile}%`;
-
-                        // Render opening hand card images
-                        renderHandCards('p1HandCards', player1Hand.openingHand);
-                    }
-
-                    // Player 2 hand
-                    document.getElementById('p2HandName').textContent = p2Name;
-                    if (player2Hand) {
-                        const p2VerdictEl = document.getElementById('p2Verdict');
-                        p2VerdictEl.textContent = getVerdictEmoji(player2Hand.verdict);
-                        p2VerdictEl.className = `stat-value ${getVerdictClass(player2Hand.verdict)}`;
-                        document.getElementById('p2VerdictText').textContent = player2Hand.verdictExplanation;
-                        document.getElementById('p2QualityScore').textContent = `${player2Hand.handQualityScore}/100`;
-                        document.getElementById('p2HandTraps').textContent = player2Hand.handTrapsInHand;
-                        document.getElementById('p2Percentile').textContent = `Top ${100 - player2Hand.percentile}%`;
-
-                        // Render opening hand card images
-                        renderHandCards('p2HandCards', player2Hand.openingHand);
-                    }
-                } else {
-                    handCard.style.display = 'none';
-                }
-            }
-
-            // Create chart
-            createChart(snapshots, playerNames);
-
-            // Show analysis container
-            analysisContainer.classList.add('visible');
-        }
-
-        // Known hand traps for visual highlighting
-        const KNOWN_HAND_TRAPS = new Set([
-            23434538,   // Ash Blossom & Joyous Spring
-            14558127,   // Maxx "C"
-            10045474,   // Infinite Impermanence
-            59438930,   // Ghost Belle & Haunted Mansion
-            73642296,   // Ghost Ogre & Snow Rabbit
-            52038441,   // Effect Veiler
-            15693423,   // Droll & Lock Bird
-            94145021,   // D.D. Crow
-            97268402,   // Nibiru, the Primal Being
-            43898403,   // PSY-Framegear Gamma
-            49036338,   // Artifact Lancea
-            50078509,   // Ghost Mourner & Moonlit Chill
-        ]);
-
-        function renderHandCards(containerId, cardCodes) {
-            const container = document.getElementById(containerId);
-            if (!container || !cardCodes || cardCodes.length === 0) {
-                if (container) container.innerHTML = '<span style="color: var(--text-muted); font-size: 0.75rem;">No hand data</span>';
-                return;
-            }
-
-            container.innerHTML = '';
-
-            for (const code of cardCodes) {
-                if (!code || code <= 0) continue;
-
-                const cardDiv = document.createElement('div');
-                cardDiv.className = 'hand-card';
-
-                // Add hand-trap class for visual highlighting
-                if (KNOWN_HAND_TRAPS.has(code)) {
-                    cardDiv.classList.add('hand-trap');
-                }
-
-                const img = document.createElement('img');
-                img.src = `https://storage.googleapis.com/yugioh-card-images-archetype-nexus/cards/${code}.png`;
-                img.alt = `Card ${code}`;
-                img.loading = 'lazy';
-                img.onerror = function () {
-                    // Fallback to placeholder if image not found
-                    this.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 421 614"><rect fill="%23333" width="421" height="614"/><text x="50%" y="50%" fill="%23666" text-anchor="middle" font-size="24">?</text></svg>';
-                };
-
-                cardDiv.appendChild(img);
-                container.appendChild(cardDiv);
-            }
+            const btn = card.querySelector('.download-btn');
+            btn.addEventListener('click', () => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = downloadName;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 100);
+            });
         }
 
         function createChart(snapshots, playerNames) {

@@ -90,43 +90,19 @@
                     "zone": "zone-extra"
                 },
                 {
-                    "id": "card_33744268_15",
-                    "name": "Z-Zillion Tank",
-                    "type": "monster",
-                    "zone": "zone-deck"
-                },
-                {
-                    "id": "card_6355563_16",
-                    "name": "Y-Yare Head",
-                    "type": "monster",
-                    "zone": "zone-deck"
-                },
-                {
-                    "id": "card_77411244_17",
-                    "name": "B-Buster Drake",
-                    "type": "monster",
-                    "zone": "zone-deck"
-                },
-                {
-                    "id": "card_58069384_18",
+                    "id": "card_58069384_15",
                     "name": "Cyber Dragon Nova",
                     "type": "extra",
                     "zone": "zone-extra"
                 },
                 {
-                    "id": "card_18326736_19",
-                    "name": "Tellarknight Ptolemaeus",
-                    "type": "extra",
-                    "zone": "zone-extra"
-                },
-                {
-                    "id": "card_10443957_20",
+                    "id": "card_10443957_16",
                     "name": "Cyber Dragon Infinity",
                     "type": "extra",
                     "zone": "zone-extra"
                 },
                 {
-                    "id": "card_1561110_21",
+                    "id": "card_1561110_17",
                     "name": "ABC-Dragon Buster",
                     "type": "extra",
                     "zone": "zone-extra"
@@ -254,7 +230,7 @@
                 },
                 {
                     "text": "Activate Effect B-Buster Drake",
-                    "card": "card_77411244_2",
+                    "card": "card_77411244_4",
                     "to": "zone-gy"
                 },
                 {
@@ -293,12 +269,12 @@
                 },
                 {
                     "text": "Move B-Buster Drake",
-                    "card": "card_77411244_2",
+                    "card": "card_77411244_4",
                     "to": "zone-s4"
                 },
                 {
                     "text": "Equip B-Buster Drake to Y-Yare Head",
-                    "card": "card_77411244_2",
+                    "card": "card_77411244_4",
                     "to": "zone-s4"
                 },
                 {
@@ -313,7 +289,7 @@
                 },
                 {
                     "text": "Move to Graveyard B-Buster Drake",
-                    "card": "card_77411244_2",
+                    "card": "card_77411244_4",
                     "to": "zone-gy"
                 },
                 {
@@ -487,19 +463,19 @@
                     "actions": [
                         {
                             "card": "card_6355563_7",
-                            "to": "zone-m3",
+                            "to": "zone-m1",
                             "isOverlay": false
                         },
                         {
                             "card": "card_6355563_7",
-                            "to": "zone-m3"
+                            "to": "zone-m1"
                         }
                     ]
                 },
                 {
                     "text": "Activate Effect Y-Yare Head",
                     "card": "card_6355563_7",
-                    "to": "zone-m3"
+                    "to": "zone-m1"
                 },
                 {
                     "text": "Move B-Buster Drake",
@@ -521,12 +497,12 @@
                     "actions": [
                         {
                             "card": "card_77411244_4",
-                            "to": "zone-m3",
+                            "to": "zone-m5",
                             "isOverlay": false
                         },
                         {
                             "card": "card_77411244_4",
-                            "to": "zone-m3"
+                            "to": "zone-m5"
                         }
                     ]
                 },
@@ -535,30 +511,30 @@
                     "actions": [
                         {
                             "card": "card_33744268_9",
-                            "to": "zone-m5",
+                            "to": "zone-m3",
                             "isOverlay": true,
                             "fromZone": "zone-m3"
                         },
                         {
                             "card": "card_6355563_7",
-                            "to": "zone-m5",
+                            "to": "zone-m3",
                             "isOverlay": true,
                             "fromZone": "zone-m1"
                         },
                         {
                             "card": "card_77411244_4",
-                            "to": "zone-m5",
+                            "to": "zone-m3",
                             "isOverlay": true,
                             "fromZone": "zone-m5"
                         },
                         {
                             "card": "card_18326736_14",
-                            "to": "zone-m5",
+                            "to": "zone-m3",
                             "isOverlay": false
                         },
                         {
                             "card": "card_18326736_14",
-                            "to": "zone-m5"
+                            "to": "zone-m3"
                         }
                     ]
                 },
@@ -568,18 +544,18 @@
                     "to": "zone-m5"
                 },
                 {
-                    "text": "Move to Graveyard Z-Zillion Tank",
-                    "card": "card_33744268_15",
+                    "text": "Detach Material to Graveyard Z-Zillion Tank",
+                    "card": "card_33744268_9",
                     "to": "zone-gy"
                 },
                 {
-                    "text": "Move to Graveyard Y-Yare Head",
-                    "card": "card_6355563_16",
+                    "text": "Detach Material to Graveyard Y-Yare Head",
+                    "card": "card_6355563_7",
                     "to": "zone-gy"
                 },
                 {
-                    "text": "Move to Graveyard B-Buster Drake",
-                    "card": "card_77411244_17",
+                    "text": "Detach Material to Graveyard B-Buster Drake",
+                    "card": "card_77411244_4",
                     "to": "zone-gy"
                 },
                 {
@@ -592,12 +568,12 @@
                             "fromZone": "zone-m3"
                         },
                         {
-                            "card": "card_58069384_18",
+                            "card": "card_58069384_15",
                             "to": "zone-m5",
                             "isOverlay": false
                         },
                         {
-                            "card": "card_58069384_18",
+                            "card": "card_58069384_15",
                             "to": "zone-m5"
                         }
                     ]
@@ -606,24 +582,24 @@
                     "text": "Xyz Summon Cyber Dragon Infinity",
                     "actions": [
                         {
-                            "card": "card_18326736_19",
+                            "card": "card_18326736_14",
                             "to": "zone-m5",
                             "isOverlay": true,
                             "fromZone": "zone-m5"
                         },
                         {
-                            "card": "card_58069384_18",
+                            "card": "card_58069384_15",
                             "to": "zone-m5",
                             "isOverlay": true,
                             "fromZone": "zone-m5"
                         },
                         {
-                            "card": "card_10443957_20",
+                            "card": "card_10443957_16",
                             "to": "zone-m5",
                             "isOverlay": false
                         },
                         {
-                            "card": "card_10443957_20",
+                            "card": "card_10443957_16",
                             "to": "zone-m5"
                         }
                     ]
@@ -632,27 +608,27 @@
                     "text": "Contact Fusion ABC-Dragon Buster",
                     "actions": [
                         {
-                            "card": "card_77411244_17",
+                            "card": "card_77411244_4",
                             "to": "zone-banish",
                             "isOverlay": false
                         },
                         {
-                            "card": "card_2133971_8",
+                            "card": "card_30012506_11",
                             "to": "zone-banish",
                             "isOverlay": false
                         },
                         {
-                            "card": "card_12524259_10",
+                            "card": "card_3405259_6",
                             "to": "zone-banish",
                             "isOverlay": false
                         },
                         {
-                            "card": "card_1561110_21",
+                            "card": "card_1561110_17",
                             "to": "zone-m1",
                             "isOverlay": false
                         },
                         {
-                            "card": "card_1561110_21",
+                            "card": "card_1561110_17",
                             "to": "zone-m1"
                         }
                     ]
