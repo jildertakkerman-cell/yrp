@@ -66,7 +66,7 @@ const PORT = parseInt(process.env.PORT || "3000", 10);
 app.use(cors({
     origin: true, // Reflect the request origin (works better than '*' with credentials)
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With', 'x-save-replay', 'x-filename'],
     credentials: true,
     optionsSuccessStatus: 200, // Some legacy browsers choke on 204
     preflightContinue: false,
