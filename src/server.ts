@@ -96,6 +96,26 @@ app.post("/analyze", async (req, res) => {
         }
         console.log(`[analyze] File validated as ${validation.fileType}`);
 
+        // Check if user opted in to save replay (via X-Save-Replay header)
+        const saveReplay = req.headers['x-save-replay'] === 'true';
+        const originalFilename = (req.headers['x-filename'] as string) || 'replay.yrpX';
+
+        if (saveReplay) {
+            // Save replay to GCS (non-blocking, don't wait for result)
+            saveReplayToGCS(originalFilename, buffer)
+                .then(result => {
+                    if (result.success) {
+                        console.log(`[analyze] Replay saved to GCS: ${result.url}`);
+                    } else {
+                        console.error(`[analyze] Failed to save replay: ${result.error}`);
+                    }
+                })
+                .catch(err => console.error(`[analyze] Error saving replay:`, err));
+            console.log(`[analyze] Saving replay to GCS enabled`);
+        } else {
+            console.log(`[analyze] Saving replay to GCS disabled (no header)`);
+        }
+
         const replay = new ReplayParserTS(buffer);
         await replay.parse();
         console.log("[analyze] Replay parsed successfully");
@@ -134,6 +154,20 @@ app.post("/analyze", async (req, res) => {
         };
 
         console.log("[analyze] Analysis complete");
+
+        if (saveReplay) {
+            // Save analysis JSON to GCS (non-blocking)
+            saveReplayJsonToGCS(originalFilename, analysis)
+                .then(result => {
+                    if (result.success) {
+                        console.log(`[analyze] Analysis JSON saved to GCS: ${result.url}`);
+                    } else {
+                        console.error(`[analyze] Failed to save analysis JSON: ${result.error}`);
+                    }
+                })
+                .catch(err => console.error(`[analyze] Error saving analysis JSON:`, err));
+        }
+
         res.json(analysis);
     } catch (error) {
         console.error("[analyze] Error:", error);
