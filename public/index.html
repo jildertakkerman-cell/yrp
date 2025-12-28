@@ -515,7 +515,7 @@
                 <div class="card-header">
                     <h2 class="card-title">? Tempo & Speed Metrics</h2>
                 </div>
-                <div class="stats-grid">
+                <div class="stats-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 1.5rem;">
                     <div class="stat-card">
                         <div class="stat-value neutral" id="avgActionsPerTurn">0</div>
                         <div class="stat-label">Avg Actions/Turn</div>
@@ -524,14 +524,48 @@
                         <div class="stat-value neutral" id="maxActionsPerTurn">0</div>
                         <div class="stat-label">Max Actions (Turn)</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-value neutral" id="totalSpecialSummons">0</div>
-                        <div class="stat-label">Special Summons</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value neutral" id="totalEffectActivations">0</div>
-                        <div class="stat-label">Effect Activations</div>
-                    </div>
+                </div>
+
+                <!-- Per Player Comparison -->
+                <div style="background: rgba(255,255,255,0.03); border-radius: 0.75rem; overflow: hidden;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: center;">
+                        <thead>
+                            <tr
+                                style="background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                <th
+                                    style="padding: 0.75rem; text-align: left; color: var(--text-muted); font-weight: 500;">
+                                    Metric</th>
+                                <th style="padding: 0.75rem; color: var(--player1-color);">Player 1</th>
+                                <th style="padding: 0.75rem; color: var(--player2-color);">Player 2</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-size: 0.9rem;">
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <td style="padding: 0.75rem; text-align: left;">Special Summons</td>
+                                <td style="padding: 0.75rem; font-weight: 600;" id="p1SpecialSummons">0</td>
+                                <td style="padding: 0.75rem; font-weight: 600;" id="p2SpecialSummons">0</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <td style="padding: 0.75rem; text-align: left;">Normal Summons</td>
+                                <td style="padding: 0.75rem;" id="p1NormalSummons">0</td>
+                                <td style="padding: 0.75rem;" id="p2NormalSummons">0</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <td style="padding: 0.75rem; text-align: left;">Effect Activations</td>
+                                <td style="padding: 0.75rem;" id="p1EffectActivations">0</td>
+                                <td style="padding: 0.75rem;" id="p2EffectActivations">0</td>
+                            </tr>
+                            <tr>
+                                <td
+                                    style="padding: 0.75rem; text-align: left; color: var(--text-primary); font-weight: 600;">
+                                    Total Actions</td>
+                                <td style="padding: 0.75rem; color: var(--player1-color); font-weight: 700;"
+                                    id="p1TotalActions">0</td>
+                                <td style="padding: 0.75rem; color: var(--player2-color); font-weight: 700;"
+                                    id="p2TotalActions">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
                 <!-- Winner Info (if available) -->
@@ -850,10 +884,24 @@
                 const { summary, perTurnMetrics, winner } = data.tempoAnalysis;
 
                 // Update summary stats
+                // Update summary stats
                 document.getElementById('avgActionsPerTurn').textContent = summary.averageActionsPerTurn;
                 document.getElementById('maxActionsPerTurn').textContent = summary.maxActionsInSingleTurn;
-                document.getElementById('totalSpecialSummons').textContent = summary.totalSpecialSummons;
-                document.getElementById('totalEffectActivations').textContent = summary.totalEffectActivations;
+
+                // Update per-player comparison table
+                if (summary.player1) {
+                    document.getElementById('p1SpecialSummons').textContent = summary.player1.specialSummons;
+                    document.getElementById('p1NormalSummons').textContent = summary.player1.normalSummons;
+                    document.getElementById('p1EffectActivations').textContent = summary.player1.effectActivations;
+                    document.getElementById('p1TotalActions').textContent = summary.player1.totalActions;
+                }
+
+                if (summary.player2) {
+                    document.getElementById('p2SpecialSummons').textContent = summary.player2.specialSummons;
+                    document.getElementById('p2NormalSummons').textContent = summary.player2.normalSummons;
+                    document.getElementById('p2EffectActivations').textContent = summary.player2.effectActivations;
+                    document.getElementById('p2TotalActions').textContent = summary.player2.totalActions;
+                }
 
                 // Show winner info if available
                 if (winner && winner.turnsToWin) {

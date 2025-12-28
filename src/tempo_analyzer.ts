@@ -11,6 +11,18 @@ export interface TempoAnalysis {
         totalSpecialSummons: number;
         totalNormalSummons: number;
         totalEffectActivations: number;
+        player1: {
+            specialSummons: number;
+            normalSummons: number;
+            effectActivations: number;
+            totalActions: number;
+        };
+        player2: {
+            specialSummons: number;
+            normalSummons: number;
+            effectActivations: number;
+            totalActions: number;
+        };
     };
     winner?: {
         player: number;
@@ -163,6 +175,21 @@ export function analyzeTempoMetrics(parsedSteps: any[], playerNames: string[]): 
     const avgActionsPerTurn = turnMetrics.length > 0 ? totalActions / turnMetrics.length : 0;
     const maxActions = turnMetrics.reduce((max, t) => Math.max(max, t.totalActions), 0);
 
+    // Calculate per-player totals
+    const p1Stats = turnMetrics.reduce((stats, t) => ({
+        specialSummons: stats.specialSummons + t.player1.specialSummons,
+        normalSummons: stats.normalSummons + t.player1.normalSummons,
+        effectActivations: stats.effectActivations + t.player1.effectActivations,
+        totalActions: stats.totalActions + t.player1.totalActions
+    }), { specialSummons: 0, normalSummons: 0, effectActivations: 0, totalActions: 0 });
+
+    const p2Stats = turnMetrics.reduce((stats, t) => ({
+        specialSummons: stats.specialSummons + t.player2.specialSummons,
+        normalSummons: stats.normalSummons + t.player2.normalSummons,
+        effectActivations: stats.effectActivations + t.player2.effectActivations,
+        totalActions: stats.totalActions + t.player2.totalActions
+    }), { specialSummons: 0, normalSummons: 0, effectActivations: 0, totalActions: 0 });
+
     return {
         perTurnMetrics: turnMetrics,
         summary: {
@@ -170,7 +197,9 @@ export function analyzeTempoMetrics(parsedSteps: any[], playerNames: string[]): 
             maxActionsInSingleTurn: maxActions,
             totalSpecialSummons,
             totalNormalSummons,
-            totalEffectActivations
+            totalEffectActivations,
+            player1: p1Stats,
+            player2: p2Stats
         },
         winner
     };
