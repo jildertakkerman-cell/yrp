@@ -1,0 +1,39 @@
+[
+  {
+    "type": "MSG_START",
+    "raw": "0105401f0000401f00002c0f280f05",
+    "details": {
+      "type": 1,
+      "rule": 5,
+      "lp": 8000,
+      "lp2": 8000,
+      "deck1": 44,
+      "extra1": 15,
+      "deck2": 40,
+      "extra2": 15,
+      "hand": 5
+    }
+  },
+  {
+    "type": "MSG_OMEGA_DATA_CONTAINER",
+    "len": 415488,
+    "decoded": [
+      {
+        "type": "MSG_UPDATE_DATA",
+        "player": 0,
+        "location": 64,
+        "locationName": "EXTRA",
+        "dataLen": 108
+      },
+      {
+        "type": "MSG_64",
+        "raw": "0108e42b87052130000002000000"
+      },
+      {
+        "type": "UNKNOWN_MSG_16",
+        "cursorStart": 145,
+        "context": "1000000000000200e8030000b0040000e8030000"
+      }
+    ]
+  }
+]

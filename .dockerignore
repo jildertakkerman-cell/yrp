@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs (we copy these in Dockerfile)
+dist/
+dist.es2015/
+build/
+
+# Development files
+*.ts
+!*.d.ts
+src/
+tsconfig*.json
+.eslintrc*
+.prettierrc
+binding.gyp
+
+# Git
+.git/
+.github/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# Test files
+*.spec.ts
+__tests__/
+__snapshots__/
+coverage/
+jest.config.*
+
+# Logs
+logs/
+*.log
+
+# Replays (test data)
+replays/
+res/
+
+# Misc
+*.md
+.releaserc.json
+reference/
+scripts/
+output/

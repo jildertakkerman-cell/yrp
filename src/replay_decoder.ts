@@ -4,6 +4,7 @@ export interface ReplayStep {
     msgId?: number;
     len?: number;
     details?: any;
+    error?: string;
 }
 
 console.log("ReplayDecoder module loaded");
@@ -610,6 +611,7 @@ function getReasonName(reason: number): string {
 }
 
 function getLocationName(loc: number): string {
+    if (loc === 0) return "NONE";
     if (loc & LOCATION_OVERLAY) {
         const baseLoc = loc & ~LOCATION_OVERLAY;
         if (baseLoc === 0) return "OVERLAY";
@@ -738,7 +740,7 @@ function getOpcodeNames(opcodes: bigint[]): string[] {
 }
 
 export class ReplayDecoder {
-    private static parsers: { [key: number]: (d: Buffer) => any } = {
+    public static parsers: { [key: number]: (d: Buffer) => any } = {
         [MSG_NEW_TURN]: (d) => ({ player: d.readUInt8(0) }),
         [MSG_NEW_PHASE]: (d) => {
             const phase = d.readUInt16LE(0);
@@ -777,12 +779,19 @@ export class ReplayDecoder {
             if (d.length >= 17) info.handSize = d.readUInt16LE(13);
             return info;
         },
-        [MSG_HINT]: (d) => ({
-            type: d.readUInt8(0),
-            typeName: getHintName(d.readUInt8(0)),
-            player: d.readUInt8(1),
-            data: d.readUInt32LE(2)
-        }),
+        [MSG_HINT]: (d) => {
+            const type = d.readUInt8(0);
+            const player = d.readUInt8(1);
+            const data = d.readUInt32LE(2);
+            return {
+                hex: d.toString('hex'),
+                type,
+                typeName: getHintName(type),
+                player,
+                data,
+                dataNote: (type === HINT_MESSAGE || type === HINT_SELECTMSG) ? "String ID" : undefined
+            };
+        },
         [MSG_CARD_HINT]: (d) => ({
             controller: d.readUInt8(0),
             location: d.readUInt8(1),
@@ -1350,6 +1359,25 @@ export class ReplayDecoder {
             return result;
         },
         [MSG_MOVE]: (d) => {
+            // Omega variant: Sometimes sends short 5-byte packets
+            if (d.length === 5) {
+                return {
+                    hex: d.toString('hex'),
+                    note: "Short MOVE (Omega)",
+                    // Attempt to parse as much as possible
+                    code: d.readUInt32LE(0),
+                    flag: d.readUInt8(4)
+                };
+            }
+
+            // Standard YGOPro format (28 bytes)
+            if (d.length < 28) {
+                return {
+                    hex: d.toString('hex'),
+                    note: `Incomplete MOVE packet (${d.length} bytes, expected 28)`
+                };
+            }
+
             const code = d.readUInt32LE(0);
             const oldController = d.readUInt8(4);
             const oldLocation = d.readUInt8(5);
@@ -1597,6 +1625,98 @@ export class ReplayDecoder {
             targetPosition: d.readUInt32LE(16),
             targetPositionName: getPositionName(d.readUInt32LE(16))
         }),
+        // Generic dumpers for observed Omega unknowns to see data in JSON
+        [0]: (d) => {
+            const res: any = { hex: d.toString('hex') };
+            if (d.length === 1) {
+                res.value = d[0];
+                res.note = "Single Byte Flag";
+            } else if (d.length === 4) {
+                res.value = d.readInt32LE(0);
+                res.note = "Int32 Value";
+            } else if (d.length > 4) {
+                if (d.includes(Buffer.from('ff9fffff', 'hex'))) {
+                    res.note = "Server Data (Contains Signature)";
+                }
+                const ints = [];
+                for (let i = 0; i <= d.length - 4; i += 4) {
+                    ints.push(d.readInt32LE(i));
+                    if (ints.length >= 8) break;
+                }
+                res.intPreview = ints;
+            }
+            return res;
+        },
+        [48]: (d) => ({ hex: d.toString('hex'), note: "Server Packet 48" }),
+        [52]: (d) => ({ hex: d.toString('hex'), note: "Server Packet 52" }),
+        [57]: (d) => ({ hex: d.toString('hex'), note: "Server Packet 57" }),
+        [9]: (d) => ({ hex: d.toString('hex'), ascii: d.toString('ascii').replace(/[^\x20-\x7E]/g, '.') }),
+        [108]: (d) => {
+            const res: any = { hex: d.toString('hex') };
+            if (d.length === 2) {
+                res.value = d.readUInt16LE(0);
+                res.note = "Short Flag";
+            } else if (d.length > 2) {
+                res.note = "Server Data";
+                if (d.includes(Buffer.from('ff9fffff', 'hex'))) {
+                    res.note += " (Contains Signature)";
+                }
+                const ints = [];
+                for (let i = 0; i <= d.length - 4; i += 4) {
+                    ints.push(d.readInt32LE(i));
+                }
+                res.intValues = ints;
+            }
+            return res;
+        },
+        [159]: (d) => {
+            const res: any = { hex: d.toString('hex') };
+            if (d.length === 255 && d.readUInt16LE(0) === 0xffff) {
+                // Omega Server Sync Packet (Standard)
+                res.note = "Server Sync (Standard)";
+                res.head = -1;
+                const ints = [];
+                // 255 bytes = 2 (head) + 252 (63 ints) + 1 (tail)
+                for (let i = 2; i < 254; i += 4) {
+                    ints.push(d.readInt32LE(i));
+                }
+                res.intValues = ints;
+                res.tail = d.readUInt8(254);
+            } else {
+                res.note = "Server Sync (Non-Standard)";
+            }
+            return res;
+        },
+        [235]: (d) => {
+            const res: any = { hex: d.toString('hex') };
+            res.note = "Server Data";
+            if (d.includes(Buffer.from('ff9fffff', 'hex'))) {
+                res.note += " (Contains Signature)";
+            }
+            const ints = [];
+            // Parse whole body as ints up to last aligned byte
+            for (let i = 0; i <= d.length - 4; i += 4) {
+                ints.push(d.readInt32LE(i));
+            }
+            res.intValues = ints;
+            return res;
+        },
+        [255]: (d) => ({ hex: d.toString('hex') }),
+        [49]: (d) => {
+            // MSG_OMEGA_SEQ?
+            const res: any = { hex: d.toString('hex') };
+            // Try to read null-terminated ASCII string from start
+            let nullIdx = d.indexOf(0);
+            if (nullIdx >= 0 && nullIdx < 4) {
+                const str = d.slice(0, nullIdx).toString('ascii');
+                if (/^\d+$/.test(str)) {
+                    res.sequenceStr = str;
+                    res.note = "Sequence ID";
+                }
+            }
+            return res;
+        },
+
         [MSG_LPUPDATE]: (d) => ({ player: d.readUInt8(0), lp: d.readUInt32LE(1) }),
         [MSG_UNEQUIP]: (d) => ({
             location: d.readUInt8(0),
@@ -1741,7 +1861,7 @@ export class ReplayDecoder {
         }
     }
 
-    private static getMsgName(msgId: number): string {
+    public static getMsgName(msgId: number): string {
         switch (msgId) {
             case MSG_RETRY: return "MSG_RETRY";
             case MSG_HINT: return "MSG_HINT";
@@ -1779,6 +1899,15 @@ export class ReplayDecoder {
             case MSG_SHUFFLE_EXTRA: return "MSG_SHUFFLE_EXTRA";
             case MSG_NEW_TURN: return "MSG_NEW_TURN";
             case MSG_NEW_PHASE: return "MSG_NEW_PHASE";
+            case 9: return "MSG_SERVER_DEBUG_9";
+            case 0: return "MSG_SERVER_GENERIC";
+            case 48: return "MSG_SERVER_48";
+            case 52: return "MSG_SERVER_52";
+            case 57: return "MSG_SERVER_57";
+            case 108: return "MSG_SERVER_108";
+            case 159: return "MSG_SERVER_PACKET_159";
+            case 235: return "MSG_SERVER_235";
+            case 255: return "MSG_SERVER_255";
             case MSG_CONFIRM_EXTRATOP: return "MSG_CONFIRM_EXTRATOP";
             case MSG_MOVE: return "MSG_MOVE";
             case MSG_POS_CHANGE: return "MSG_POS_CHANGE";

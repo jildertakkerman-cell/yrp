@@ -1,0 +1,393 @@
+{
+  "archetype": "Unknown",
+  "combos": {
+    "combo1": {
+      "title": "Extracted Replay Combo",
+      "description": "Automatically extracted from Omega replay file.",
+      "cards": [
+        {
+          "id": "card_415488",
+          "name": "Card 415488",
+          "type": "unknown",
+          "zone": "zone-deck"
+        },
+        {
+          "id": "card_2293810",
+          "name": "Card 2293810",
+          "type": "unknown",
+          "zone": "zone-deck"
+        },
+        {
+          "id": "card_2293811",
+          "name": "Card 2293811",
+          "type": "unknown",
+          "zone": "zone-deck"
+        },
+        {
+          "id": "card_10682420",
+          "name": "Card 10682420",
+          "type": "unknown",
+          "zone": "zone-deck"
+        },
+        {
+          "id": "card_196662",
+          "name": "Card 196662",
+          "type": "unknown",
+          "zone": "zone-deck"
+        },
+        {
+          "id": "card_2293817",
+          "name": "Card 2293817",
+          "type": "unknown",
+          "zone": "zone-deck"
+        },
+        {
+          "id": "card_15104",
+          "name": "Card 15104",
+          "type": "unknown",
+          "zone": "zone-deck"
+        },
+        {
+          "id": "card_16128",
+          "name": "Card 16128",
+          "type": "unknown",
+          "zone": "zone-deck"
+        },
+        {
+          "id": "card_989868080",
+          "name": "Card 989868080",
+          "type": "unknown",
+          "zone": "zone-deck"
+        },
+        {
+          "id": "card_1660957488",
+          "name": "Card 1660957488",
+          "type": "unknown",
+          "zone": "zone-deck"
+        },
+        {
+          "id": "card_1879062320",
+          "name": "Card 1879062320",
+          "type": "unknown",
+          "zone": "zone-deck"
+        },
+        {
+          "id": "card_1056977457",
+          "name": "Card 1056977457",
+          "type": "unknown",
+          "zone": "zone-deck"
+        },
+        {
+          "id": "card_1124086577",
+          "name": "Card 1124086577",
+          "type": "unknown",
+          "zone": "zone-deck"
+        },
+        {
+          "id": "card_33568049",
+          "name": "Card 33568049",
+          "type": "unknown",
+          "zone": "zone-deck"
+        },
+        {
+          "id": "card_1124086322",
+          "name": "Card 1124086322",
+          "type": "unknown",
+          "zone": "zone-deck"
+        },
+        {
+          "id": "card_1124086578",
+          "name": "Card 1124086578",
+          "type": "unknown",
+          "zone": "zone-deck"
+        },
+        {
+          "id": "card_1056979250",
+          "name": "Card 1056979250",
+          "type": "unknown",
+          "zone": "zone-deck"
+        },
+        {
+          "id": "card_1124085811",
+          "name": "Card 1124085811",
+          "type": "unknown",
+          "zone": "zone-deck"
+        },
+        {
+          "id": "card_33567283",
+          "name": "Card 33567283",
+          "type": "unknown",
+          "zone": "zone-deck"
+        },
+        {
+          "id": "card_4211095091",
+          "name": "Card 4211095091",
+          "type": "unknown",
+          "zone": "zone-deck"
+        }
+      ],
+      "steps": [
+        {
+          "text": "Move 415488 to zone-undefined-0",
+          "card": "card_415488",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 2293810 to zone-undefined-0",
+          "card": "card_2293810",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 2293811 to zone-undefined-0",
+          "card": "card_2293811",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 10682420 to zone-undefined-0",
+          "card": "card_10682420",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 196662 to zone-undefined-0",
+          "card": "card_196662",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 2293817 to zone-undefined-0",
+          "card": "card_2293817",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 15104 to zone-undefined-0",
+          "card": "card_15104",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 16128 to zone-undefined-0",
+          "card": "card_16128",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 989868080 to zone-undefined-0",
+          "card": "card_989868080",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1660957488 to zone-undefined-0",
+          "card": "card_1660957488",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1879062320 to zone-undefined-0",
+          "card": "card_1879062320",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1056977457 to zone-undefined-0",
+          "card": "card_1056977457",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1124086577 to zone-undefined-0",
+          "card": "card_1124086577",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 33568049 to zone-undefined-0",
+          "card": "card_33568049",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1124086322 to zone-undefined-0",
+          "card": "card_1124086322",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1124086578 to zone-undefined-0",
+          "card": "card_1124086578",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1056979250 to zone-undefined-0",
+          "card": "card_1056979250",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1124085811 to zone-undefined-0",
+          "card": "card_1124085811",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 33567283 to zone-undefined-0",
+          "card": "card_33567283",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 4211095091 to zone-undefined-0",
+          "card": "card_4211095091",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1056977460 to zone-undefined-0",
+          "card": "card_1056977460",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1660957492 to zone-undefined-0",
+          "card": "card_1660957492",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 587214901 to zone-undefined-0",
+          "card": "card_587214901",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1660956981 to zone-undefined-0",
+          "card": "card_1660956981",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 989869109 to zone-undefined-0",
+          "card": "card_989869109",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 587216437 to zone-undefined-0",
+          "card": "card_587216437",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1660958517 to zone-undefined-0",
+          "card": "card_1660958517",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 989869110 to zone-undefined-0",
+          "card": "card_989869110",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 587216438 to zone-undefined-0",
+          "card": "card_587216438",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 2399156022 to zone-undefined-0",
+          "card": "card_2399156022",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1124087862 to zone-undefined-0",
+          "card": "card_1124087862",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 989868599 to zone-undefined-0",
+          "card": "card_989868599",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 587215927 to zone-undefined-0",
+          "card": "card_587215927",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1124087095 to zone-undefined-0",
+          "card": "card_1124087095",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1124087351 to zone-undefined-0",
+          "card": "card_1124087351",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1124086328 to zone-undefined-0",
+          "card": "card_1124086328",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1124086584 to zone-undefined-0",
+          "card": "card_1124086584",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1526740536 to zone-undefined-0",
+          "card": "card_1526740536",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 285225017 to zone-undefined-0",
+          "card": "card_285225017",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 989868857 to zone-undefined-0",
+          "card": "card_989868857",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 587216185 to zone-undefined-0",
+          "card": "card_587216185",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1862284857 to zone-undefined-0",
+          "card": "card_1862284857",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1124087609 to zone-undefined-0",
+          "card": "card_1124087609",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 50346041 to zone-undefined-0",
+          "card": "card_50346041",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 196664 to zone-undefined-0",
+          "card": "card_196664",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 2031667 to zone-undefined-0",
+          "card": "card_2031667",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 512 to zone-undefined-0",
+          "card": "card_512",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 512 to zone-undefined-0",
+          "card": "card_512",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 65592 to zone-undefined-0",
+          "card": "card_65592",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1526740532 to zone-undefined-0",
+          "card": "card_1526740532",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 1526740277 to zone-undefined-0",
+          "card": "card_1526740277",
+          "to": "zone-undefined-0"
+        },
+        {
+          "text": "Move 2399154230 to zone-undefined-0",
+          "card": "card_2399154230",
+          "to": "zone-undefined-0"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,96 @@
+﻿=== Testing YGO Omega Replay Parser ===
+
+Loading: ./replays/25_12_27-20_36_35.bytes
+
+=== Game Settings ===
+{
+  "region": 1,
+  "masterRule": 5,
+  "mode": 1,
+  "startHand": 5,
+  "drawCount": 1,
+  "timer": 180,
+  "startLP": 8000,
+  "duelRule": 0,
+  "isPublic": true,
+  "extraRule": 0,
+  "budget": 0
+}
+
+=== Player IDs ===
+Player 0: 474044bda3e9c40d
+Player 1: 1e008490613f8b08
+
+=== Deck 0 ===
+Main deck cards: 0
+
+=== Deck 1 ===
+Main deck cards: 0
+
+=== YRP-Compatible Interface ===
+Header: {
+  "id": 0,
+  "version": 0,
+  "flag": 0,
+  "seed": 0,
+  "dataSize": 227986,
+  "hash": 0,
+  "props": {
+    "type": "Buffer",
+    "data": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "isOmegaReplay": true,
+  "gameSettings": {
+    "region": 1,
+    "masterRule": 5,
+    "mode": 1,
+    "startHand": 5,
+    "drawCount": 1,
+    "timer": 180,
+    "startLP": 8000,
+    "duelRule": 0,
+    "isPublic": true,
+    "extraRule": 0,
+    "budget": 0
+  }
+}
+Players: [ '474044bda3e9c40d', '1e008490613f8b08' ]
+Params: {
+  startLP: 8000,
+  startHand: 5,
+  drawCount: 1,
+  duelFlags: 0,
+  masterRule: 5,
+  timer: 180,
+  mode: 1,
+  region: 1
+}
+Decks count: 2
+Replay data size: 113492 bytes
+
+
+=== Testing Base64 Input ===
+Loading: ./replays/YGO OMEGA REPLAY1.txt
+Successfully parsed Base64 replay!
+Game Settings: {
+  "region": 1,
+  "masterRule": 5,
+  "mode": 1,
+  "startHand": 5,
+  "drawCount": 1,
+  "timer": 180,
+  "startLP": 8000,
+  "duelRule": 0,
+  "isPublic": true,
+  "extraRule": 0,
+  "budget": 0
+}

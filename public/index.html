@@ -4,50 +4,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YRP Replay Parser</title>
+    <title>YRP Replay Analyzer</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #0f172a;
+            --bg-secondary: #1e293b;
             --text-color: #e2e8f0;
+            --text-muted: #94a3b8;
             --accent-color: #38bdf8;
+            --accent-secondary: #818cf8;
             --glass-bg: rgba(30, 41, 59, 0.7);
             --glass-border: rgba(255, 255, 255, 0.1);
+            --player1-color: #38bdf8;
+            --player2-color: #f472b6;
+            --delta-positive: #34d399;
+            --delta-negative: #f87171;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
             margin: 0;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
+            background: linear-gradient(135deg, var(--bg-color) 0%, #1a1a2e 100%);
             color: var(--text-color);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             min-height: 100vh;
             overflow-x: hidden;
         }
 
         .container {
             width: 100%;
-            max-width: 800px;
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 2rem;
-            box-sizing: border-box;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
         }
 
         h1 {
             font-size: 2.5rem;
             margin-bottom: 0.5rem;
-            background: linear-gradient(to right, #38bdf8, #818cf8);
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-align: center;
         }
 
-        p.subtitle {
-            text-align: center;
-            color: #94a3b8;
-            margin-bottom: 3rem;
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
         }
 
         .drop-zone {
@@ -55,7 +67,7 @@
             backdrop-filter: blur(10px);
             border: 2px dashed var(--glass-border);
             border-radius: 1rem;
-            padding: 4rem 2rem;
+            padding: 3rem 2rem;
             text-align: center;
             transition: all 0.3s ease;
             cursor: pointer;
@@ -68,48 +80,41 @@
             border-color: var(--accent-color);
             background: rgba(56, 189, 248, 0.1);
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-        }
-
-        .drop-zone p {
-            font-size: 1.2rem;
-            color: #cbd5e1;
-            pointer-events: none;
+            box-shadow: 0 10px 40px -10px rgba(56, 189, 248, 0.3);
         }
 
         .drop-zone svg {
-            width: 64px;
-            height: 64px;
+            width: 48px;
+            height: 48px;
             margin-bottom: 1rem;
             fill: var(--accent-color);
-            pointer-events: none;
+        }
+
+        .drop-zone p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 1rem;
         }
 
         #fileInput {
             display: none;
         }
 
-        .results {
+        /* Analysis Results */
+        .analysis-container {
             margin-top: 2rem;
-            display: grid;
-            gap: 1rem;
+            display: none;
         }
 
-        .result-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 0.5rem;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            animation: slideIn 0.3s ease-out;
+        .analysis-container.visible {
+            display: block;
+            animation: fadeIn 0.5s ease;
         }
 
-        @keyframes slideIn {
+        @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(20px);
             }
 
             to {
@@ -118,75 +123,412 @@
             }
         }
 
-        .file-name {
-            font-weight: 600;
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
-        .actions button {
-            background: var(--accent-color);
-            color: #0f172a;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 0.25rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--glass-border);
         }
 
-        .actions button:hover {
-            opacity: 0.9;
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
         }
 
-        .download-btn {
-            background: var(--accent-color);
-            color: #0f172a;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 0.25rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
-            text-decoration: none;
-            display: inline-block;
-            font-family: inherit;
+        .player-names {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .player-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             font-size: 0.9rem;
         }
 
-        .download-btn:hover {
-            opacity: 0.9;
+        .player-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
         }
 
-        .error {
-            color: #ef4444;
+        .player-dot.p1 {
+            background: var(--player1-color);
+        }
+
+        .player-dot.p2 {
+            background: var(--player2-color);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+
+        /* Summary Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value.positive {
+            color: var(--delta-positive);
+        }
+
+        .stat-value.negative {
+            color: var(--delta-negative);
+        }
+
+        .stat-value.neutral {
+            color: var(--text-muted);
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--glass-border);
+            border-top-color: var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-message {
+            background: rgba(248, 113, 113, 0.1);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            color: #f87171;
+            margin-top: 1rem;
+        }
+
+        /* Opening hand card images */
+        .hand-cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
             margin-top: 0.5rem;
+        }
+
+        .hand-card {
+            width: 60px;
+            height: 88px;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        .hand-card:hover {
+            transform: scale(1.15);
+            z-index: 10;
+        }
+
+        .hand-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hand-card.hand-trap {
+            box-shadow: 0 0 8px 2px rgba(244, 114, 182, 0.6);
+        }
+
+        /* Download button */
+        .btn {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
             font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px -5px rgba(56, 189, 248, 0.5);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
         }
     </style>
 </head>
 
 <body>
-
     <div class="container">
-        <h1>YRP Parser</h1>
-        <p class="subtitle">Drag & drop your .yrp files to convert them to JSON</p>
+        <header>
+            <h1>Replay Analyzer</h1>
+            <p class="subtitle">Upload your .yrp/.yrpx replay to see the Card Advantage chart</p>
+        </header>
 
         <div class="drop-zone" id="dropZone">
             <svg viewBox="0 0 24 24">
                 <path
                     d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z" />
             </svg>
-            <p>Drop files here or click to upload</p>
-            <input type="file" id="fileInput" multiple accept=".yrp,.yrpx,.yrpX">
+            <p>Drop your replay file here or click to upload</p>
+            <input type="file" id="fileInput" accept=".yrp,.yrpx,.yrpX">
         </div>
 
-        <div class="results" id="results"></div>
+        <div class="loading" id="loadingState" style="display: none;">
+            <div class="spinner"></div>
+            <p>Analyzing replay...</p>
+        </div>
+
+        <div class="error-message" id="errorMessage" style="display: none;"></div>
+
+        <div class="analysis-container" id="analysisContainer">
+            <!-- Summary Stats -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-value" id="peakAdvantage">+0</div>
+                    <div class="stat-label">Peak Advantage</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="finalDelta">0</div>
+                    <div class="stat-label">Final Delta</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value neutral" id="totalTurns">0</div>
+                    <div class="stat-label">Total Phases Tracked</div>
+                </div>
+            </div>
+
+            <!-- Chart -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Card Advantage Over Time</h2>
+                    <div class="player-names" id="playerNames">
+                        <span class="player-badge">
+                            <span class="player-dot p1"></span>
+                            <span id="player1Name">Player 1</span>
+                        </span>
+                        <span class="player-badge">
+                            <span class="player-dot p2"></span>
+                            <span id="player2Name">Player 2</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="advantageChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chain Efficiency Stats -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Chain & Interaction Efficiency</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value neutral" id="negateRate">0%</div>
+                        <div class="stat-label">Negate Success Rate</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value neutral" id="avgChainDepth">0</div>
+                        <div class="stat-label">Avg Chain Depth</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value neutral" id="maxChainDepth">0</div>
+                        <div class="stat-label">Max Chain Depth</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value neutral" id="baitsForced">0</div>
+                        <div class="stat-label">Baits Forced (Pre-NS)</div>
+                    </div>
+                </div>
+
+                <!-- Per-Player Chain Stats -->
+                <div class="card-header"
+                    style="margin-top: 1rem; border-top: 1px solid var(--glass-border); padding-top: 1rem;">
+                    <h3 class="card-title" style="font-size: 1rem;">Per-Player Breakdown</h3>
+                </div>
+                <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
+                    <div class="stat-card" style="text-align: left;">
+                        <div style="color: var(--player1-color); font-weight: 600; margin-bottom: 0.5rem;"
+                            id="p1ChainName">Player 1</div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <span style="color: var(--text-muted);">Effects Activated:</span>
+                            <span id="p1EffectsActivated">0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <span style="color: var(--text-muted);">Effects Negated:</span>
+                            <span id="p1EffectsNegated">0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: var(--text-muted);">Chains Started:</span>
+                            <span id="p1ChainsInitiated">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="text-align: left;">
+                        <div style="color: var(--player2-color); font-weight: 600; margin-bottom: 0.5rem;"
+                            id="p2ChainName">Player 2</div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <span style="color: var(--text-muted);">Effects Activated:</span>
+                            <span id="p2EffectsActivated">0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <span style="color: var(--text-muted);">Effects Negated:</span>
+                            <span id="p2EffectsNegated">0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: var(--text-muted);">Chains Started:</span>
+                            <span id="p2ChainsInitiated">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Opening Hand Analysis (Brick Meter) -->
+            <div class="card" id="handAnalysisCard" style="display: none;">
+                <div class="card-header">
+                    <h2 class="card-title">🎲 Opening Hand Analysis (Brick Meter)</h2>
+                </div>
+                <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
+                    <!-- Player 1 Hand -->
+                    <div class="stat-card" style="text-align: center;">
+                        <div style="color: var(--player1-color); font-weight: 600; margin-bottom: 0.5rem;"
+                            id="p1HandName">Player 1</div>
+                        <div class="stat-value" id="p1Verdict" style="font-size: 1.2rem;">-</div>
+                        <div class="stat-label" id="p1VerdictText" style="margin-top: 0.25rem;">No deck data</div>
+                        <div
+                            style="margin-top: 1rem; background: rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 0.75rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                <span style="color: var(--text-muted); font-size: 0.85rem;">Quality Score:</span>
+                                <span id="p1QualityScore">-</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                <span style="color: var(--text-muted); font-size: 0.85rem;">Hand Traps:</span>
+                                <span id="p1HandTraps">-</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--text-muted); font-size: 0.85rem;">Percentile:</span>
+                                <span id="p1Percentile">-</span>
+                            </div>
+                        </div>
+                        <!-- Player 1 Opening Hand Cards -->
+                        <div style="margin-top: 1rem;">
+                            <div style="color: var(--text-muted); font-size: 0.75rem; margin-bottom: 0.5rem;">Opening
+                                Hand:</div>
+                            <div id="p1HandCards" class="hand-cards-container"></div>
+                        </div>
+                    </div>
+                    <!-- Player 2 Hand -->
+                    <div class="stat-card" style="text-align: center;">
+                        <div style="color: var(--player2-color); font-weight: 600; margin-bottom: 0.5rem;"
+                            id="p2HandName">Player 2</div>
+                        <div class="stat-value" id="p2Verdict" style="font-size: 1.2rem;">-</div>
+                        <div class="stat-label" id="p2VerdictText" style="margin-top: 0.25rem;">No deck data</div>
+                        <div
+                            style="margin-top: 1rem; background: rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 0.75rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                <span style="color: var(--text-muted); font-size: 0.85rem;">Quality Score:</span>
+                                <span id="p2QualityScore">-</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                <span style="color: var(--text-muted); font-size: 0.85rem;">Hand Traps:</span>
+                                <span id="p2HandTraps">-</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--text-muted); font-size: 0.85rem;">Percentile:</span>
+                                <span id="p2Percentile">-</span>
+                            </div>
+                        </div>
+                        <!-- Player 2 Opening Hand Cards -->
+                        <div style="margin-top: 1rem;">
+                            <div style="color: var(--text-muted); font-size: 0.75rem; margin-bottom: 0.5rem;">Opening
+                                Hand:</div>
+                            <div id="p2HandCards" class="hand-cards-container"></div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    style="margin-top: 1rem; padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">
+                    <strong>How to read:</strong> The verdict shows if the hand was statistically favorable (God Hand)
+                    or unfavorable (Brick).
+                    A "Brick" with a loss suggests bad luck. A "God Hand" with a loss suggests misplay.
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="btn-group">
+                <button class="btn" id="downloadBtn">Download Analysis JSON</button>
+                <button class="btn btn-secondary" id="resetBtn">Analyze Another Replay</button>
+            </div>
+        </div>
     </div>
 
     <script>
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
-        const resultsContainer = document.getElementById('results');
+        const loadingState = document.getElementById('loadingState');
+        const errorMessage = document.getElementById('errorMessage');
+        const analysisContainer = document.getElementById('analysisContainer');
 
+        let chartInstance = null;
+        let currentAnalysisData = null;
+
+        // Drag and drop handlers
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             dropZone.classList.add('drag-over');
@@ -200,111 +542,388 @@
             e.preventDefault();
             dropZone.classList.remove('drag-over');
             const files = e.dataTransfer.files;
-            handleFiles(files);
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
         });
 
-        dropZone.addEventListener('click', () => {
-            fileInput.click();
-        });
-
+        dropZone.addEventListener('click', () => fileInput.click());
         fileInput.addEventListener('change', () => {
-            handleFiles(fileInput.files);
+            if (fileInput.files.length > 0) {
+                handleFile(fileInput.files[0]);
+            }
         });
 
-        function handleFiles(files) {
-            Array.from(files).forEach(file => {
-                const lowerName = file.name.toLowerCase();
-                if (lowerName.endsWith('.yrp') || lowerName.endsWith('.yrpx')) {
-                    uploadAndParse(file);
-                } else {
-                    showError(file.name, "Not a .yrp or .yrpx file");
-                }
-            });
-        }
+        // Reset button
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            analysisContainer.classList.remove('visible');
+            dropZone.style.display = 'block';
+            errorMessage.style.display = 'none';
+            if (chartInstance) {
+                chartInstance.destroy();
+                chartInstance = null;
+            }
+        });
 
-        async function uploadAndParse(file) {
-            console.log('[FRONTEND] Starting upload for:', file.name);
-            const card = createResultCard(file.name, "Processing...");
+        // Download button
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            if (!currentAnalysisData) return;
+            const blob = new Blob([JSON.stringify(currentAnalysisData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'replay-analysis.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        async function handleFile(file) {
+            const lowerName = file.name.toLowerCase();
+            if (!lowerName.endsWith('.yrp') && !lowerName.endsWith('.yrpx')) {
+                showError('Please upload a .yrp or .yrpx replay file');
+                return;
+            }
+
+            // Show loading state
+            dropZone.style.display = 'none';
+            loadingState.style.display = 'block';
+            errorMessage.style.display = 'none';
+            analysisContainer.classList.remove('visible');
 
             try {
-                console.log('[FRONTEND] Sending POST to /parse');
-                const response = await fetch('/parse', {
+                const response = await fetch('/analyze', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/octet-stream'
-                    },
+                    headers: { 'Content-Type': 'application/octet-stream' },
                     body: file
                 });
 
-                console.log('[FRONTEND] Response received:', response.status);
                 if (!response.ok) {
-                    const errorJson = await response.json().catch(() => ({}));
-                    throw new Error(errorJson.details || errorJson.error || 'Parse failed');
+                    const error = await response.json().catch(() => ({}));
+                    throw new Error(error.details || error.error || 'Analysis failed');
                 }
 
-                const json = await response.json();
-                console.log('[FRONTEND] JSON received, cards count:', json.combos?.combo1?.cards?.length);
-                updateCardSuccess(card, file.name, json);
+                const data = await response.json();
+                currentAnalysisData = data;
+                displayAnalysis(data);
             } catch (error) {
-                console.error('[FRONTEND] Error:', error);
-                updateCardError(card, error.message);
-                console.error(error);
+                showError(error.message);
+                dropZone.style.display = 'block';
+            } finally {
+                loadingState.style.display = 'none';
             }
         }
 
-        function createResultCard(fileName, status) {
-            const div = document.createElement('div');
-            div.className = 'result-card';
-            div.innerHTML = `
-                <span class="file-name">${fileName}</span>
-                <span class="status">${status}</span>
-            `;
-            resultsContainer.prepend(div);
-            return div;
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
         }
 
-        function updateCardSuccess(card, fileName, data) {
-            const jsonStr = JSON.stringify(data, null, 2);
-            // Use application/octet-stream to force download and respect filename
-            const blob = new Blob([jsonStr], { type: 'application/octet-stream' });
-            const downloadName = fileName.replace(/\.[^/.]+$/, "") + ".json";
+        function displayAnalysis(data) {
+            const { resourceAnalysis, chainAnalysis, playerNames } = data;
+            const { snapshots, summary } = resourceAnalysis;
 
-            card.innerHTML = `
-                <span class="file-name">${fileName}</span>
-                <div class="actions">
-                    <button class="download-btn">Download JSON</button>
-                </div>
-            `;
+            // Update player names
+            const p1Name = playerNames?.[0] || 'Player 1';
+            const p2Name = playerNames?.[1] || 'Player 2';
 
-            const btn = card.querySelector('.download-btn');
-            btn.addEventListener('click', () => {
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = url;
-                a.download = downloadName;
-                document.body.appendChild(a);
-                a.click();
-                setTimeout(() => {
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                }, 100);
+            if (playerNames && playerNames.length >= 2) {
+                document.getElementById('player1Name').textContent = p1Name;
+                document.getElementById('player2Name').textContent = p2Name;
+            }
+
+            // Update resource stats
+            const peakAdvEl = document.getElementById('peakAdvantage');
+            const peakValue = summary.peakAdvantagePlayer === 1 ? summary.maxDelta : summary.minDelta;
+            peakAdvEl.textContent = peakValue >= 0 ? `+${peakValue}` : peakValue;
+            peakAdvEl.className = `stat-value ${peakValue > 0 ? 'positive' : peakValue < 0 ? 'negative' : 'neutral'}`;
+
+            const finalDeltaEl = document.getElementById('finalDelta');
+            finalDeltaEl.textContent = summary.finalDelta >= 0 ? `+${summary.finalDelta}` : summary.finalDelta;
+            finalDeltaEl.className = `stat-value ${summary.finalDelta > 0 ? 'positive' : summary.finalDelta < 0 ? 'negative' : 'neutral'}`;
+
+            document.getElementById('totalTurns').textContent = snapshots.length;
+
+            // Update chain efficiency stats
+            if (chainAnalysis && chainAnalysis.summary) {
+                const chainSummary = chainAnalysis.summary;
+
+                document.getElementById('negateRate').textContent = `${chainSummary.negateSuccessRate}%`;
+                document.getElementById('avgChainDepth').textContent = chainSummary.averageChainDepth;
+                document.getElementById('maxChainDepth').textContent = chainSummary.maxChainDepth;
+                document.getElementById('baitsForced').textContent = chainSummary.baitsForced;
+
+                // Per-player chain stats
+                document.getElementById('p1ChainName').textContent = p1Name;
+                document.getElementById('p2ChainName').textContent = p2Name;
+
+                if (chainSummary.player1Stats) {
+                    document.getElementById('p1EffectsActivated').textContent = chainSummary.player1Stats.effectsActivated;
+                    document.getElementById('p1EffectsNegated').textContent = chainSummary.player1Stats.effectsNegated;
+                    document.getElementById('p1ChainsInitiated').textContent = chainSummary.player1Stats.chainsInitiated;
+                }
+
+                if (chainSummary.player2Stats) {
+                    document.getElementById('p2EffectsActivated').textContent = chainSummary.player2Stats.effectsActivated;
+                    document.getElementById('p2EffectsNegated').textContent = chainSummary.player2Stats.effectsNegated;
+                    document.getElementById('p2ChainsInitiated').textContent = chainSummary.player2Stats.chainsInitiated;
+                }
+            }
+
+            // Update hand analysis (Brick Meter)
+            if (data.handAnalysis) {
+                const handCard = document.getElementById('handAnalysisCard');
+                const { player1Hand, player2Hand } = data.handAnalysis;
+
+                if (player1Hand || player2Hand) {
+                    handCard.style.display = 'block';
+
+                    // Helper to get verdict styling
+                    const getVerdictClass = (verdict) => {
+                        switch (verdict) {
+                            case 'god_hand': return 'positive';
+                            case 'good': return 'positive';
+                            case 'average': return 'neutral';
+                            case 'brick': return 'negative';
+                            case 'unplayable': return 'negative';
+                            default: return 'neutral';
+                        }
+                    };
+
+                    const getVerdictEmoji = (verdict) => {
+                        switch (verdict) {
+                            case 'god_hand': return '🔥 GOD HAND';
+                            case 'good': return '✅ Good';
+                            case 'average': return '⚖️ Average';
+                            case 'brick': return '🧱 BRICK';
+                            case 'unplayable': return '💀 Unplayable';
+                            default: return verdict;
+                        }
+                    };
+
+                    // Player 1 hand
+                    document.getElementById('p1HandName').textContent = p1Name;
+                    if (player1Hand) {
+                        const p1VerdictEl = document.getElementById('p1Verdict');
+                        p1VerdictEl.textContent = getVerdictEmoji(player1Hand.verdict);
+                        p1VerdictEl.className = `stat-value ${getVerdictClass(player1Hand.verdict)}`;
+                        document.getElementById('p1VerdictText').textContent = player1Hand.verdictExplanation;
+                        document.getElementById('p1QualityScore').textContent = `${player1Hand.handQualityScore}/100`;
+                        document.getElementById('p1HandTraps').textContent = player1Hand.handTrapsInHand;
+                        document.getElementById('p1Percentile').textContent = `Top ${100 - player1Hand.percentile}%`;
+
+                        // Render opening hand card images
+                        renderHandCards('p1HandCards', player1Hand.openingHand);
+                    }
+
+                    // Player 2 hand
+                    document.getElementById('p2HandName').textContent = p2Name;
+                    if (player2Hand) {
+                        const p2VerdictEl = document.getElementById('p2Verdict');
+                        p2VerdictEl.textContent = getVerdictEmoji(player2Hand.verdict);
+                        p2VerdictEl.className = `stat-value ${getVerdictClass(player2Hand.verdict)}`;
+                        document.getElementById('p2VerdictText').textContent = player2Hand.verdictExplanation;
+                        document.getElementById('p2QualityScore').textContent = `${player2Hand.handQualityScore}/100`;
+                        document.getElementById('p2HandTraps').textContent = player2Hand.handTrapsInHand;
+                        document.getElementById('p2Percentile').textContent = `Top ${100 - player2Hand.percentile}%`;
+
+                        // Render opening hand card images
+                        renderHandCards('p2HandCards', player2Hand.openingHand);
+                    }
+                } else {
+                    handCard.style.display = 'none';
+                }
+            }
+
+            // Create chart
+            createChart(snapshots, playerNames);
+
+            // Show analysis container
+            analysisContainer.classList.add('visible');
+        }
+
+        // Known hand traps for visual highlighting
+        const KNOWN_HAND_TRAPS = new Set([
+            23434538,   // Ash Blossom & Joyous Spring
+            14558127,   // Maxx "C"
+            10045474,   // Infinite Impermanence
+            59438930,   // Ghost Belle & Haunted Mansion
+            73642296,   // Ghost Ogre & Snow Rabbit
+            52038441,   // Effect Veiler
+            15693423,   // Droll & Lock Bird
+            94145021,   // D.D. Crow
+            97268402,   // Nibiru, the Primal Being
+            43898403,   // PSY-Framegear Gamma
+            49036338,   // Artifact Lancea
+            50078509,   // Ghost Mourner & Moonlit Chill
+        ]);
+
+        function renderHandCards(containerId, cardCodes) {
+            const container = document.getElementById(containerId);
+            if (!container || !cardCodes || cardCodes.length === 0) {
+                if (container) container.innerHTML = '<span style="color: var(--text-muted); font-size: 0.75rem;">No hand data</span>';
+                return;
+            }
+
+            container.innerHTML = '';
+
+            for (const code of cardCodes) {
+                if (!code || code <= 0) continue;
+
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'hand-card';
+
+                // Add hand-trap class for visual highlighting
+                if (KNOWN_HAND_TRAPS.has(code)) {
+                    cardDiv.classList.add('hand-trap');
+                }
+
+                const img = document.createElement('img');
+                img.src = `https://storage.googleapis.com/yugioh-card-images-archetype-nexus/cards/${code}.png`;
+                img.alt = `Card ${code}`;
+                img.loading = 'lazy';
+                img.onerror = function () {
+                    // Fallback to placeholder if image not found
+                    this.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 421 614"><rect fill="%23333" width="421" height="614"/><text x="50%" y="50%" fill="%23666" text-anchor="middle" font-size="24">?</text></svg>';
+                };
+
+                cardDiv.appendChild(img);
+                container.appendChild(cardDiv);
+            }
+        }
+
+        function createChart(snapshots, playerNames) {
+            const ctx = document.getElementById('advantageChart').getContext('2d');
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            // Prepare data
+            const labels = snapshots.map(s => `T${s.turn} ${s.phase}`);
+            const player1Data = snapshots.map(s => s.player1.total);
+            const player2Data = snapshots.map(s => s.player2.total);
+            const deltaData = snapshots.map(s => s.delta);
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [
+                        {
+                            label: playerNames?.[0] || 'Player 1',
+                            data: player1Data,
+                            borderColor: '#38bdf8',
+                            backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: playerNames?.[1] || 'Player 2',
+                            data: player2Data,
+                            borderColor: '#f472b6',
+                            backgroundColor: 'rgba(244, 114, 182, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'Delta (P1 - P2)',
+                            data: deltaData,
+                            borderColor: '#a78bfa',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            tension: 0.3,
+                            pointRadius: 0,
+                            yAxisID: 'delta'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#94a3b8',
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleColor: '#e2e8f0',
+                            bodyColor: '#94a3b8',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            callbacks: {
+                                label: function (context) {
+                                    const label = context.dataset.label || '';
+                                    const value = context.parsed.y;
+                                    if (context.datasetIndex === 2) {
+                                        return `${label}: ${value >= 0 ? '+' : ''}${value}`;
+                                    }
+                                    return `${label}: ${value} cards`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        },
+                        y: {
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Total Resources (Hand + Field)',
+                                color: '#94a3b8'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: '#64748b'
+                            },
+                            beginAtZero: true
+                        },
+                        delta: {
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Advantage Delta',
+                                color: '#a78bfa'
+                            },
+                            grid: {
+                                drawOnChartArea: false
+                            },
+                            ticks: {
+                                color: '#a78bfa'
+                            }
+                        }
+                    }
+                }
             });
-        }
-
-        function updateCardError(card, message) {
-            card.innerHTML += `<div class="error">${message}</div>`;
-        }
-
-        function showError(fileName, message) {
-            const div = document.createElement('div');
-            div.className = 'result-card';
-            div.style.borderColor = '#ef4444';
-            div.innerHTML = `
-                <span class="file-name">${fileName}</span>
-                <span class="error">${message}</span>
-            `;
-            resultsContainer.prepend(div);
         }
     </script>
 </body>

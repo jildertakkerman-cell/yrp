@@ -1,5 +1,5 @@
 
-import { YrpxParser } from './src/yrpx_parser';
+import { ReplayParserTS } from './src/replay_parser_ts';
 import * as fs from 'fs';
 // @ts-ignore
 import * as lzma from 'lzma-purejs';
@@ -23,7 +23,7 @@ async function run() {
     // Total header size = 32 (base) + 40 (extended) = 72
     const headerSize = 32 + 40;
     const buffer = Buffer.alloc(headerSize + compressed.length - 13); // -13 because we strip LZMA header from compressed usually?
-    // Wait, YrpxParser expects:
+    // Wait, ReplayParserTS expects:
     // props = buffer.slice(24, 29)
     // compressedData = buffer.slice(32) (currently)
 
@@ -56,7 +56,8 @@ async function run() {
     console.log(`Created buffer of size ${buffer.length}`);
 
     try {
-        await YrpxParser.create(buffer);
+        const parser = new ReplayParserTS(buffer);
+        await parser.parse();
         console.log("SUCCESS: Parsed successfully (Unexpected if bug exists)");
     } catch (e: any) {
         console.log("CAUGHT ERROR: " + e.message);
