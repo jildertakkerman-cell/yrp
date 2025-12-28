@@ -7,6 +7,7 @@ import { analyzeResources } from "./resource_analyzer";
 import { analyzeChains } from "./chain_analyzer";
 import { analyzeTempoMetrics } from "./tempo_analyzer";
 import { analyzeTechnicalTags } from "./technical_tags_analyzer";
+import { analyzeOpeningHands } from "./hand_analyzer";
 
 // Clear module cache for distill_combo to force reload
 const distillComboPath = require.resolve("./distill_combo_v2");
@@ -115,12 +116,16 @@ app.post("/analyze", async (req, res) => {
         console.log("[analyze] Running technical tags analysis...");
         const technicalTags = analyzeTechnicalTags(parsedReplayData, replay.playerNames);
 
+        console.log("[analyze] Running hand analysis...");
+        const handAnalysis = analyzeOpeningHands(parsedReplayData, replay.decks);
+
         // Combined response
         const analysis = {
             resourceAnalysis,
             chainAnalysis,
             tempoAnalysis,
             technicalTags,
+            handAnalysis,
             playerNames: replay.playerNames,
             replayInfo: {
                 seed: replay.header.seed,

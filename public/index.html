@@ -318,7 +318,7 @@
     <div class="container">
         <header>
             <h1>Replay Analyzer</h1>
-            <p class="subtitle">Upload your .yrp/.yrpx replay to see the Card Advantage chart</p>
+            <p class="subtitle">Upload your .yrpX replay to see the Card Advantage chart</p>
         </header>
 
         <div class="drop-zone" id="dropZone">
@@ -327,7 +327,7 @@
                     d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z" />
             </svg>
             <p>Drop your replay file here or click to upload</p>
-            <input type="file" id="fileInput" accept=".yrp,.yrpx,.yrpX">
+            <input type="file" id="fileInput" accept=".yrpx,.yrpX">
         </div>
 
         <div class="loading" id="loadingState" style="display: none;">
@@ -442,7 +442,7 @@
             <!-- Opening Hand Analysis (Brick Meter) -->
             <div class="card" id="handAnalysisCard" style="display: none;">
                 <div class="card-header">
-                    <h2 class="card-title">?? Opening Hand Analysis (Brick Meter)</h2>
+                    <h2 class="card-title">🎲 Opening Hand Analysis (Brick Meter)</h2>
                 </div>
                 <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
                     <!-- Player 1 Hand -->
@@ -683,8 +683,8 @@
 
         async function handleFile(file) {
             const lowerName = file.name.toLowerCase();
-            if (!lowerName.endsWith('.yrp') && !lowerName.endsWith('.yrpx')) {
-                showError('Please upload a .yrp or .yrpx replay file');
+            if (!lowerName.endsWith('.yrpx')) {
+                showError('Please upload a .yrpX replay file');
                 return;
             }
 
@@ -774,12 +774,16 @@
             }
 
             // Update hand analysis (Brick Meter)
+            console.log('[DEBUG] Checking handAnalysis:', data.handAnalysis);
             if (data.handAnalysis) {
                 const handCard = document.getElementById('handAnalysisCard');
                 const { player1Hand, player2Hand } = data.handAnalysis;
+                console.log('[DEBUG] player1Hand:', player1Hand);
+                console.log('[DEBUG] player2Hand:', player2Hand);
 
                 if (player1Hand || player2Hand) {
                     handCard.style.display = 'block';
+                    console.log('[DEBUG] Showing hand analysis card');
 
                     // Helper to get verdict styling
                     const getVerdictClass = (verdict) => {
@@ -795,11 +799,11 @@
 
                     const getVerdictEmoji = (verdict) => {
                         switch (verdict) {
-                            case 'god_hand': return '?? GOD HAND';
-                            case 'good': return '? Good';
-                            case 'average': return '?? Average';
-                            case 'brick': return '?? BRICK';
-                            case 'unplayable': return '?? Unplayable';
+                            case 'god_hand': return '🌟 GOD HAND';
+                            case 'good': return '✅ Good';
+                            case 'average': return '➖ Average';
+                            case 'brick': return '🧱 BRICK';
+                            case 'unplayable': return '❌ Unplayable';
                             default: return verdict;
                         }
                     };
@@ -834,8 +838,11 @@
                         renderHandCards('p2HandCards', player2Hand.openingHand);
                     }
                 } else {
+                    console.log('[DEBUG] No player hands found, hiding card');
                     handCard.style.display = 'none';
                 }
+            } else {
+                console.log('[DEBUG] No handAnalysis in data');
             }
 
             // Update tempo & speed metrics
