@@ -137,7 +137,13 @@ app.post("/analyze", async (req, res) => {
         const technicalTags = analyzeTechnicalTags(parsedReplayData, replay.playerNames);
 
         console.log("[analyze] Running hand analysis...");
-        const handAnalysis = analyzeOpeningHands(parsedReplayData, replay.decks);
+        const handAnalysis = await analyzeOpeningHands(parsedReplayData, replay.decks);
+
+        // Use extracted decks from hand analyzer if header decks are empty (YRPX files)
+        const effectiveDecks = (replay.decks && replay.decks.length >= 2 &&
+            (replay.decks[0].main?.length > 0 || replay.decks[1].main?.length > 0))
+            ? replay.decks
+            : handAnalysis.extractedDecks;
 
         // Combined response
         const analysis = {
@@ -147,6 +153,7 @@ app.post("/analyze", async (req, res) => {
             technicalTags,
             handAnalysis,
             playerNames: replay.playerNames,
+            decks: effectiveDecks, // Full deck lists - from header or extracted from replay messages
             replayInfo: {
                 seed: replay.header.seed,
                 startLP: replay.params.startLP || 8000

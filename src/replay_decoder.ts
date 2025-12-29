@@ -1,3 +1,5 @@
+// @ts-ignore
+import * as fs from 'fs';
 export interface ReplayStep {
     type: string;
     raw: string;
@@ -775,9 +777,10 @@ export class ReplayDecoder {
             if (d.length >= 1) info.type = d.readUInt8(0);
             if (d.length >= 5) info.lp = d.readUInt32LE(1);
             if (d.length >= 9) info.lp2 = d.readUInt32LE(5);
-            if (d.length >= 13) info.deckSize = d.readUInt16LE(9);
-            if (d.length >= 15) info.extraSize = d.readUInt16LE(11);
-            if (d.length >= 17) info.handSize = d.readUInt16LE(13);
+            if (d.length >= 11) info.deckSize = d.readUInt16LE(9);       // Player 1 deck size
+            if (d.length >= 13) info.extraSize = d.readUInt16LE(11);     // Player 1 extra deck size
+            if (d.length >= 15) info.deck2Size = d.readUInt16LE(13);     // Player 2 deck size
+            if (d.length >= 17) info.extra2Size = d.readUInt16LE(15);    // Player 2 extra deck size
             return info;
         },
         [MSG_HINT]: (d) => {
@@ -1848,8 +1851,24 @@ export class ReplayDecoder {
                 param2,
                 param3
             };
+        },
+        // MSG_CHAIN_NEGATED: An effect in the chain was negated
+        [MSG_CHAIN_NEGATED]: (d) => {
+            // Format: chainLink (1 byte)
+            return {
+                chainLink: d.readUInt8(0)
+            };
+        },
+        // MSG_CHAIN_DISABLED: An effect in the chain was disabled (similar to negate)
+        [MSG_CHAIN_DISABLED]: (d) => {
+            // Format: chainLink (1 byte)
+            return {
+                chainLink: d.readUInt8(0)
+            };
         }
     };
+
+
 
     public static decode(buffer: Buffer, replayId: number): ReplayStep[] {
         if (replayId === REPLAY_YRP1) {
@@ -2005,7 +2024,9 @@ export class ReplayDecoder {
 
         while (cursor < buffer.length) {
             // YRPX Format: [MsgID: 1 byte] [Length: 4 bytes] [Data: Length bytes]
-            if (cursor + 5 > buffer.length) break;
+            if (cursor + 5 > buffer.length) {
+                break;
+            }
 
             const msgId = buffer.readUInt8(cursor);
             cursor += 1;
@@ -2013,7 +2034,9 @@ export class ReplayDecoder {
             const len = buffer.readUInt32LE(cursor);
             cursor += 4;
 
-            if (cursor + len > buffer.length) break;
+            if (cursor + len > buffer.length) {
+                break;
+            }
 
             const data = buffer.slice(cursor, cursor + len);
             cursor += len;
@@ -2041,4 +2064,3 @@ export class ReplayDecoder {
 
 
 }
-

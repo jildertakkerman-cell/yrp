@@ -273,6 +273,39 @@
             z-index: 10;
         }
 
+        /* Deck list card images - smaller than hand cards */
+        .deck-cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 0.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 0.5rem;
+        }
+
+        .deck-card {
+            width: 45px;
+            height: 66px;
+            border-radius: 3px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        .deck-card:hover {
+            transform: scale(1.3);
+            z-index: 10;
+        }
+
+        .deck-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         .hand-card img {
             width: 100%;
             height: 100%;
@@ -447,8 +480,11 @@
                 <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
                     <!-- Player 1 Hand -->
                     <div class="stat-card" style="text-align: center;">
-                        <div style="color: var(--player1-color); font-weight: 600; margin-bottom: 0.5rem;"
-                            id="p1HandName">Player 1</div>
+                        <div style="color: var(--player1-color); font-weight: 600; margin-bottom: 0.5rem;">
+                            <span id="p1HandName">Player 1</span>
+                            <span id="p1TurnLabel"
+                                style="font-size: 0.7rem; background: rgba(255,255,255,0.1); padding: 0.1rem 0.4rem; border-radius: 0.25rem; margin-left: 0.25rem; vertical-align: middle; display: none;"></span>
+                        </div>
                         <div class="stat-value" id="p1Verdict" style="font-size: 1.2rem;">-</div>
                         <div class="stat-label" id="p1VerdictText" style="margin-top: 0.25rem;">No deck data</div>
                         <div
@@ -461,10 +497,25 @@
                                 <span style="color: var(--text-muted); font-size: 0.85rem;">Hand Traps:</span>
                                 <span id="p1HandTraps">-</span>
                             </div>
-                            <div style="display: flex; justify-content: space-between;">
-                                <span style="color: var(--text-muted); font-size: 0.85rem;">Percentile:</span>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                <span style="color: var(--text-muted); font-size: 0.85rem;">Archetype Cards:</span>
+                                <span id="p1ArchetypeCards">-</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                <span style="color: var(--text-muted); font-size: 0.85rem;">Archetype Density:</span>
+                                <span id="p1ArchetypeDensity">-</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                <span style="color: var(--text-muted); font-size: 0.85rem;">Draw Chance:</span>
                                 <span id="p1Percentile">-</span>
                             </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--text-muted); font-size: 0.85rem;">Garnets Drawn:</span>
+                                <span id="p1Garnets">-</span>
+                            </div>
+                            <!-- Archetypes identified -->
+                            <div id="p1Archetypes"
+                                style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);"></div>
                         </div>
                         <!-- Player 1 Opening Hand Cards -->
                         <div style="margin-top: 1rem;">
@@ -475,8 +526,11 @@
                     </div>
                     <!-- Player 2 Hand -->
                     <div class="stat-card" style="text-align: center;">
-                        <div style="color: var(--player2-color); font-weight: 600; margin-bottom: 0.5rem;"
-                            id="p2HandName">Player 2</div>
+                        <div style="color: var(--player2-color); font-weight: 600; margin-bottom: 0.5rem;">
+                            <span id="p2HandName">Player 2</span>
+                            <span id="p2TurnLabel"
+                                style="font-size: 0.7rem; background: rgba(255,255,255,0.1); padding: 0.1rem 0.4rem; border-radius: 0.25rem; margin-left: 0.25rem; vertical-align: middle; display: none;"></span>
+                        </div>
                         <div class="stat-value" id="p2Verdict" style="font-size: 1.2rem;">-</div>
                         <div class="stat-label" id="p2VerdictText" style="margin-top: 0.25rem;">No deck data</div>
                         <div
@@ -489,10 +543,25 @@
                                 <span style="color: var(--text-muted); font-size: 0.85rem;">Hand Traps:</span>
                                 <span id="p2HandTraps">-</span>
                             </div>
-                            <div style="display: flex; justify-content: space-between;">
-                                <span style="color: var(--text-muted); font-size: 0.85rem;">Percentile:</span>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                <span style="color: var(--text-muted); font-size: 0.85rem;">Archetype Cards:</span>
+                                <span id="p2ArchetypeCards">-</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                <span style="color: var(--text-muted); font-size: 0.85rem;">Archetype Density:</span>
+                                <span id="p2ArchetypeDensity">-</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                <span style="color: var(--text-muted); font-size: 0.85rem;">Draw Chance:</span>
                                 <span id="p2Percentile">-</span>
                             </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--text-muted); font-size: 0.85rem;">Garnets Drawn:</span>
+                                <span id="p2Garnets">-</span>
+                            </div>
+                            <!-- Archetypes identified -->
+                            <div id="p2Archetypes"
+                                style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);"></div>
                         </div>
                         <!-- Player 2 Opening Hand Cards -->
                         <div style="margin-top: 1rem;">
@@ -504,16 +573,34 @@
                 </div>
                 <div
                     style="margin-top: 1rem; padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">
-                    <strong>How to read:</strong> The verdict shows if the hand was statistically favorable (God Hand)
-                    or unfavorable (Brick).
-                    A "Brick" with a loss suggests bad luck. A "God Hand" with a loss suggests misplay.
+                    <div style="margin-bottom: 0.5rem;">
+                        <strong>How to read:</strong> The verdict shows if the hand was statistically favorable (God
+                        Hand)
+                        or unfavorable (Brick).
+                        A "Brick" with a loss suggests bad luck. A "God Hand" with a loss suggests misplay.
+                    </div>
+                    <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.5rem;">
+                        <strong>Draw Chance:</strong> Measures your hand trap "luck". <strong>80%</strong> means 80% of
+                        possible hands would have <em>fewer</em> hand traps than yours. A high percentage indicates a
+                        very defensive draw.
+                    </div>
+                    <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.5rem; margin-top: 0.5rem;">
+                        <strong>Turn Factor:</strong> Scoring is adjusted by turn order. <strong>1st player</strong>
+                        wants engine access (0-1 hand traps is ideal). <strong>2nd player</strong> needs interruption
+                        (2+ hand traps is ideal).
+                    </div>
+                    <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.5rem; margin-top: 0.5rem;">
+                        <strong>Garnets:</strong> 1-off archetype cards you want to stay in the deck. Drawing them
+                        incurs a <strong>-15 point</strong> penalty. Powerful 1-offs restricted by the
+                        <strong>Banlist</strong> are NOT penalized.
+                    </div>
                 </div>
             </div>
 
             <!-- Tempo & Speed Metrics -->
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-title">? Tempo & Speed Metrics</h2>
+                    <h2 class="card-title">⚡ Tempo & Speed Metrics</h2>
                 </div>
                 <div class="stats-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 1.5rem;">
                     <div class="stat-card">
@@ -641,6 +728,50 @@
                                 • <strong>Missed Lethal</strong>: Had enough ATK to win but didn't attack (game-losing
                                 mistake)
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full Deck Lists -->
+            <div class="card" id="deckListsCard" style="display: none;">
+                <div class="card-header">
+                    <h2 class="card-title">📚 Full Deck Lists</h2>
+                </div>
+                <div
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+                    <!-- Player 1 Deck -->
+                    <div
+                        style="background: rgba(59, 130, 246, 0.05); border-radius: 0.75rem; padding: 1rem; border: 1px solid rgba(59, 130, 246, 0.2);">
+                        <h3 id="p1DeckTitle"
+                            style="color: var(--player1-color); font-size: 1rem; margin-bottom: 0.75rem;">Player 1's
+                            Deck</h3>
+                        <div style="margin-bottom: 1rem;">
+                            <div style="color: var(--text-muted); font-size: 0.75rem; margin-bottom: 0.5rem;">Main Deck
+                                (<span id="p1MainDeckCount">0</span>)</div>
+                            <div id="p1MainDeck" class="deck-cards-container"></div>
+                        </div>
+                        <div>
+                            <div style="color: var(--text-muted); font-size: 0.75rem; margin-bottom: 0.5rem;">Extra Deck
+                                (<span id="p1ExtraDeckCount">0</span>)</div>
+                            <div id="p1ExtraDeck" class="deck-cards-container"></div>
+                        </div>
+                    </div>
+                    <!-- Player 2 Deck -->
+                    <div
+                        style="background: rgba(239, 68, 68, 0.05); border-radius: 0.75rem; padding: 1rem; border: 1px solid rgba(239, 68, 68, 0.2);">
+                        <h3 id="p2DeckTitle"
+                            style="color: var(--player2-color); font-size: 1rem; margin-bottom: 0.75rem;">Player 2's
+                            Deck</h3>
+                        <div style="margin-bottom: 1rem;">
+                            <div style="color: var(--text-muted); font-size: 0.75rem; margin-bottom: 0.5rem;">Main Deck
+                                (<span id="p2MainDeckCount">0</span>)</div>
+                            <div id="p2MainDeck" class="deck-cards-container"></div>
+                        </div>
+                        <div>
+                            <div style="color: var(--text-muted); font-size: 0.75rem; margin-bottom: 0.5rem;">Extra Deck
+                                (<span id="p2ExtraDeckCount">0</span>)</div>
+                            <div id="p2ExtraDeck" class="deck-cards-container"></div>
                         </div>
                     </div>
                 </div>
@@ -851,7 +982,18 @@
                         document.getElementById('p1VerdictText').textContent = player1Hand.verdictExplanation;
                         document.getElementById('p1QualityScore').textContent = `${player1Hand.handQualityScore}/100`;
                         document.getElementById('p1HandTraps').textContent = player1Hand.handTrapsInHand;
-                        document.getElementById('p1Percentile').textContent = `Top ${100 - player1Hand.percentile}%`;
+                        document.getElementById('p1Percentile').textContent = `${player1Hand.percentile}%`;
+                        document.getElementById('p1Garnets').textContent = player1Hand.garnetsInHand;
+
+                        const p1TurnEl = document.getElementById('p1TurnLabel');
+                        p1TurnEl.textContent = player1Hand.isGoingFirst ? '1st' : '2nd';
+                        p1TurnEl.style.display = 'inline-block';
+
+                        // Archetype info
+                        document.getElementById('p1ArchetypeCards').textContent = player1Hand.archetypeCardsInHand ?? '-';
+                        document.getElementById('p1ArchetypeDensity').textContent = player1Hand.archetypeDensity !== undefined ? `${player1Hand.archetypeDensity}%` : '-';
+                        const p1Archetypes = player1Hand.archetypesIdentified;
+                        document.getElementById('p1Archetypes').textContent = p1Archetypes?.length > 0 ? `Deck: ${p1Archetypes.join(', ')}` : '';
 
                         // Render opening hand card images
                         renderHandCards('p1HandCards', player1Hand.openingHand);
@@ -866,7 +1008,18 @@
                         document.getElementById('p2VerdictText').textContent = player2Hand.verdictExplanation;
                         document.getElementById('p2QualityScore').textContent = `${player2Hand.handQualityScore}/100`;
                         document.getElementById('p2HandTraps').textContent = player2Hand.handTrapsInHand;
-                        document.getElementById('p2Percentile').textContent = `Top ${100 - player2Hand.percentile}%`;
+                        document.getElementById('p2Percentile').textContent = `${player2Hand.percentile}%`;
+                        document.getElementById('p2Garnets').textContent = player2Hand.garnetsInHand;
+
+                        const p2TurnEl = document.getElementById('p2TurnLabel');
+                        p2TurnEl.textContent = player2Hand.isGoingFirst ? '1st' : '2nd';
+                        p2TurnEl.style.display = 'inline-block';
+
+                        // Archetype info
+                        document.getElementById('p2ArchetypeCards').textContent = player2Hand.archetypeCardsInHand ?? '-';
+                        document.getElementById('p2ArchetypeDensity').textContent = player2Hand.archetypeDensity !== undefined ? `${player2Hand.archetypeDensity}%` : '-';
+                        const p2Archetypes = player2Hand.archetypesIdentified;
+                        document.getElementById('p2Archetypes').textContent = p2Archetypes?.length > 0 ? `Deck: ${p2Archetypes.join(', ')}` : '';
 
                         // Render opening hand card images
                         renderHandCards('p2HandCards', player2Hand.openingHand);
@@ -924,6 +1077,33 @@
             // Display technical tags
             if (data.technicalTags && data.technicalTags.length > 0) {
                 displayTechnicalTags(data.technicalTags);
+            }
+
+            // Display deck lists
+            if (data.decks && data.decks.length >= 2) {
+                const deckListsCard = document.getElementById('deckListsCard');
+                deckListsCard.style.display = 'block';
+
+                const p1Name = playerNames?.[0] || 'Player 1';
+                const p2Name = playerNames?.[1] || 'Player 2';
+
+                document.getElementById('p1DeckTitle').textContent = `${p1Name}'s Deck`;
+                document.getElementById('p2DeckTitle').textContent = `${p2Name}'s Deck`;
+
+                const deck1 = data.decks[0];
+                const deck2 = data.decks[1];
+
+                // Player 1 deck
+                document.getElementById('p1MainDeckCount').textContent = deck1.main?.length || 0;
+                document.getElementById('p1ExtraDeckCount').textContent = deck1.extra?.length || 0;
+                renderDeckCards('p1MainDeck', deck1.main);
+                renderDeckCards('p1ExtraDeck', deck1.extra);
+
+                // Player 2 deck
+                document.getElementById('p2MainDeckCount').textContent = deck2.main?.length || 0;
+                document.getElementById('p2ExtraDeckCount').textContent = deck2.extra?.length || 0;
+                renderDeckCards('p2MainDeck', deck2.main);
+                renderDeckCards('p2ExtraDeck', deck2.extra);
             }
 
             // Create chart
@@ -1100,18 +1280,26 @@
 
         // Known hand traps for visual highlighting
         const KNOWN_HAND_TRAPS = new Set([
-            23434538,   // Ash Blossom & Joyous Spring
-            14558127,   // Maxx "C"
+            14558127,   // Ash Blossom & Joyous Spring
+            14558128,   // Ash Blossom & Joyous Spring (alt art)
+            23434538,   // Maxx "C"
             10045474,   // Infinite Impermanence
-            59438930,   // Ghost Belle & Haunted Mansion
-            73642296,   // Ghost Ogre & Snow Rabbit
-            52038441,   // Effect Veiler
-            15693423,   // Droll & Lock Bird
-            94145021,   // D.D. Crow
-            97268402,   // Nibiru, the Primal Being
+            94145021,   // Droll & Lock Bird
+            94145022,   // Droll & Lock Bird (alt art)
+            73642296,   // Ghost Belle & Haunted Mansion
+            73642297,   // Ghost Belle & Haunted Mansion (alt art)
+            59438930,   // Ghost Ogre & Snow Rabbit
+            59438931,   // Ghost Ogre & Snow Rabbit (alt art)
+            97268402,   // Effect Veiler
+            27204311,   // Nibiru, the Primal Being
+            24508238,   // D.D. Crow
+            24224830,   // Called by the Grave
             43898403,   // PSY-Framegear Gamma
             49036338,   // Artifact Lancea
             50078509,   // Ghost Mourner & Moonlit Chill
+            84192580,   // Mulcharmy Purulia
+            42141493,   // Mulcharmy Fuwalos
+            93457100,   // Mulcharmy Meowls
         ]);
 
         function renderHandCards(containerId, cardCodes) {
@@ -1130,7 +1318,7 @@
                 cardDiv.className = 'hand-card';
 
                 // Add hand-trap class for visual highlighting
-                if (KNOWN_HAND_TRAPS.has(code)) {
+                if (KNOWN_HAND_TRAPS.has(Number(code))) {
                     cardDiv.classList.add('hand-trap');
                 }
 
@@ -1139,8 +1327,53 @@
                 img.alt = `Card ${code}`;
                 img.loading = 'lazy';
                 img.onerror = function () {
-                    // Fallback to placeholder if image not found
-                    this.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 421 614"><rect fill="%23333" width="421" height="614"/><text x="50%" y="50%" fill="%23666" text-anchor="middle" font-size="24">?</text></svg>';
+                    // Fallback to YGOProDeck API if GCS image not found
+                    if (!this.dataset.fallback) {
+                        this.dataset.fallback = 'true';
+                        this.src = `https://images.ygoprodeck.com/images/cards/${code}.jpg`;
+                    } else {
+                        // Final fallback to placeholder
+                        this.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 421 614"><rect fill="%23333" width="421" height="614"/><text x="50%" y="50%" fill="%23666" text-anchor="middle" font-size="24">?</text></svg>';
+                    }
+                };
+
+                cardDiv.appendChild(img);
+                container.appendChild(cardDiv);
+            }
+        }
+
+        function renderDeckCards(containerId, cardCodes) {
+            const container = document.getElementById(containerId);
+            if (!container || !cardCodes || cardCodes.length === 0) {
+                if (container) container.innerHTML = '<span style="color: var(--text-muted); font-size: 0.7rem;">No cards</span>';
+                return;
+            }
+
+            container.innerHTML = '';
+
+            // Sort cards by code to group duplicates together
+            // This groups identical cards (3x Ash Blossom will be adjacent)
+            const sortedCodes = [...cardCodes].sort((a, b) => a - b);
+
+            for (const code of sortedCodes) {
+                if (!code || code <= 0) continue;
+
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'deck-card';
+
+                const img = document.createElement('img');
+                img.src = `https://storage.googleapis.com/yugioh-card-images-archetype-nexus/cards/${code}.png`;
+                img.alt = `Card ${code}`;
+                img.loading = 'lazy';
+                img.onerror = function () {
+                    // Fallback to YGOProDeck API if GCS image not found
+                    if (!this.dataset.fallback) {
+                        this.dataset.fallback = 'true';
+                        this.src = `https://images.ygoprodeck.com/images/cards/${code}.jpg`;
+                    } else {
+                        // Final fallback to placeholder
+                        this.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 421 614"><rect fill="%23333" width="421" height="614"/><text x="50%" y="50%" fill="%23666" text-anchor="middle" font-size="24">?</text></svg>';
+                    }
                 };
 
                 cardDiv.appendChild(img);

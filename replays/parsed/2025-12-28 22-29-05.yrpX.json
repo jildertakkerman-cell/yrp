@@ -1,0 +1,545 @@
+{
+  "resourceAnalysis": {
+    "snapshots": [
+      {
+        "turn": 1,
+        "phase": "Draw",
+        "phaseCode": 1,
+        "timestamp": 15,
+        "player1": {
+          "hand": 5,
+          "field": 0,
+          "total": 5
+        },
+        "player2": {
+          "hand": 5,
+          "field": 0,
+          "total": 5
+        },
+        "delta": 0
+      },
+      {
+        "turn": 1,
+        "phase": "Standby",
+        "phaseCode": 2,
+        "timestamp": 26,
+        "player1": {
+          "hand": 5,
+          "field": 0,
+          "total": 5
+        },
+        "player2": {
+          "hand": 5,
+          "field": 0,
+          "total": 5
+        },
+        "delta": 0
+      },
+      {
+        "turn": 1,
+        "phase": "Main 1",
+        "phaseCode": 4,
+        "timestamp": 37,
+        "player1": {
+          "hand": 5,
+          "field": 0,
+          "total": 5
+        },
+        "player2": {
+          "hand": 5,
+          "field": 0,
+          "total": 5
+        },
+        "delta": 0
+      },
+      {
+        "turn": 1,
+        "phase": "End",
+        "phaseCode": 512,
+        "timestamp": 54,
+        "player1": {
+          "hand": 5,
+          "field": 0,
+          "total": 5
+        },
+        "player2": {
+          "hand": 5,
+          "field": 0,
+          "total": 5
+        },
+        "delta": 0
+      },
+      {
+        "turn": 2,
+        "phase": "Draw",
+        "phaseCode": 1,
+        "timestamp": 70,
+        "player1": {
+          "hand": 5,
+          "field": 0,
+          "total": 5
+        },
+        "player2": {
+          "hand": 5,
+          "field": 0,
+          "total": 5
+        },
+        "delta": 0
+      },
+      {
+        "turn": 2,
+        "phase": "Standby",
+        "phaseCode": 2,
+        "timestamp": 146,
+        "player1": {
+          "hand": 4,
+          "field": 0,
+          "total": 4
+        },
+        "player2": {
+          "hand": 5,
+          "field": 0,
+          "total": 5
+        },
+        "delta": -1
+      },
+      {
+        "turn": 2,
+        "phase": "Main 1",
+        "phaseCode": 4,
+        "timestamp": 157,
+        "player1": {
+          "hand": 4,
+          "field": 0,
+          "total": 4
+        },
+        "player2": {
+          "hand": 5,
+          "field": 0,
+          "total": 5
+        },
+        "delta": -1
+      },
+      {
+        "turn": 2,
+        "phase": "Main 2",
+        "phaseCode": 256,
+        "timestamp": 250,
+        "player1": {
+          "hand": 4,
+          "field": 0,
+          "total": 4
+        },
+        "player2": {
+          "hand": 4,
+          "field": 3,
+          "total": 7
+        },
+        "delta": -3
+      },
+      {
+        "turn": 2,
+        "phase": "End",
+        "phaseCode": 512,
+        "timestamp": 261,
+        "player1": {
+          "hand": 4,
+          "field": 0,
+          "total": 4
+        },
+        "player2": {
+          "hand": 4,
+          "field": 3,
+          "total": 7
+        },
+        "delta": -3
+      },
+      {
+        "turn": 3,
+        "phase": "Draw",
+        "phaseCode": 1,
+        "timestamp": 278,
+        "player1": {
+          "hand": 4,
+          "field": 0,
+          "total": 4
+        },
+        "player2": {
+          "hand": 4,
+          "field": 3,
+          "total": 7
+        },
+        "delta": -3
+      },
+      {
+        "turn": 3,
+        "phase": "Standby",
+        "phaseCode": 2,
+        "timestamp": 299,
+        "player1": {
+          "hand": 5,
+          "field": 0,
+          "total": 5
+        },
+        "player2": {
+          "hand": 4,
+          "field": 3,
+          "total": 7
+        },
+        "delta": -2
+      },
+      {
+        "turn": 3,
+        "phase": "Main 1",
+        "phaseCode": 4,
+        "timestamp": 310,
+        "player1": {
+          "hand": 5,
+          "field": 0,
+          "total": 5
+        },
+        "player2": {
+          "hand": 4,
+          "field": 3,
+          "total": 7
+        },
+        "delta": -2
+      },
+      {
+        "turn": 3,
+        "phase": "End",
+        "phaseCode": 512,
+        "timestamp": 445,
+        "player1": {
+          "hand": 3,
+          "field": 1,
+          "total": 4
+        },
+        "player2": {
+          "hand": 4,
+          "field": 2,
+          "total": 6
+        },
+        "delta": -2
+      },
+      {
+        "turn": 4,
+        "phase": "Draw",
+        "phaseCode": 1,
+        "timestamp": 502,
+        "player1": {
+          "hand": 3,
+          "field": 1,
+          "total": 4
+        },
+        "player2": {
+          "hand": 5,
+          "field": 2,
+          "total": 7
+        },
+        "delta": -3
+      },
+      {
+        "turn": 4,
+        "phase": "Standby",
+        "phaseCode": 2,
+        "timestamp": 519,
+        "player1": {
+          "hand": 3,
+          "field": 1,
+          "total": 4
+        },
+        "player2": {
+          "hand": 6,
+          "field": 2,
+          "total": 8
+        },
+        "delta": -4
+      },
+      {
+        "turn": 4,
+        "phase": "Main 1",
+        "phaseCode": 4,
+        "timestamp": 526,
+        "player1": {
+          "hand": 3,
+          "field": 1,
+          "total": 4
+        },
+        "player2": {
+          "hand": 6,
+          "field": 2,
+          "total": 8
+        },
+        "delta": -4
+      },
+      {
+        "turn": 4,
+        "phase": "Main 2",
+        "phaseCode": 256,
+        "timestamp": 896,
+        "player1": {
+          "hand": 3,
+          "field": 1,
+          "total": 4
+        },
+        "player2": {
+          "hand": 7,
+          "field": 4,
+          "total": 11
+        },
+        "delta": -7
+      },
+      {
+        "turn": 4,
+        "phase": "End",
+        "phaseCode": 512,
+        "timestamp": 907,
+        "player1": {
+          "hand": 3,
+          "field": 1,
+          "total": 4
+        },
+        "player2": {
+          "hand": 7,
+          "field": 4,
+          "total": 11
+        },
+        "delta": -7
+      },
+      {
+        "turn": 5,
+        "phase": "Draw",
+        "phaseCode": 1,
+        "timestamp": 1004,
+        "player1": {
+          "hand": 3,
+          "field": 0,
+          "total": 3
+        },
+        "player2": {
+          "hand": 7,
+          "field": 4,
+          "total": 11
+        },
+        "delta": -8
+      },
+      {
+        "turn": 5,
+        "phase": "Standby",
+        "phaseCode": 2,
+        "timestamp": 1029,
+        "player1": {
+          "hand": 4,
+          "field": 0,
+          "total": 4
+        },
+        "player2": {
+          "hand": 7,
+          "field": 4,
+          "total": 11
+        },
+        "delta": -7
+      }
+    ],
+    "summary": {
+      "maxDelta": 0,
+      "minDelta": -8,
+      "peakAdvantagePlayer": 2,
+      "finalDelta": -7
+    }
+  },
+  "chainAnalysis": {
+    "interactions": [],
+    "summary": {
+      "totalInteractions": 0,
+      "totalNegates": 0,
+      "totalEffectsActivated": 18,
+      "negateSuccessRate": 0,
+      "averageChainDepth": 0,
+      "maxChainDepth": 0,
+      "baitsForced": 0,
+      "player1Stats": {
+        "effectsActivated": 5,
+        "effectsNegated": 0,
+        "chainsInitiated": 1,
+        "responsesUsed": 4
+      },
+      "player2Stats": {
+        "effectsActivated": 13,
+        "effectsNegated": 0,
+        "chainsInitiated": 0,
+        "responsesUsed": 13
+      }
+    }
+  },
+  "tempoAnalysis": {
+    "perTurnMetrics": [
+      {
+        "turn": 2,
+        "specialSummons": 0,
+        "normalSummons": 0,
+        "effectActivations": 2,
+        "totalActions": 2,
+        "player1": {
+          "specialSummons": 0,
+          "normalSummons": 0,
+          "effectActivations": 1,
+          "totalActions": 1
+        },
+        "player2": {
+          "specialSummons": 0,
+          "normalSummons": 0,
+          "effectActivations": 1,
+          "totalActions": 1
+        }
+      },
+      {
+        "turn": 3,
+        "specialSummons": 1,
+        "normalSummons": 0,
+        "effectActivations": 3,
+        "totalActions": 4,
+        "player1": {
+          "specialSummons": 1,
+          "normalSummons": 0,
+          "effectActivations": 1,
+          "totalActions": 2
+        },
+        "player2": {
+          "specialSummons": 0,
+          "normalSummons": 0,
+          "effectActivations": 2,
+          "totalActions": 2
+        }
+      },
+      {
+        "turn": 4,
+        "specialSummons": 4,
+        "normalSummons": 0,
+        "effectActivations": 12,
+        "totalActions": 16,
+        "player1": {
+          "specialSummons": 1,
+          "normalSummons": 0,
+          "effectActivations": 3,
+          "totalActions": 4
+        },
+        "player2": {
+          "specialSummons": 3,
+          "normalSummons": 0,
+          "effectActivations": 9,
+          "totalActions": 12
+        }
+      },
+      {
+        "turn": 5,
+        "specialSummons": 0,
+        "normalSummons": 0,
+        "effectActivations": 1,
+        "totalActions": 1,
+        "player1": {
+          "specialSummons": 0,
+          "normalSummons": 0,
+          "effectActivations": 0,
+          "totalActions": 0
+        },
+        "player2": {
+          "specialSummons": 0,
+          "normalSummons": 0,
+          "effectActivations": 1,
+          "totalActions": 1
+        }
+      }
+    ],
+    "summary": {
+      "averageActionsPerTurn": 5.8,
+      "maxActionsInSingleTurn": 16,
+      "totalSpecialSummons": 5,
+      "totalNormalSummons": 0,
+      "totalEffectActivations": 18,
+      "player1": {
+        "specialSummons": 2,
+        "normalSummons": 0,
+        "effectActivations": 5,
+        "totalActions": 7
+      },
+      "player2": {
+        "specialSummons": 3,
+        "normalSummons": 0,
+        "effectActivations": 13,
+        "totalActions": 16
+      }
+    },
+    "winner": {
+      "player": 1,
+      "playerName": "eternsl",
+      "turnsToWin": 5,
+      "isOTK": false
+    }
+  },
+  "technicalTags": [],
+  "handAnalysis": {
+    "player1Hand": {
+      "player": 0,
+      "openingHand": [
+        84192580,
+        48130397,
+        48130397,
+        66518509,
+        42141493
+      ],
+      "deckSize": 61,
+      "monstersInHand": 0,
+      "spellsInHand": 0,
+      "trapsInHand": 0,
+      "handTrapsInHand": 0,
+      "handQualityScore": 54,
+      "percentile": 50,
+      "verdict": "average",
+      "verdictExplanation": "Typical opening hand. Winnable with good sequencing."
+    },
+    "player2Hand": {
+      "player": 1,
+      "openingHand": [
+        14558128,
+        94145022,
+        94145022,
+        5431722,
+        30271097
+      ],
+      "deckSize": 6,
+      "monstersInHand": 0,
+      "spellsInHand": 0,
+      "trapsInHand": 0,
+      "handTrapsInHand": 0,
+      "handQualityScore": 54,
+      "percentile": 50,
+      "verdict": "average",
+      "verdictExplanation": "Typical opening hand. Winnable with good sequencing."
+    },
+    "deckInfo": {
+      "player1Deck": {
+        "totalCards": 40,
+        "monsters": 0,
+        "spells": 0,
+        "traps": 0,
+        "handTraps": 0
+      },
+      "player2Deck": {
+        "totalCards": 40,
+        "monsters": 0,
+        "spells": 0,
+        "traps": 0,
+        "handTraps": 0
+      }
+    }
+  },
+  "playerNames": [
+    "Pedro",
+    "eternsl"
+  ],
+  "replayInfo": {
+    "seed": 1766956740
+  }
+}

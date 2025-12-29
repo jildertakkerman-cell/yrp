@@ -107,6 +107,34 @@ export function analyzeChains(parsedReplayData: ReplayStep[]): ChainAnalysisResu
     // Process all replay steps
     for (const step of parsedReplayData) {
         const details = step.details;
+
+        // Handle MSG_CHAIN_END first (it has no details)
+        if (step.msgId === MSG_CHAIN_END) {
+            // Chain finished resolving
+            // If chain depth >= 2, this was an actual interaction
+            if (state.chainState.currentChainDepth >= 2) {
+                // Determine the responding player (first player to chain link 2)
+                const respondingCard = state.chainState.cardsInChain.find(c => c.chainLink === 2);
+                const respondingPlayer = respondingCard ? respondingCard.controller : -1;
+
+                interactions.push({
+                    turn: state.turn,
+                    chainDepth: state.chainState.currentChainDepth,
+                    cards: [...state.chainState.cardsInChain],
+                    negatedLinks: [...state.chainState.negatedLinks],
+                    disabledLinks: [...state.chainState.disabledLinks],
+                    wasBeforeNormalSummon: state.chainState.chainStartedBeforeNormalSummon,
+                    respondingPlayer
+                });
+            }
+
+            // Reset chain state
+            state.chainState = createEmptyChainState();
+            currentChainLink = 0;
+            continue;
+        }
+
+        // Skip steps without details for other message types
         if (!details) continue;
 
         switch (step.msgId) {
@@ -177,12 +205,13 @@ export function analyzeChains(parsedReplayData: ReplayStep[]): ChainAnalysisResu
 
             case MSG_CHAIN_NEGATED: {
                 // An effect in the chain was negated
-                // This typically means the effect didn't resolve
-                state.chainState.negatedLinks.push(currentChainLink);
+                // Use chainLink from details if available, otherwise fall back to currentChainLink
+                const negatedLink = (details.chainLink as number) ?? currentChainLink;
+                state.chainState.negatedLinks.push(negatedLink);
 
                 // Find which player's effect was negated
                 const negatedCard = state.chainState.cardsInChain.find(
-                    c => c.chainLink === currentChainLink
+                    c => c.chainLink === negatedLink
                 );
                 if (negatedCard && (negatedCard.controller === 0 || negatedCard.controller === 1)) {
                     playerStats[negatedCard.controller].effectsNegated++;
@@ -192,11 +221,13 @@ export function analyzeChains(parsedReplayData: ReplayStep[]): ChainAnalysisResu
 
             case MSG_CHAIN_DISABLED: {
                 // An effect in the chain was disabled (similar to negate)
-                state.chainState.disabledLinks.push(currentChainLink);
+                // Use chainLink from details if available, otherwise fall back to currentChainLink
+                const disabledLink = (details.chainLink as number) ?? currentChainLink;
+                state.chainState.disabledLinks.push(disabledLink);
 
                 // Find which player's effect was disabled
                 const disabledCard = state.chainState.cardsInChain.find(
-                    c => c.chainLink === currentChainLink
+                    c => c.chainLink === disabledLink
                 );
                 if (disabledCard && (disabledCard.controller === 0 || disabledCard.controller === 1)) {
                     playerStats[disabledCard.controller].effectsNegated++;
